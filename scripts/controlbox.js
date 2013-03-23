@@ -62,15 +62,19 @@
             if (split[0] !== 'git') {
                 return this.error();
             }
+            
+            var method = split[1],
+                args = split.slice(2);
 
             try {
-                var result = this[split[1]](split.slice(2));
-            
-                if (typeof result === 'string') {
-                    this.error(result);
+                if (typeof this[method] === 'function') {
+                    this[method](args);
+                } else {
+                    this.error();
                 }
             } catch (ex) {
-                this.error();
+                var msg = (ex && ex.message) ? ex.message: null; 
+                this.error(msg);
             }
         },
 
@@ -90,7 +94,35 @@
         },
 
         branch: function (args) {
+            if (args.length < 1) {
+                this.info(
+                    'You need to give a branch name. ' +
+                    'Normally if you don\'t give a name, ' +
+                    'this command will list your local branches on the screen.'
+                );
+                
+                return;
+            }
+            
+            while (args.length > 0) {
+                var arg = args.shift();
+                
+                switch (arg) {
+                    default:
+                        this.historyView.branch(arg);
+                }
+            }
+        },
         
+        checkout: function (args) {
+            while (args.length > 0) {
+                var arg = args.shift();
+                
+                switch (arg) {
+                    default:
+                        this.historyView.checkout(arg);
+                }
+            }
         }
     };
 

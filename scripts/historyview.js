@@ -513,7 +513,7 @@
 
         branch: function (name) {
             if (!name || name.trim() === '') {
-                throw new Error('You need to give a branch name. Normally if you don\'t give a name, this command will list your local branches on the screen.');
+                throw new Error('You need to give a branch name.');
             }
         
             if (name.indexOf(' ') > -1) {
