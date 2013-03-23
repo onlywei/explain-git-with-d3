@@ -1,0 +1,164 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>Explain Git with D3</title>
+<script data-main="scripts/main" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.4/require.min.js"></script>
+<link rel="stylesheet" href="css/explaingit.css">
+</head>
+<body>
+<h1>Visualizing Git Concepts with D3 - The Basics</h1>
+
+These are the most basic git commands for you to visualize.
+
+<h2>git commit</h2>
+<a id="start-commit" href="#">Open this tutorial</a>
+
+<div id="ExplainGitCommit-Container" class="concept-container">
+    <p>
+        We are going to skip instructing you on how to add/stage your files for commit in this explanation.
+        Let's assume you already know how to do that. If you don't, go read some other tutorials.
+    </p>
+    <p>
+        Pretend that you already have your files staged for commit and enter "git commit" as many times as you like
+        in the terminal box.
+    </p>
+</div>
+<script type="text/javascript">
+(function () {
+    var historyView, controlBox, start,
+        beginSwitch = document.getElementById('start-commit');
+
+    start = function () {
+        beginSwitch.style.display = 'none';
+
+        require(['explaingit'], function (explainGit) {
+            var containerId = 'ExplainGitCommit-Container',
+                containerSelector = '#' + containerId;
+
+            document.getElementById(containerId).style.display = 'block';
+
+            historyView = new explainGit.HistoryView({
+                name: 'ExplainGitCommit',
+                height: 250,
+                commitData: [
+                    {id: '98ca9b5', tags: ['origin/master', 'master']}
+                ]
+            });
+
+            controlBox = new explainGit.ControlBox({
+                historyView: historyView
+            });
+
+            controlBox.render(containerSelector);
+            historyView.render(containerSelector);
+        });
+    };
+
+    beginSwitch.addEventListener('click', start, false);
+})();
+</script>
+
+<h2>git branch</h2>
+<a id="start-branch" href="#">Open this tutorial</a>
+
+<div id="ExplainGitBranch-Container" class="concept-container">
+    <p>
+        Creating branches just creates a new tag pointing to the currently checked out commit.
+    </p>
+    <p>
+        Type git commit and git branch commands to your hearts desire until you understand this concept.
+    </p>
+</div>
+<script type="text/javascript">
+(function () {
+    var historyView, controlBox, start,
+        beginSwitch = document.getElementById('start-branch');
+
+    start = function () {
+        beginSwitch.style.display = 'none';
+
+        require(['explaingit'], function (explainGit) {
+            var containerId = 'ExplainGitBranch-Container',
+                containerSelector = '#' + containerId;
+
+            document.getElementById(containerId).style.display = 'block';
+
+            historyView = new explainGit.HistoryView({
+                name: 'ExplainGitBranch',
+                commitData: [
+                    {id: '98ca9b5', tags: ['origin/master', 'master']}
+                ]
+            });
+
+            controlBox = new explainGit.ControlBox({
+                historyView: historyView
+            });
+
+            controlBox.render(containerSelector);
+            historyView.render(containerSelector);
+        });
+    };
+
+    beginSwitch.addEventListener('click', start, false);
+})();
+</script>
+
+<h2>git checkout</h2>
+<a id="start-checkout" href="#">Open this tutorial</a>
+
+<div id="ExplainGitCheckout-Container" class="concept-container">
+    <p>
+        git checkout has many uses, but the main one is to switch between branches.</br>
+        For example, to switch from master branch to dev branch, I would type 'git checkout dev'.
+        After that, if I do a git commit, notice where it goes. Try it.
+    </p>
+    <p>
+        In addition to checking out branches, you can also checkout individual commits. Try it.
+        Type "git checkout 77oa0ph" and see what happens.
+    </p>
+    <p>
+        Type git commit, and git branch, and git checkout commands to your hearts desire until you understand this concept.
+    </p>
+</div>
+<script type="text/javascript">
+(function () {
+    var historyView, controlBox, start,
+        beginSwitch = document.getElementById('start-checkout');
+
+    start = function () {
+        beginSwitch.style.display = 'none';
+    
+        require(['explaingit'], function (explainGit) {
+            var containerId = 'ExplainGitCheckout-Container',
+                containerSelector = '#' + containerId;
+
+            document.getElementById(containerId).style.display = 'block';
+
+            historyView = new explainGit.HistoryView({
+                name: 'ExplainGitCheckout',
+                height: 500,
+                width: 900,
+                commitData: [
+                    {id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
+                    {id: '77oa0ph', parent: '98ca9b5', tags: ['master']},
+                    {id: 'amcqj4r', parent: '98ca9b5', tags: ['dev']}
+                ]
+            });
+
+            controlBox = new explainGit.ControlBox({
+                historyView: historyView,
+                initialMessage: 'Use git checkout, git branch, and git commit commands until you understand.'
+            });
+
+            controlBox.render(containerSelector);
+            historyView.render(containerSelector);
+        });
+    };
+
+    beginSwitch.addEventListener('click', start, false);
+})();
+</script>
+
+<h3><a href="index.html">Back to Home</a></h3>
+</body>
+</html>

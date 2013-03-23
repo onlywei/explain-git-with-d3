@@ -1,0 +1,120 @@
+﻿.concept-container {
+    display: none;
+}
+
+.svg-container {
+    display: inline-block;
+    border: 1px dotted #AAA;
+}
+
+.control-box {
+    display: inline-block;
+    width: 250px;
+    vertical-align: bottom;
+    background-color: #000;
+    border: 1px dotted #AAA;
+}
+
+.control-box button {
+    font-family: Courier New;
+    font-size: 12px;
+    margin-right: 5px;
+    margin-bottom: 5px;
+}
+
+.control-box .log {
+    overflow-y: auto;
+    border-bottom: 1px solid #AAA;
+}
+
+.control-box .log,
+.control-box input[type="text"] {
+    font-family: Courier New;
+    font-size: 14px;
+}
+
+.control-box .log .command-entry,
+.control-box input[type="text"] {
+    padding-left: 15px;
+    color: #FFF;
+    line-height: 14px;
+    background: url(../images/prompt.gif) no-repeat left center transparent;
+}
+
+.control-box .log .info,
+.control-box .log .error {
+    font-size: 12px;
+    padding: 5px;
+}
+
+.control-box .log .info {
+    color: #FFC;
+}
+
+.control-box .log .error {
+    color: #FCC;
+}
+
+.control-box input[type="text"] {
+    width: 235px;
+    border: none;
+}
+
+circle.commit {
+  fill: #EEEEEE;
+  stroke: #888888;
+  stroke-width: 3;
+}
+
+circle.commit.checked-out {
+
+}
+
+marker#triangle {
+	fill: #666;
+}
+
+line.commit-pointer {
+	stroke: #666;
+	stroke-width: 4;
+}
+
+text.id-label {
+	text-anchor: middle;
+	font-family: Courier New;
+	fill: #666;
+	font-size: 10px;
+}
+
+g.branch-tag > rect {
+	fill: #FFCC66;
+	stroke: #CC9900;
+	stroke-width: 2;
+}
+
+g.branch-tag.remote-branch > rect {
+	fill: #CCC;
+	stroke: #888;
+}
+
+g.branch-tag > text {
+	text-anchor: middle;
+	fill: #000;
+	font-size: 11px;
+	font-family: Arial;
+}
+
+g.head-tag > rect {
+	fill: #CCFFCC;
+	stroke: #339900;
+	stroke-width: 2;
+}
+
+g.head-tag > text {
+	text-anchor: middle;
+	fill: #000;
+	font-size: 11px;
+	font-family: Arial;
+	font-weight: bold;
+	text-transform: uppercase;
+}
