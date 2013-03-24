@@ -3,26 +3,97 @@
 <head>
 <title>Explain Git with D3</title>
 <script data-main="js/main" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.4/require.min.js"></script>
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css">
+<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/1140/2.0/1140.css">
 <link rel="stylesheet" href="css/explaingit.css">
 </head>
 <body>
-<h1>Visualizing Git Concepts with D3</h1>
-<p>This website is designed to help you understand some basic git concepts visually.</p>
-<p>This is my first attempt at using both SVG and D3. I hope it is helpful to you.</p>
-
-<h2>git commit</h2>
-<a id="open-commit" class="openswitch" href="#">Open this sandbox</a>
-
-<div id="ExplainGitCommit-Container" class="concept-container">
-    <p>
+<div class="container">
+  <div class="row intro">
+    <div class="twelvecol">
+      <h1>Visualizing Git Concepts with D3</h1>
+      <p>
+        This website is designed to help you understand some basic git concepts visually.
+        This is my first attempt at using both SVG and D3. I hope it is helpful to you.
+      </p>
+      <p>
+        Adding/staging your files for commit will not be covered by this site. In all sandbox playgrounds
+        on this site, just pretend that you always have files staged and ready to commit at all times.
+        If you need a refresher on how to add or stage files for commit, please read
+        <a href="http://git-scm.com/book/en/Git-Basics-Recording-Changes-to-the-Repository">Git Basics</a>.
+      </p>
+      <p>
+        Sandboxes are split by specific git commands, listed below.
+      </p>
+    </div>
+  </div>
+  <div class="row command-list">
+    <div class="twocol">
+      <h4>Basic Commands</h3>
+      <a id="open-commit" class="openswitch" href="#">git commit</a>
+      <a id="open-branch" class="openswitch" href="#">git branch</a>
+    </div>
+    <div class="twocol">
+      <h4>More Basics</h4>
+      <a id="open-checkout" class="openswitch" href="#">git checkout</a>
+      <a id="open-checkout-b" class="openswitch" href="#">git checkout -b</a>
+    </div>
+    <div class="fourcol">
+      <h4>Combining Two Branches</h4>
+    </div>
+    <div class="fourcol last">
+      <h4>Interacting with Remote Server</h4>
+    </div>
+  </div>
+  <div class="row">
+    <div id="ExplainGitCommit-Container" class="twelvecol concept-container">
+      <p>
         We are going to skip instructing you on how to add your files for commit in this explanation.
         Let's assume you already know how to do that. If you don't, go read some other tutorials.
-    </p>
-    <p>
-        Pretend that you already have your files staged for commit and enter "git commit"
+      </p>
+      <p>
+        Pretend that you already have your files staged for commit and enter <span class="cmd">git commit</span>
 		as many times as you like in the terminal box.
-    </p>
+      </p>
+    </div>
+    <div id="ExplainGitBranch-Container" class="twelvecol concept-container">
+      <p>
+        Creating branches just creates a new tag pointing to the currently checked out commit.
+      </p>
+      <p>
+        Type <span class="cmd">git commit</span> and <span class="cmd">git branch</span> commands
+        to your hearts desire until you understand this concept.
+      </p>
+    </div>
+    <div id="ExplainGitCheckout-Container" class="twelvecol concept-container">
+      <p>
+        <span class="cmd">git checkout</span> has many uses,
+        but the main one is to switch between branches.</br>
+        For example, to switch from master branch to dev branch,
+        I would type <span class="cmd">git checkout dev</span>.
+        After that, if I do a git commit, notice where it goes. Try it.
+      </p>
+      <p>
+        In addition to checking out branches, you can also checkout individual commits. Try it.</br>
+        Make a new commit and then type <span class="cmd">git checkout 77oa0ph</span>
+        and see what happens.
+      </p>
+      <p>
+        Type <span class="cmd">git commit</span>, <span class="cmd">git branch</span>,
+        and <span class="cmd">git checkout</span> commands to your hearts desire
+		until you understand this concept.
+      </p>
+    </div>
+    <div id="ExplainGitCheckout-b-Container" class="twelvecol concept-container">
+      <p>
+        You can combine <span class="cmd">git branch</span> and <span class="cmd">git checkout</span>
+        into a single command by typing <span class="cmd">git checkout -b branchname</span>.
+        This will create the branch if it does not already exist and immediately check it out.
+      </p>
+    </div>
+  </div>
 </div>
+
 <script type="text/javascript">
 require(['explaingit'], function (explainGit) {
     var openSwitch = document.getElementById('open-commit'),
@@ -30,7 +101,6 @@ require(['explaingit'], function (explainGit) {
 
     open = function () {
 		explainGit.reset();
-        openSwitch.style.display = 'none';
 
 		explainGit.open({
 			name: 'Commit',
@@ -46,17 +116,6 @@ require(['explaingit'], function (explainGit) {
 });
 </script>
 
-<h2>git branch</h2>
-<a id="open-branch" class="openswitch" href="#">Open this sandbox</a>
-
-<div id="ExplainGitBranch-Container" class="concept-container">
-    <p>
-        Creating branches just creates a new tag pointing to the currently checked out commit.
-    </p>
-    <p>
-        Type git commit and git branch commands to your hearts desire until you understand this concept.
-    </p>
-</div>
 <script type="text/javascript">
 require(['explaingit'], function (explainGit) {
 	var openSwitch = document.getElementById('open-branch'),
@@ -64,7 +123,6 @@ require(['explaingit'], function (explainGit) {
 
     open = function () {
 		explainGit.reset();
-        openSwitch.style.display = 'none';
 
 		explainGit.open({
 			name: 'Branch',
@@ -78,24 +136,6 @@ require(['explaingit'], function (explainGit) {
 });
 </script>
 
-<h2>git checkout</h2>
-<a id="open-checkout" class="openswitch" href="#">Open this sandbox</a>
-
-<div id="ExplainGitCheckout-Container" class="concept-container">
-    <p>
-        git checkout has many uses, but the main one is to switch between branches.</br>
-        For example, to switch from master branch to dev branch, I would type 'git checkout dev'.
-        After that, if I do a git commit, notice where it goes. Try it.
-    </p>
-    <p>
-        In addition to checking out branches, you can also checkout individual commits. Try it.
-        Type "git checkout 77oa0ph" and see what happens.
-    </p>
-    <p>
-        Type git commit, and git branch, and git checkout commands to your hearts desire
-		until you understand this concept.
-    </p>
-</div>
 <script type="text/javascript">
 require(['explaingit'], function (explainGit) {
     var openSwitch = document.getElementById('open-checkout'),
@@ -103,12 +143,10 @@ require(['explaingit'], function (explainGit) {
 
     open = function () {
 		explainGit.reset();
-        openSwitch.style.display = 'none';
 
 		explainGit.open({
 			name: 'Checkout',
 			height: 500,
-			width: 900,
 			commitData: [
 				{id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
 				{id: '77oa0ph', parent: '98ca9b5', tags: ['master']},
@@ -123,16 +161,6 @@ require(['explaingit'], function (explainGit) {
 });
 </script>
 
-<h2>git checkout -b</h2>
-<a id="open-checkout-b" class="openswitch" href="#">Open this sandbox</a>
-
-<div id="ExplainGitCheckout-b-Container" class="concept-container">
-    <p>
-        You can combine git branch and git checkout into a single command by typing
-		"git checkout -b branchname". This will create the branch if it does not already exist
-		and immediately check it out.
-    </p>
-</div>
 <script type="text/javascript">
 require(['explaingit'], function (explainGit) {
     var openSwitch = document.getElementById('open-checkout-b'),
@@ -140,12 +168,10 @@ require(['explaingit'], function (explainGit) {
 
     open = function () {
 		explainGit.reset();
-        openSwitch.style.display = 'none';
 
 		explainGit.open({
 			name: 'Checkout-b',
 			height: 500,
-			width: 900,
 			commitData: [
 				{id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
 				{id: 'def6ayi', parent: '98ca9b5'},

@@ -1,6 +1,28 @@
 /* styles */
+.intro p, .concept-container p {
+    padding-bottom: 10px;
+    color: #909090;
+}
+
+a.openswitch {
+    display: block;
+    font-family: Courier New;
+}
+
+.command-list {
+    padding: 10px 0;
+    border-bottom: 2px dashed #888;
+    border-top: 2px dashed #888;
+}
+
 .concept-container {
+    padding-top: 10px;
     display: none;
+}
+
+span.cmd {
+    font-family: Courier New;
+    color: #000;
 }
 
 .svg-container {
@@ -62,9 +84,13 @@
 }
 
 circle.commit {
-  fill: #EEEEEE;
-  stroke: #888888;
-  stroke-width: 3;
+    fill: #EEEEEE;
+    stroke: #888888;
+    stroke-width: 3;
+}
+
+circle.commit.merge-commit {
+    stroke: #CC9900;
 }
 
 circle.commit.branchless {

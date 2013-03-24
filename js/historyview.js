@@ -242,7 +242,7 @@ define(['d3'], function () {
         this.branches = [];
         this.currentBranch = config.currentBranch || 'master';
 
-        this.width = config.width || 700;
+        this.width = config.width || 886;
         this.height = config.height || 400;
         this.commitRadius = config.commitRadius || 20;
         this.pointerMargin = this.commitRadius * 1.3;
@@ -347,6 +347,7 @@ define(['d3'], function () {
                 .attr('width', this.width)
                 .attr('height', this.height);
 
+            this.svgContainer = svgContainer;
             this.svg = svg;
 
             renderArrowheadMarker(svg);
@@ -362,6 +363,7 @@ define(['d3'], function () {
 
 		destroy: function () {
 			this.svg.remove();
+            this.svgContainer.remove();
 
 			for (var prop in this) {
 				if (this.hasOwnProperty(prop)) {
@@ -406,6 +408,9 @@ define(['d3'], function () {
                     return view.name + '-' + d.id;
                 })
                 .classed('commit', true)
+                .classed('merge-commit', function (d) {
+                    return typeof d.parent2 === 'string';
+                })
                 .call(fixCirclePosition)
                 .attr('r', 1)
                 .transition()
