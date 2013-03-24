@@ -197,6 +197,37 @@ define(['d3'], function () {
 					this.historyView.checkout(remainingArgs.join(' '));
                 }
             }
+        },
+
+        reset: function (args) {
+            while (args.length > 0) {
+                var arg = args.shift();
+                
+                switch (arg) {
+                case '--soft':
+                    this.info(
+                        'The "--soft" flag works in real git, but ' +
+                        'I am unable to show you how it works in this demo. ' +
+                        'So I am just going to show you what "--hard" looks like instead.'
+                    );
+                    break;
+                case '--mixed':
+                    this.info(
+                        'The "--mixed" flag works in real git, but ' +
+                        'I am unable to show you how it works in this demo.'
+                    );
+                    break;
+                case '--hard':
+                    this.historyView.reset(args.join(' '));
+                    args.length = 0;
+                    break;
+                default:
+                    var remainingArgs = [arg].concat(args);
+                    args.length = 0;
+                    this.info('Assuming "--hard".');
+                    this.historyView.reset(remainingArgs.join(' '));
+                }
+            }
         }
     };
 

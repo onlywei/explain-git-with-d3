@@ -213,6 +213,10 @@
                 }
             }
 
+            if (!commit) {
+                throw new Error('Cannot find commit: ' + ref);
+            }
+
             return matchedCommit;
         },
 
@@ -554,10 +558,6 @@
         checkout: function (ref) {
             var commit = this.getCommit(ref);
 
-            if (!commit) {
-                return 'Cannot find commit: ' + ref;
-            }
-
             var previousHead = this.getCircle('HEAD'),
                 newHead = this.getCircle(commit.id);
 
@@ -570,6 +570,19 @@
             this._renderTags();
 
             newHead.style('fill', '#CCFFCC').style('stroke', '#339900');
+
+            return this;
+        },
+        
+        reset: function (ref) {
+            var commit = this.getCommit(ref);
+
+            if (this.currentBranch) {
+                this._moveTag(this.currentBranch, commit.id);
+                this.checkout(this.currentBranch);
+            } else {
+                this.checkout(commit.id);
+            }
 
             return this;
         }
