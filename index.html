@@ -9,9 +9,156 @@
 <h1>Visualizing Git Concepts with D3</h1>
 <p>This website is designed to help you understand some basic git concepts visually.</p>
 <p>This is my first attempt at using both SVG and D3. I hope it is helpful to you.</p>
-<p>The D3 playgrounds are split into multiple sections. Please explore them below:</p>
 
-<h3><a href="basics.html">The Basics</a></h3>
-<p>Covers git commit, git branch, and git checkout.</p>
+<h2>git commit</h2>
+<a id="open-commit" class="openswitch" href="#">Open this sandbox</a>
+
+<div id="ExplainGitCommit-Container" class="concept-container">
+    <p>
+        We are going to skip instructing you on how to add your files for commit in this explanation.
+        Let's assume you already know how to do that. If you don't, go read some other tutorials.
+    </p>
+    <p>
+        Pretend that you already have your files staged for commit and enter "git commit"
+		as many times as you like in the terminal box.
+    </p>
+</div>
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-commit'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+        openSwitch.style.display = 'none';
+
+		explainGit.open({
+			name: 'Commit',
+			height: 250,
+			commitData: [
+				{id: '98ca9b5', tags: ['origin/master', 'master']}
+			],
+			initialMessage: 'Type git commit a few times.'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<h2>git branch</h2>
+<a id="open-branch" class="openswitch" href="#">Open this sandbox</a>
+
+<div id="ExplainGitBranch-Container" class="concept-container">
+    <p>
+        Creating branches just creates a new tag pointing to the currently checked out commit.
+    </p>
+    <p>
+        Type git commit and git branch commands to your hearts desire until you understand this concept.
+    </p>
+</div>
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+	var openSwitch = document.getElementById('open-branch'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+        openSwitch.style.display = 'none';
+
+		explainGit.open({
+			name: 'Branch',
+			commitData: [
+				{id: '98ca9b5', tags: ['origin/master', 'master']}
+			]
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<h2>git checkout</h2>
+<a id="open-checkout" class="openswitch" href="#">Open this sandbox</a>
+
+<div id="ExplainGitCheckout-Container" class="concept-container">
+    <p>
+        git checkout has many uses, but the main one is to switch between branches.</br>
+        For example, to switch from master branch to dev branch, I would type 'git checkout dev'.
+        After that, if I do a git commit, notice where it goes. Try it.
+    </p>
+    <p>
+        In addition to checking out branches, you can also checkout individual commits. Try it.
+        Type "git checkout 77oa0ph" and see what happens.
+    </p>
+    <p>
+        Type git commit, and git branch, and git checkout commands to your hearts desire
+		until you understand this concept.
+    </p>
+</div>
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-checkout'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+        openSwitch.style.display = 'none';
+
+		explainGit.open({
+			name: 'Checkout',
+			height: 500,
+			width: 900,
+			commitData: [
+				{id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
+				{id: '77oa0ph', parent: '98ca9b5', tags: ['master']},
+				{id: 'amcqj4r', parent: '98ca9b5', tags: ['dev']}
+			],
+			initialMessage:
+				'Use git checkout, git branch, and git commit commands until you understand.'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<h2>git checkout -b</h2>
+<a id="open-checkout-b" class="openswitch" href="#">Open this sandbox</a>
+
+<div id="ExplainGitCheckout-b-Container" class="concept-container">
+    <p>
+        You can combine git branch and git checkout into a single command by typing
+		"git checkout -b branchname". This will create the branch if it does not already exist
+		and immediately check it out.
+    </p>
+</div>
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-checkout-b'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+        openSwitch.style.display = 'none';
+
+		explainGit.open({
+			name: 'Checkout-b',
+			height: 500,
+			width: 900,
+			commitData: [
+				{id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
+				{id: 'def6ayi', parent: '98ca9b5'},
+				{id: '77oa0ph', parent: 'def6ayi', tags: ['master']},
+				{id: 'amcqj4r', parent: '98ca9b5', tags: ['dev']}
+			],
+			initialMessage:
+				'Use git checkout -b and git commit commands until you understand.'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
 </body>
 </html>

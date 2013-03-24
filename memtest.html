@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<title>Explain Git with D3</title>
+<script data-main="js/main" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.4/require.min.js"></script>
+<link rel="stylesheet" href="css/explaingit.css">
+</head>
+<body>
+<h1>Memtest Page</h1>
+<p>This page exists to help me find any memory leaks that may happen.</p>
+
+<h2>explain git memtest</h2>
+<div id="ExplainGitMemtest-Container" class="concept-container">
+    <p>
+        Create and destroy many git history views and control boxes to find memory leaks.
+    </p>
+</div>
+<h3><a id="start-test" href="#">Start Test</a></h3>
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var open = function () {
+        openSwitch.style.display = 'none';
+
+		explainGit.open({
+			name: 'Memtest',
+			height: 250,
+			commitData: [
+				{id: '98ca9b5', tags: ['origin/master', 'master']}
+			]
+		});
+    };
+
+	document.getElementById('start-test').addEventListener('click', function () {
+		for (var i = 0; i < 100; i++) {
+			open();
+			explainGit.reset();
+			console.log('test run: ' + i);
+		}
+	}, false);
+});
+</script>
+<h3><a href="index.html">Back to Home</a></h3>
+</body>
+</html>

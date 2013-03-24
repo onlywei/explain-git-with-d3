@@ -149,7 +149,7 @@
      * @constructor
      */
     function HistoryView(config) {
-        var commitData = config.commitData,
+        var commitData = config.commitData || [],
             commit;
 
         for (var i = 0; i < commitData.length; i++) {
@@ -182,7 +182,7 @@
     };
 
     HistoryView.prototype = {
-        /**
+		/**
          * @method getCommit
          * @param ref {String} the id or a tag name that refers to the commit
          * @return {Object} the commit datum object
@@ -242,10 +242,12 @@
          * @param container {String} selector for the container to render the SVG into
          */
         render: function (container) {
-            container = d3.select(container).append('div')
+            var svgContainer, svg;
+
+			svgContainer = container.append('div')
                 .classed('svg-container', true);
 
-            var svg = container.append('svg:svg');
+            svg = container.append('svg:svg');
 
             svg.attr('id', this.name)
                 .attr('width', this.width)
@@ -263,6 +265,16 @@
 
             this._setCurrentBranch(this.currentBranch);
         },
+		
+		destroy: function () {
+			this.svg.remove();
+
+			for (var prop in this) {
+				if (this.hasOwnProperty(prop)) {
+					this[prop] = null;
+				}
+			}
+		},
 
         _renderCommits: function () {
             for (var i = 0; i < this.commitData.length; i++) {

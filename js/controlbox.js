@@ -15,18 +15,19 @@ define(['d3'], function () {
 
     ControlBox.prototype = {
         render: function (container) {
-            container = d3.select(container).append('div')
+			var cBox = this,
+				cBoxContainer, log, input;
+
+            cBoxContainer = container.append('div')
                 .classed('control-box', true);
 
-            container.node().style.height = this.historyView.height + 5 + 'px';
-
-            var cBox = this;
-
-            var log = container.append('div')
+            cBoxContainer.style('height', this.historyView.height + 5 + 'px');
+            
+			log = cBoxContainer.append('div')
                 .classed('log', true)
                 .style('height', this.historyView.height - 20 + 'px');
 
-            var input = container.append('input')
+            input = cBoxContainer.append('input')
                 .attr('type', 'text')
                 .attr('placeholder', 'enter git command');
 
@@ -75,11 +76,24 @@ define(['d3'], function () {
                 }
             });
 
-            this.log = log;
+            this.container = cBoxContainer;
+			this.log = log;
             this.input = input;
 
             this.info(this.initialMessage);
         },
+		
+		destroy: function () {
+			this.log.remove();
+			this.input.remove();
+			this.container.remove();
+
+			for (var prop in this) {
+				if (this.hasOwnProperty(prop)) {
+					this[prop] = null;
+				}
+			}
+		},
 
         _scrollToBottom: function () {
             var log = this.log.node();
