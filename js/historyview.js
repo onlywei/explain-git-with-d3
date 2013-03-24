@@ -192,13 +192,18 @@
          * @param ref {String} the id or a tag name that refers to the commit
          * @return {Object} the commit datum object
          */
-        getCommit: function (ref) {
+        getCommit: function getCommit(ref) {
+            var commitData = this.commitData,
+                headMatcher = /HEAD(\^+)/.exec(ref),
+                matchedCommit = null;
+
             if (ref === 'initial') {
                 return this.initialCommit;
             }
 
-            var commitData = this.commitData,
-                matchedCommit = null;
+            if (headMatcher) {
+                ref = 'HEAD';
+            }
 
             for (var i = 0; i < commitData.length; i++) {
                 var commit = commitData[i];
@@ -213,8 +218,14 @@
                 }
             }
 
-            if (!commit) {
+            if (!matchedCommit) {
                 throw new Error('Cannot find commit: ' + ref);
+            }
+
+            if (headMatcher) {
+                for (var h = 0; h < headMatcher[1].length; h++) {
+                    matchedCommit = getCommit.call(this, matchedCommit.parent);
+                }
             }
 
             return matchedCommit;
@@ -233,9 +244,9 @@
                 return circle;
             }
 
-            commit = this.getCommit(ref);
-
-            if (!commit) {
+            try {
+                commit = this.getCommit(ref);
+            } catch (err) {
                 return null;
             }
 
@@ -502,11 +513,14 @@
         },
 
         _moveTag: function (tag, ref) {
-            var currentLoc = this.getCommit(tag),
+            var currentLoc,
                 newLoc = this.getCommit(ref);
 
-            if (currentLoc) {
+            try {
+                currentLoc = this.getCommit(tag);
                 currentLoc.tags.splice(currentLoc.tags.indexOf(tag), 1);
+            } catch (e) {
+                // oh well
             }
 
             newLoc.tags.push(tag);
