@@ -11,16 +11,16 @@
 These are the most basic git commands for you to visualize.
 
 <h2>git commit</h2>
-<a id="start-commit" href="#">Open this tutorial</a>
+<a id="start-commit" href="#">Open this sandbox</a>
 
 <div id="ExplainGitCommit-Container" class="concept-container">
     <p>
-        We are going to skip instructing you on how to add/stage your files for commit in this explanation.
+        We are going to skip instructing you on how to add your files for commit in this explanation.
         Let's assume you already know how to do that. If you don't, go read some other tutorials.
     </p>
     <p>
-        Pretend that you already have your files staged for commit and enter "git commit" as many times as you like
-        in the terminal box.
+        Pretend that you already have your files staged for commit and enter "git commit"
+		as many times as you like in the terminal box.
     </p>
 </div>
 <script type="text/javascript">
@@ -59,7 +59,7 @@ These are the most basic git commands for you to visualize.
 </script>
 
 <h2>git branch</h2>
-<a id="start-branch" href="#">Open this tutorial</a>
+<a id="start-branch" href="#">Open this sandbox</a>
 
 <div id="ExplainGitBranch-Container" class="concept-container">
     <p>
@@ -104,7 +104,7 @@ These are the most basic git commands for you to visualize.
 </script>
 
 <h2>git checkout</h2>
-<a id="start-checkout" href="#">Open this tutorial</a>
+<a id="start-checkout" href="#">Open this sandbox</a>
 
 <div id="ExplainGitCheckout-Container" class="concept-container">
     <p>
@@ -117,7 +117,8 @@ These are the most basic git commands for you to visualize.
         Type "git checkout 77oa0ph" and see what happens.
     </p>
     <p>
-        Type git commit, and git branch, and git checkout commands to your hearts desire until you understand this concept.
+        Type git commit, and git branch, and git checkout commands to your hearts desire
+		until you understand this concept.
     </p>
 </div>
 <script type="text/javascript">
@@ -147,7 +148,59 @@ These are the most basic git commands for you to visualize.
 
             controlBox = new explainGit.ControlBox({
                 historyView: historyView,
-                initialMessage: 'Use git checkout, git branch, and git commit commands until you understand.'
+                initialMessage: 
+					'Use git checkout, git branch, and git commit commands until you understand.'
+            });
+
+            controlBox.render(containerSelector);
+            historyView.render(containerSelector);
+        });
+    };
+
+    beginSwitch.addEventListener('click', start, false);
+})();
+</script>
+
+<h2>git checkout -b</h2>
+<a id="start-checkout-b" href="#">Open this sandbox</a>
+
+<div id="ExplainGitCheckout-b-Container" class="concept-container">
+    <p>
+        You can combine git branch and git checkout into a single command by typing
+		"git checkout -b branchname". This will create the branch if it does not already exist
+		and immediately check it out.
+    </p>
+</div>
+<script type="text/javascript">
+(function () {
+    var historyView, controlBox, start,
+        beginSwitch = document.getElementById('start-checkout-b');
+
+    start = function () {
+        beginSwitch.style.display = 'none';
+    
+        require(['explaingit'], function (explainGit) {
+            var containerId = 'ExplainGitCheckout-b-Container',
+                containerSelector = '#' + containerId;
+
+            document.getElementById(containerId).style.display = 'block';
+
+            historyView = new explainGit.HistoryView({
+                name: 'ExplainGitCheckout-b',
+                height: 500,
+                width: 900,
+                commitData: [
+                    {id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
+					{id: 'def6ayi', parent: '98ca9b5'},
+                    {id: '77oa0ph', parent: 'def6ayi', tags: ['master']},
+                    {id: 'amcqj4r', parent: '98ca9b5', tags: ['dev']}
+                ]
+            });
+
+            controlBox = new explainGit.ControlBox({
+                historyView: historyView,
+                initialMessage: 
+					'Use git checkout -b and git commit commands until you understand.'
             });
 
             controlBox.render(containerSelector);

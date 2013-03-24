@@ -32,7 +32,7 @@
                 break;
             }
         }
-        
+
         if (overlappedCommit) {
             if (overlappedCommit.cy < centerBranchLine) {
                 overlappedCommit.cy -= shift;
@@ -59,7 +59,7 @@
 
         for (var i = 0; i < view.commitData.length; i++) {
             var d = view.commitData[i];
-            
+
             if (d.parent === commit.parent) {
                 branches.push(d.id);
             }
@@ -69,7 +69,7 @@
 
         if (parentCY === centerBranchLine) {
             var direction = 1;
-            for (var i = 0; i < branchIndex; i++) {
+            for (var bi = 0; bi < branchIndex; bi++) {
                 direction *= -1;
             }
 
@@ -127,7 +127,7 @@
         return endCY - (view.pointerMargin * 1.2 * (diffY / length));
     };
 
-    tagY = function tagY (t, view) {
+    tagY = function tagY(t, view) {
         var commit = view.getCommit(t.commit),
             commitCY = commit.cy,
             tags = commit.tags,
@@ -148,7 +148,7 @@
      * @class HistoryView
      * @constructor
      */
-    function HistoryView (config) {
+    function HistoryView(config) {
         var commitData = config.commitData,
             commit;
 
@@ -160,7 +160,7 @@
 
         this.name = config.name || 'UnnamedHistoryView';
         this.commitData = commitData;
-        
+
         this.branches = ['HEAD'];
         this.currentBranch = config.currentBranch || 'master';
 
@@ -168,10 +168,15 @@
         this.height = config.height || 400;
         this.commitRadius = config.commitRadius || 20;
         this.pointerMargin = this.commitRadius * 1.3;
-        
-        this.initialCommit = {id: 'initial', parent: null, cx: -(this.commitRadius * 2), cy: this.height / 2};
+
+        this.initialCommit = {
+			id: 'initial',
+			parent: null,
+			cx: -(this.commitRadius * 2),
+			cy: this.height / 2
+		};
     }
-    
+
     HistoryView.generateId = function () {
         return Math.random().toString(36).substring(2, 9);
     };
@@ -186,7 +191,7 @@
             if (ref === 'initial') {
                 return this.initialCommit;
             }
-        
+
             var commitData = this.commitData,
                 matchedCommit = null;
 
@@ -220,9 +225,9 @@
             }
 
             commit = this.getCommit(ref);
-            
+
             if (!commit) {
-                return null
+                return null;
             }
 
             return this.svg.select('#' + this.name + '-' + commit.id);
@@ -255,7 +260,7 @@
                 .classed('current-branch-display', true)
                 .attr('x', 10)
                 .attr('y', 25);
-            
+
             this._setCurrentBranch(this.currentBranch);
         },
 
@@ -266,7 +271,7 @@
                 commit.cy = cy(commit, this);
                 preventOverlap(commit, this);
             }
-        
+
             this._renderCircles();
             this._renderPointers();
             this._renderIdLabels();
@@ -278,7 +283,7 @@
                 existingCircles,
                 newCircles,
                 fixPosition;
-            
+
             fixPosition = function (selection) {
                 selection
                     .attr('cx', function (d) {
@@ -342,8 +347,8 @@
                 .attr('marker-end', 'url(#triangle)')
                 .attr('x1', function (d) { return px1(d, view); })
                 .attr('y1', function (d) { return py1(d, view); })
-                .attr('x2', function (d) { return d3.select(this).attr('x1'); })
-                .attr('y2', function (d) {  return d3.select(this).attr('y1'); })
+                .attr('x2', function () { return d3.select(this).attr('x1'); })
+                .attr('y2', function () {  return d3.select(this).attr('y1'); })
                 .transition()
                 .duration(500)
                 .attr('x2', function (d) { return px2(d, view); })
@@ -355,7 +360,7 @@
                 existingLabels,
                 newLabels,
                 fixPosition;
-            
+
             fixPosition = function (selection) {
                 selection.attr('x', function (d) {
                     return d.cx;
@@ -366,7 +371,7 @@
 
             existingLabels = this.svg.selectAll('text.id-label')
                 .data(this.commitData, function (d) { return d.id; });
-            
+
             existingLabels.transition().call(fixPosition);
 
             newLabels = existingLabels.enter()
@@ -425,7 +430,7 @@
                 .attr('x', function (d) {
                     var commit = view.getCommit(d.commit);
                     return commit.cx;
-                })
+                });
 
             newTags = existingTags.enter()
                 .append('g')
@@ -460,9 +465,9 @@
                 .attr('x', function (d) {
                     var commit = view.getCommit(d.commit);
                     return commit.cx;
-                })
+                });
         },
-        
+
         _setCurrentBranch: function (branch) {
             var display = this.svg.select('text.current-branch-display');
 
@@ -504,9 +509,9 @@
 
             this.commitData.push(commit);
             this._moveTag(this.currentBranch, commit.id);
-            
+
             this._renderCommits();
-            
+
             this.checkout(this.currentBranch);
             return this;
         },
@@ -515,7 +520,7 @@
             if (!name || name.trim() === '') {
                 throw new Error('You need to give a branch name.');
             }
-        
+
             if (name.indexOf(' ') > -1) {
                 throw new Error('Branch names cannot contain spaces.');
             }
@@ -535,18 +540,18 @@
             if (!commit) {
                 return 'Cannot find commit: ' + ref;
             }
-            
+
             var previousHead = this.getCircle('HEAD'),
                 newHead = this.getCircle(commit.id);
 
             if (previousHead && !previousHead.empty()) {
-                previousHead.style('fill', '#EEE').style('stroke', '#888')
+                previousHead.style('fill', '#EEE').style('stroke', '#888');
             }
-            
+
             this._setCurrentBranch(ref === commit.id ? null : ref);
             this._moveTag('HEAD', commit.id);
             this._renderTags();
-            
+
             newHead.style('fill', '#CCFFCC').style('stroke', '#339900');
 
             return this;
