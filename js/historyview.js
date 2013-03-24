@@ -1,22 +1,33 @@
-﻿define(['d3'], function () {
+define(['d3'], function () {
     "use strict";
 
     var renderArrowheadMarker,
         preventOverlap,
+        applyBranchlessClass,
         cx, cy, px1, py1, px2, py2, tagY;
 
     renderArrowheadMarker = function (svg) {
+        var setAttributes = function (selection) {
+            selection
+                .attr('refX', 5)
+                .attr('refY', 5)
+                .attr('markerUnits', 'strokeWidth')
+                .attr('markerWidth', 4)
+                .attr('markerHeight', 3)
+                .attr('orient', 'auto')
+                .attr('viewBox', '0 0 10 10')
+                .append('svg:path')
+                    .attr('d', 'M 0 0 L 10 5 L 0 10 z');
+        };
+
         svg.append('svg:marker')
             .attr('id', 'triangle')
-            .attr('refX', 5)
-            .attr('refY', 5)
-            .attr('markerUnits', 'strokeWidth')
-            .attr('markerWidth', 4)
-            .attr('markerHeight', 3)
-            .attr('orient', 'auto')
-            .attr('viewBox', '0 0 10 10')
-            .append('svg:path')
-                .attr('d', 'M 0 0 L 10 5 L 0 10 z');
+            .call(setAttributes);
+
+        svg.append('svg:marker')
+            .attr('id', 'faded-triangle')
+            .call(setAttributes);
+
     };
 
     preventOverlap = function preventOverlap(commit, view) {
@@ -36,7 +47,7 @@
         if (overlapped) {
             var oParent = view.getCommit(overlapped.parent),
                 parent = view.getCommit(commit.parent);
-        
+
             if (overlapped.cy < centerBranchLine) {
                 overlapped = oParent.cy < parent.cy ? overlapped : commit;
                 overlapped.cy -= shift;
@@ -47,6 +58,12 @@
 
             preventOverlap(overlapped, view);
         }
+    };
+
+    applyBranchlessClass = function (selection) {
+        selection.classed('branchless', function (d) {
+            return d.branchless;
+        });
     };
 
     cx = function (commit, view) {
@@ -166,7 +183,7 @@
         this.name = config.name || 'UnnamedHistoryView';
         this.commitData = commitData;
 
-        this.branches = ['HEAD'];
+        this.branches = [];
         this.currentBranch = config.currentBranch || 'master';
 
         this.width = config.width || 700;
@@ -218,11 +235,7 @@
                 }
             }
 
-            if (!matchedCommit) {
-                throw new Error('Cannot find commit: ' + ref);
-            }
-
-            if (headMatcher) {
+            if (headMatcher && matchedCommit) {
                 for (var h = 0; h < headMatcher[1].length; h++) {
                     matchedCommit = getCommit.call(this, matchedCommit.parent);
                 }
@@ -244,9 +257,9 @@
                 return circle;
             }
 
-            try {
-                commit = this.getCommit(ref);
-            } catch (err) {
+            commit = this.getCommit(ref);
+
+            if (!commit) {
                 return null;
             }
 
@@ -285,7 +298,7 @@
 
             this._setCurrentBranch(this.currentBranch);
         },
-		
+
 		destroy: function () {
 			this.svg.remove();
 
@@ -296,14 +309,17 @@
 			}
 		},
 
-        _renderCommits: function () {
+        _calculatePositionData: function () {
             for (var i = 0; i < this.commitData.length; i++) {
                 var commit = this.commitData[i];
                 commit.cx = cx(commit, this);
                 commit.cy = cy(commit, this);
                 preventOverlap(commit, this);
             }
+        },
 
+        _renderCommits: function () {
+            this._calculatePositionData();
             this._renderCircles();
             this._renderPointers();
             this._renderIdLabels();
@@ -338,7 +354,7 @@
                 .attr('id', function (d) {
                     return view.name + '-' + d.id;
                 })
-                .attr('class', 'commit')
+                .classed('commit', true)
                 .call(fixPosition)
                 .attr('r', 1)
                 .transition()
@@ -376,7 +392,6 @@
                     return view.name + '-' + d.id + '-to-' + d.parent;
                 })
                 .attr('class', 'commit-pointer')
-                .attr('marker-end', 'url(#triangle)')
                 .attr('x1', function (d) { return px1(d, view); })
                 .attr('y1', function (d) { return py1(d, view); })
                 .attr('x2', function () { return d3.select(this).attr('x1'); })
@@ -413,21 +428,18 @@
                 .call(fixPosition);
         },
 
-        _renderTags: function () {
-            var view = this,
-                tagData = [], i,
-                headCommit = null,
-                existingTags, newTags;
+        _parseTagData: function () {
+            var tagData = [], i,
+                headCommit = null;
 
             for (i = 0; i < this.commitData.length; i++) {
                 var c = this.commitData[i];
+
                 for (var t = 0; t < c.tags.length; t++) {
                     var tagName = c.tags[t];
                     if (tagName.toUpperCase() === 'HEAD') {
                         headCommit = c;
-                    }
-
-                    if (this.branches.indexOf(tagName) === -1) {
+                    } else if (this.branches.indexOf(tagName) === -1) {
                         this.branches.push(tagName);
                     }
 
@@ -440,6 +452,39 @@
                 headCommit.tags.push('HEAD');
                 tagData.push({name: 'HEAD', commit: headCommit.id});
             }
+
+            // find out which commits are not branchless
+
+
+            return tagData;
+        },
+
+        _markBranchlessCommits: function () {
+            // first mark every commit as branchless
+            for (var c = 0; c < this.commitData.length; c++) {
+                this.commitData[c].branchless = true;
+            }
+
+            for (var b = 0; b < this.branches.length; b++) {
+                var commit = this.getCommit(this.branches[b]),
+                    parent = this.getCommit(commit.parent);
+
+                commit.branchless = false;
+
+                while (parent) {
+                    parent.branchless = false;
+                    parent = this.getCommit(parent.parent);
+                }
+            }
+
+            this.svg.selectAll('circle.commit').call(applyBranchlessClass);
+            this.svg.selectAll('line.commit-pointer').call(applyBranchlessClass);
+        },
+
+        _renderTags: function () {
+            var view = this,
+                tagData = this._parseTagData(),
+                existingTags, newTags;
 
             existingTags = this.svg.selectAll('g.branch-tag')
                 .data(tagData, function (d) { return d.name; });
@@ -498,6 +543,8 @@
                     var commit = view.getCommit(d.commit);
                     return commit.cx;
                 });
+
+            this._markBranchlessCommits();
         },
 
         _setCurrentBranch: function (branch) {
@@ -513,18 +560,14 @@
         },
 
         _moveTag: function (tag, ref) {
-            var currentLoc,
+            var currentLoc = this.getCommit(tag),
                 newLoc = this.getCommit(ref);
 
-            try {
-                currentLoc = this.getCommit(tag);
+            if (currentLoc) {
                 currentLoc.tags.splice(currentLoc.tags.indexOf(tag), 1);
-            } catch (e) {
-                // oh well
             }
 
             newLoc.tags.push(tag);
-
             return this;
         },
 
@@ -556,6 +599,10 @@
                 throw new Error('You need to give a branch name.');
             }
 
+            if (name === 'HEAD') {
+                throw new Error('You cannot name your branch "HEAD".');
+            }
+
             if (name.indexOf(' ') > -1) {
                 throw new Error('Branch names cannot contain spaces.');
             }
@@ -572,24 +619,32 @@
         checkout: function (ref) {
             var commit = this.getCommit(ref);
 
+            if (!commit) {
+                throw new Error('Cannot find commit: ' + ref);
+            }
+
             var previousHead = this.getCircle('HEAD'),
                 newHead = this.getCircle(commit.id);
 
             if (previousHead && !previousHead.empty()) {
-                previousHead.style('fill', '#EEE').style('stroke', '#888');
+                previousHead.classed('checked-out', false);
             }
 
             this._setCurrentBranch(ref === commit.id ? null : ref);
             this._moveTag('HEAD', commit.id);
             this._renderTags();
 
-            newHead.style('fill', '#CCFFCC').style('stroke', '#339900');
+            newHead.classed('checked-out', true);
 
             return this;
         },
-        
+
         reset: function (ref) {
             var commit = this.getCommit(ref);
+
+            if (!commit) {
+                throw new Error('Cannot find commit: ' + ref);
+            }
 
             if (this.currentBranch) {
                 this._moveTag(this.currentBranch, commit.id);

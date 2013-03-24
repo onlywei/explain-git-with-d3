@@ -1,4 +1,5 @@
-﻿.concept-container {
+/* styles */
+.concept-container {
     display: none;
 }
 
@@ -66,17 +67,34 @@ circle.commit {
   stroke-width: 3;
 }
 
-circle.commit.checked-out {
+circle.commit.branchless {
+    fill: #FEFEFE;
+    stroke: #DDD;
+}
 
+circle.commit.checked-out {
+    fill: #CCFFCC;
+    stroke: #339900;
 }
 
 marker#triangle {
 	fill: #666;
 }
 
+marker#faded-triangle {
+    fill: #DDD;
+}
+
 line.commit-pointer {
 	stroke: #666;
 	stroke-width: 4;
+    marker-end: url(#triangle);
+}
+
+line.commit-pointer.branchless {
+    stroke: #DDD;
+    stroke-width: 2;
+    marker-end: url(#faded-triangle);
 }
 
 text.id-label {
