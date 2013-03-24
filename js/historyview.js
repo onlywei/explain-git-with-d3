@@ -4,7 +4,10 @@ define(['d3'], function () {
     var renderArrowheadMarker,
         preventOverlap,
         applyBranchlessClass,
-        cx, cy, px1, py1, px2, py2, tagY;
+        cx, cy, fixCirclePosition,
+        px1, py1, fixPointerStartPosition,
+        px2, py2, fixPointerEndPosition,
+        fixIdPosition, tagY;
 
     renderArrowheadMarker = function (svg) {
         var setAttributes = function (selection) {
@@ -107,6 +110,16 @@ define(['d3'], function () {
         }
     };
 
+    fixCirclePosition = function (selection) {
+        selection
+            .attr('cx', function (d) {
+                return d.cx;
+            })
+            .attr('cy', function (d) {
+                return d.cy;
+            });
+    };
+
     // calculates the x1 point for commit pointer lines
     px1 = function (commit, view) {
         var parent = view.getCommit(commit.parent),
@@ -129,6 +142,14 @@ define(['d3'], function () {
         return startCY + (view.pointerMargin * (diffY / length));
     };
 
+    fixPointerStartPosition = function (selection, view) {
+        selection.attr('x1', function (d) {
+            return px1(d, view);
+        }).attr('y1', function (d) {
+            return py1(d, view);
+        });
+    };
+
     px2 = function (commit, view) {
         var parent = view.getCommit(commit.parent),
             endCX = parent.cx,
@@ -147,6 +168,22 @@ define(['d3'], function () {
             length = Math.sqrt((diffX * diffX) + (diffY * diffY));
 
         return endCY - (view.pointerMargin * 1.2 * (diffY / length));
+    };
+
+    fixPointerEndPosition = function (selection, view) {
+        selection.attr('x2', function (d) {
+            return px2(d, view);
+        }).attr('y2', function (d) {
+            return py2(d, view);
+        });
+    };
+
+    fixIdPosition = function (selection, view) {
+        selection.attr('x', function (d) {
+            return d.cx;
+        }).attr('y', function (d) {
+            return d.cy + view.commitRadius + 14;
+        });
     };
 
     tagY = function tagY(t, view) {
@@ -329,25 +366,14 @@ define(['d3'], function () {
         _renderCircles: function () {
             var view = this,
                 existingCircles,
-                newCircles,
-                fixPosition;
-
-            fixPosition = function (selection) {
-                selection
-                    .attr('cx', function (d) {
-                        return d.cx;
-                    })
-                    .attr('cy', function (d) {
-                        return d.cy;
-                    });
-            };
+                newCircles;
 
             existingCircles = this.svg.selectAll('circle.commit')
                 .data(this.commitData, function (d) { return d.id; });
 
             existingCircles.transition()
                 .duration(500)
-                .call(fixPosition);
+                .call(fixCirclePosition);
 
             newCircles = existingCircles.enter()
                 .append('svg:circle')
@@ -355,7 +381,7 @@ define(['d3'], function () {
                     return view.name + '-' + d.id;
                 })
                 .classed('commit', true)
-                .call(fixPosition)
+                .call(fixCirclePosition)
                 .attr('r', 1)
                 .transition()
                 .duration(500)
@@ -373,18 +399,8 @@ define(['d3'], function () {
 
             existingPointers.transition()
                 .duration(500)
-                .attr('x1', function (d) {
-                    return px1(d, view);
-                })
-                .attr('y1', function (d) {
-                    return py1(d, view);
-                })
-                .attr('x2', function (d) {
-                    return px2(d, view);
-                })
-                .attr('y2', function (d) {
-                    return py2(d, view);
-                });
+                .call(fixPointerStartPosition, view)
+                .call(fixPointerEndPosition, view);
 
             newPointers = existingPointers.enter()
                 .insert('svg:line', ':first-child')
@@ -392,40 +408,29 @@ define(['d3'], function () {
                     return view.name + '-' + d.id + '-to-' + d.parent;
                 })
                 .attr('class', 'commit-pointer')
-                .attr('x1', function (d) { return px1(d, view); })
-                .attr('y1', function (d) { return py1(d, view); })
+                .call(fixPointerStartPosition, view)
                 .attr('x2', function () { return d3.select(this).attr('x1'); })
                 .attr('y2', function () {  return d3.select(this).attr('y1'); })
                 .transition()
                 .duration(500)
-                .attr('x2', function (d) { return px2(d, view); })
-                .attr('y2', function (d) { return py2(d, view); });
+                .call(fixPointerEndPosition, view);
         },
 
         _renderIdLabels: function () {
             var view = this,
                 existingLabels,
-                newLabels,
-                fixPosition;
-
-            fixPosition = function (selection) {
-                selection.attr('x', function (d) {
-                    return d.cx;
-                }).attr('y', function (d) {
-                    return d.cy + view.commitRadius + 14;
-                });
-            };
+                newLabels;
 
             existingLabels = this.svg.selectAll('text.id-label')
                 .data(this.commitData, function (d) { return d.id; });
 
-            existingLabels.transition().call(fixPosition);
+            existingLabels.transition().call(fixIdPosition, view);
 
             newLabels = existingLabels.enter()
                 .append('text')
                 .attr('class', 'id-label')
                 .text(function (d) { return d.id + '..'; })
-                .call(fixPosition);
+                .call(fixIdPosition, view);
         },
 
         _parseTagData: function () {
