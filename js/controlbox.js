@@ -228,6 +228,15 @@ define(['d3'], function () {
                     this.historyView.reset(remainingArgs.join(' '));
                 }
             }
+        },
+
+        merge: function (args) {
+            var ref = args.shift(),
+                result = this.historyView.merge(ref);
+
+            if (result === 'Fast-Forward') {
+                this.info('You have performed a fast-forward merge.');
+            }
         }
     };
 

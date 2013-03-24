@@ -31,6 +31,9 @@ define(['d3'], function () {
             .attr('id', 'faded-triangle')
             .call(setAttributes);
 
+        svg.append('svg:marker')
+            .attr('id', 'purple-triangle')
+            .call(setAttributes);
     };
 
     preventOverlap = function preventOverlap(commit, view) {
@@ -70,8 +73,16 @@ define(['d3'], function () {
     };
 
     cx = function (commit, view) {
-        var parent = view.getCommit(commit.parent);
-        return parent.cx + (view.commitRadius * 4.5);
+        var parent = view.getCommit(commit.parent),
+            parentCX = parent.cx;
+
+        if (typeof commit.parent2 === 'string') {
+            var parent2 = view.getCommit(commit.parent2);
+
+            parentCX = parent.cx > parent2.cx ? parent.cx : parent2.cx;
+        }
+
+        return parentCX + (view.commitRadius * 4.5);
     };
 
     cy = function (commit, view) {
@@ -121,8 +132,10 @@ define(['d3'], function () {
     };
 
     // calculates the x1 point for commit pointer lines
-    px1 = function (commit, view) {
-        var parent = view.getCommit(commit.parent),
+    px1 = function (commit, view, pp) {
+        pp = pp || 'parent';
+
+        var parent = view.getCommit(commit[pp]),
             startCX = commit.cx,
             diffX = startCX - parent.cx,
             diffY = parent.cy - commit.cy,
@@ -132,8 +145,10 @@ define(['d3'], function () {
     };
 
     // calculates the y1 point for commit pointer lines
-    py1 = function (commit, view) {
-        var parent = view.getCommit(commit.parent),
+    py1 = function (commit, view, pp) {
+        pp = pp || 'parent';
+
+        var parent = view.getCommit(commit[pp]),
             startCY = commit.cy,
             diffX = commit.cx - parent.cx,
             diffY = parent.cy - startCY,
@@ -150,8 +165,10 @@ define(['d3'], function () {
         });
     };
 
-    px2 = function (commit, view) {
-        var parent = view.getCommit(commit.parent),
+    px2 = function (commit, view, pp) {
+        pp = pp || 'parent';
+
+        var parent = view.getCommit(commit[pp]),
             endCX = parent.cx,
             diffX = commit.cx - endCX,
             diffY = parent.cy - commit.cy,
@@ -160,8 +177,10 @@ define(['d3'], function () {
         return endCX + (view.pointerMargin * 1.2 * (diffX / length));
     };
 
-    py2 = function (commit, view) {
-        var parent = view.getCommit(commit.parent),
+    py2 = function (commit, view, pp) {
+        pp = pp || 'parent';
+
+        var parent = view.getCommit(commit[pp]),
             endCY = parent.cy,
             diffX = commit.cx - parent.cx,
             diffY = endCY - commit.cy,
@@ -261,6 +280,11 @@ define(['d3'], function () {
 
             for (var i = 0; i < commitData.length; i++) {
                 var commit = commitData[i];
+                if (commit === ref) {
+                    matchedCommit = commit;
+                    break;
+                }
+
                 if (commit.id === ref) {
                     matchedCommit = commit;
                     break;
@@ -359,6 +383,7 @@ define(['d3'], function () {
             this._calculatePositionData();
             this._renderCircles();
             this._renderPointers();
+            this._renderMergePointers();
             this._renderIdLabels();
             this.checkout(this.currentBranch);
         },
@@ -407,13 +432,61 @@ define(['d3'], function () {
                 .attr('id', function (d) {
                     return view.name + '-' + d.id + '-to-' + d.parent;
                 })
-                .attr('class', 'commit-pointer')
+                .classed('commit-pointer', true)
                 .call(fixPointerStartPosition, view)
                 .attr('x2', function () { return d3.select(this).attr('x1'); })
                 .attr('y2', function () {  return d3.select(this).attr('y1'); })
                 .transition()
                 .duration(500)
                 .call(fixPointerEndPosition, view);
+        },
+
+        _renderMergePointers: function () {
+            var view = this,
+                mergeCommits = [],
+                existingPointers, newPointers;
+
+            for (var i = 0; i < this.commitData.length; i++) {
+                var commit = this.commitData[i];
+                if (typeof commit.parent2 === 'string') {
+                    mergeCommits.push(commit);
+                }
+            }
+
+            existingPointers = this.svg.selectAll('polyline.commit-pointer')
+                .data(mergeCommits, function (d) { return d.id; });
+
+            existingPointers.transition().duration(500)
+                .attr('points', function (d) {
+                    var p1 = px1(d, view, 'parent2') + ',' + py1(d, view, 'parent2'),
+                        p2 = px2(d, view, 'parent2') + ',' + py2(d, view, 'parent2');
+
+                    return [p1, p2].join(' ');
+                });
+
+            newPointers = existingPointers.enter()
+                .insert('svg:polyline', ':first-child')
+                .attr('id', function (d) {
+                    return view.name + '-' + d.id + '-to-' + d.parent2;
+                })
+                .classed('commit-pointer', true)
+                .attr('points', function (d) {
+                    var x1 = px1(d, view, 'parent2'),
+                        y1 = py1(d, view, 'parent2'),
+                        p1 = x1 + ',' + y1;
+
+                    return [p1, p1].join(' ');
+                })
+                .transition()
+                .duration(500)
+                .attr('points', function (d) {
+                    var points = d3.select(this).attr('points').split(' '),
+                        x2 = px2(d, view, 'parent2'),
+                        y2 = py2(d, view, 'parent2');
+
+                    points[1] = x2 + ',' + y2;
+                    return points.join(' ');
+                });
         },
 
         _renderIdLabels: function () {
@@ -583,6 +656,36 @@ define(['d3'], function () {
             return this;
         },
 
+        isAncestor: function isAncestor(ref1, ref2) {
+            var currentCommit = this.getCommit(ref1),
+                targetTree = this.getCommit(ref2),
+                inTree = false,
+                additionalTrees = [];
+
+            while (targetTree) {
+                if (targetTree.id === currentCommit.id) {
+                    inTree = true;
+                    targetTree = null;
+                } else {
+                    if (targetTree.parent2) {
+                        additionalTrees.push(targetTree.parent2);
+                    }
+                    targetTree = this.getCommit(targetTree.parent);
+                }
+            }
+
+            if (inTree) {
+                return true;
+            }
+
+            for (var i = 0; i < additionalTrees.length; i++) {
+                inTree = isAncestor.call(this, currentCommit, additionalTrees[i]);
+                if (inTree) break;
+            }
+
+            return inTree;
+        },
+
         commit: function (commit) {
             commit = commit || {};
 
@@ -655,7 +758,7 @@ define(['d3'], function () {
             var commit = this.getCommit(ref);
 
             if (!commit) {
-                throw new Error('Cannot find commit: ' + ref);
+                throw new Error('Cannot find ref: ' + ref);
             }
 
             if (this.currentBranch) {
@@ -666,8 +769,34 @@ define(['d3'], function () {
             }
 
             return this;
-        }
+        },
 
+        merge: function (ref) {
+            var mergeTarget = this.getCommit(ref),
+                currentCommit = this.getCommit('HEAD'),
+                isFastForward;
+
+            if (!mergeTarget) {
+                throw new Error('Cannot find ref: ' + ref);
+            }
+
+            isFastForward = this.isAncestor(currentCommit, mergeTarget);
+
+            if (isFastForward) {
+                if (this.currentBranch) {
+                    this._moveTag(this.currentBranch, mergeTarget.id);
+                    this.checkout(this.currentBranch);
+                } else {
+                    this.checkout(mergeTarget.id);
+                }
+
+                return 'Fast-Forward';
+            } else if (currentCommit.parent2 === mergeTarget.id) {
+                throw new Error('Already up-to-date.');
+            } else {
+                this.commit({parent2: mergeTarget.id});
+            }
+        }
     };
 
     return HistoryView;

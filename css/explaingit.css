@@ -81,17 +81,26 @@ marker#triangle {
 	fill: #666;
 }
 
+marker#purple-triangle {
+    fill: #3300CC;
+}
+
 marker#faded-triangle {
     fill: #DDD;
 }
 
-line.commit-pointer {
+.commit-pointer {
 	stroke: #666;
 	stroke-width: 4;
     marker-end: url(#triangle);
 }
 
-line.commit-pointer.branchless {
+polyline.commit-pointer {
+    stroke: #3300CC;
+    marker-end: url(#purple-triangle);
+}
+
+.commit-pointer.branchless {
     stroke: #DDD;
     stroke-width: 2;
     marker-end: url(#faded-triangle);
