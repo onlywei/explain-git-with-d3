@@ -252,7 +252,7 @@
 			svgContainer = container.append('div')
                 .classed('svg-container', true);
 
-            svg = container.append('svg:svg');
+            svg = svgContainer.append('svg:svg');
 
             svg.attr('id', this.name)
                 .attr('width', this.width)
