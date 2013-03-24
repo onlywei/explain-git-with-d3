@@ -149,7 +149,9 @@ define(['d3'], function () {
 
                 switch (arg) {
                     default:
-                        this.historyView.branch(arg);
+                        var remainingArgs = [arg].concat(args);
+                        args.length = 0;
+                        this.historyView.branch(remainingArgs.join(' '));
                 }
             }
         },

@@ -521,7 +521,7 @@
             }
 
             if (this.branches.indexOf(name) > -1) {
-                return 'Branch "' + name + '" already exists.';
+                throw new Error('Branch "' + name + '" already exists.');
             }
 
             this.getCommit('HEAD').tags.push(name);
