@@ -23,24 +23,29 @@
         var commitData = view.commitData,
             centerBranchLine = view.height / 2,
             shift = view.commitRadius * 4.5,
-            overlappedCommit = null;
+            overlapped = null;
 
         for (var i = 0; i < commitData.length; i++) {
             var c = commitData[i];
             if (c.cx === commit.cx && c.cy === commit.cy && c !== commit) {
-                overlappedCommit = c;
+                overlapped = c;
                 break;
             }
         }
 
-        if (overlappedCommit) {
-            if (overlappedCommit.cy < centerBranchLine) {
-                overlappedCommit.cy -= shift;
+        if (overlapped) {
+            var oParent = view.getCommit(overlapped.parent),
+                parent = view.getCommit(commit.parent);
+        
+            if (overlapped.cy < centerBranchLine) {
+                overlapped = oParent.cy < parent.cy ? overlapped : commit;
+                overlapped.cy -= shift;
             } else {
-                overlappedCommit.cy += shift;
+                overlapped = oParent.cy > parent.cy ? overlapped : commit;
+                overlapped.cy += shift;
             }
 
-            preventOverlap(overlappedCommit, view);
+            preventOverlap(overlapped, view);
         }
     };
 
