@@ -467,13 +467,20 @@ define(['d3'], function () {
 
             for (var b = 0; b < this.branches.length; b++) {
                 var commit = this.getCommit(this.branches[b]),
-                    parent = this.getCommit(commit.parent);
+                    parent = this.getCommit(commit.parent),
+                    parent2 = this.getCommit(commit.parent2);
 
                 commit.branchless = false;
 
                 while (parent) {
                     parent.branchless = false;
                     parent = this.getCommit(parent.parent);
+                }
+
+                // just in case this is a merge commit
+                while (parent2) {
+                    parent2.branchless = false;
+                    parent2 = this.getCommit(parent2.parent);
                 }
             }
 
