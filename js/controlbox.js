@@ -1,4 +1,4 @@
-﻿define(['d3'], function () {
+define(['d3'], function () {
     "use strict";
 
     /**
@@ -8,8 +8,11 @@
     function ControlBox (config) {
         this.historyView = config.historyView;
         this.initialMessage = config.initialMessage || 'Enter git commands below.';
+        this._commandHistory = [];
+        this._currentCommand = -1;
+        this._tempCommand = '';
     }
-    
+
     ControlBox.prototype = {
         render: function (container) {
             container = d3.select(container).append('div')
@@ -17,7 +20,7 @@
 
             container.node().style.height = this.historyView.height + 5 + 'px';
 
-            var cConsole = this;
+            var cBox = this;
 
             var log = container.append('div')
                 .classed('log', true)
@@ -28,10 +31,47 @@
                 .attr('placeholder', 'enter git command');
 
             input.on('keyup', function () {
-                if (d3.event.keyCode === 13) {
-                    cConsole.command(this.value);
-                    this.value = '';
-                    d3.event.stopImmediatePropagation();
+                var e = d3.event;
+
+                switch (e.keyCode) {
+                    case 13:
+                        if (this.value.trim() === '') {
+                            break;
+                        }
+
+                        cBox._commandHistory.unshift(this.value);
+                        cBox._tempCommand = '';
+                        cBox._currentCommand = -1;
+                        cBox.command(this.value);
+                        this.value = '';
+                        e.stopImmediatePropagation();
+                        break;
+                    case 38:
+                        var previousCommand = cBox._commandHistory[cBox._currentCommand + 1];
+                        if (cBox._currentCommand === -1) {
+                            cBox._tempCommand = this.value;
+                        }
+
+                        if (typeof previousCommand === 'string') {
+                            cBox._currentCommand += 1;
+                            this.value = previousCommand;
+                            this.value = this.value; // set cursor to end
+                        }
+                        e.stopImmediatePropagation();
+                        break;
+                    case 40:
+                        var nextCommand = cBox._commandHistory[cBox._currentCommand - 1];
+                        if (typeof nextCommand === 'string') {
+                            cBox._currentCommand -= 1;
+                            this.value = nextCommand;
+                            this.value = this.value; // set cursor to end
+                        } else {
+                            cBox._currentCommand = -1;
+                            this.value = cBox._tempCommand;
+                            this.value = this.value; // set cursor to end
+                        }
+                        e.stopImmediatePropagation();
+                        break;
                 }
             });
 
@@ -40,12 +80,12 @@
 
             this.info(this.initialMessage);
         },
-        
+
         _scrollToBottom: function () {
             var log = this.log.node();
             log.scrollTop = log.scrollHeight;
         },
-        
+
         command: function (entry) {
             if (entry.trim === '') {
                 return;
@@ -62,7 +102,7 @@
             if (split[0] !== 'git') {
                 return this.error();
             }
-            
+
             var method = split[1],
                 args = split.slice(2);
 
@@ -73,7 +113,7 @@
                     this.error();
                 }
             } catch (ex) {
-                var msg = (ex && ex.message) ? ex.message: null; 
+                var msg = (ex && ex.message) ? ex.message: null;
                 this.error(msg);
             }
         },
@@ -88,7 +128,7 @@
             this.log.append('div').classed('error', true).html(msg);
             this._scrollToBottom();
         },
-        
+
         commit: function (args) {
             this.historyView.commit();
         },
@@ -100,24 +140,24 @@
                     'Normally if you don\'t give a name, ' +
                     'this command will list your local branches on the screen.'
                 );
-                
+
                 return;
             }
-            
+
             while (args.length > 0) {
                 var arg = args.shift();
-                
+
                 switch (arg) {
                     default:
                         this.historyView.branch(arg);
                 }
             }
         },
-        
+
         checkout: function (args) {
             while (args.length > 0) {
                 var arg = args.shift();
-                
+
                 switch (arg) {
                     default:
                         this.historyView.checkout(arg);
