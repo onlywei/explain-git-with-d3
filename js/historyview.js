@@ -385,7 +385,10 @@ define(['d3'], function () {
                 newCircles;
 
             existingCircles = this.svg.selectAll('circle.commit')
-                .data(this.commitData, function (d) { return d.id; });
+                .data(this.commitData, function (d) { return d.id; })
+                .attr('id', function (d) {
+                    return view.name + '-' + d.id;
+                });
 
             existingCircles.transition()
                 .duration(500)
@@ -414,7 +417,10 @@ define(['d3'], function () {
                 newPointers;
 
             existingPointers = this.svg.selectAll('line.commit-pointer')
-                .data(this.commitData, function (d) { return d.id; });
+                .data(this.commitData, function (d) { return d.id; })
+                .attr('id', function (d) {
+                    return view.name + '-' + d.id + '-to-' + d.parent;
+                });
 
             existingPointers.transition()
                 .duration(500)
@@ -449,7 +455,10 @@ define(['d3'], function () {
             }
 
             existingPointers = this.svg.selectAll('polyline.merge-pointer')
-                .data(mergeCommits, function (d) { return d.id; });
+                .data(mergeCommits, function (d) { return d.id; })
+                .attr('id', function (d) {
+                    return view.name + '-' + d.id + '-to-' + d.parent2;
+                });
 
             existingPointers.transition().duration(500)
                 .attr('points', function (d) {
@@ -491,13 +500,14 @@ define(['d3'], function () {
                 newLabels;
 
             existingLabels = this.svg.selectAll('text.id-label')
-                .data(this.commitData, function (d) { return d.id; });
+                .data(this.commitData, function (d) { return d.id; })
+                .text(function (d) { return d.id + '..'; });
 
             existingLabels.transition().call(fixIdPosition, view);
 
             newLabels = existingLabels.enter()
                 .append('text')
-                .attr('class', 'id-label')
+                .classed('id-label', true)
                 .text(function (d) { return d.id + '..'; })
                 .call(fixIdPosition, view);
         },
@@ -799,30 +809,104 @@ define(['d3'], function () {
             return this;
         },
 
+        fastForward: function (ref) {
+            var targetCommit = this.getCommit(ref);
+
+            if (this.currentBranch) {
+                this._moveTag(this.currentBranch, targetCommit.id);
+                this.checkout(this.currentBranch);
+            } else {
+                this.checkout(targetCommit.id);
+            }
+        },
+
         merge: function (ref) {
             var mergeTarget = this.getCommit(ref),
-                currentCommit = this.getCommit('HEAD'),
-                isFastForward;
+                currentCommit = this.getCommit('HEAD');
 
             if (!mergeTarget) {
                 throw new Error('Cannot find ref: ' + ref);
             }
 
-            isFastForward = this.isAncestor(currentCommit, mergeTarget);
-
-            if (isFastForward) {
-                if (this.currentBranch) {
-                    this._moveTag(this.currentBranch, mergeTarget.id);
-                    this.checkout(this.currentBranch);
-                } else {
-                    this.checkout(mergeTarget.id);
-                }
-
-                return 'Fast-Forward';
+            if (currentCommit.id === mergeTarget.id) {
+                throw new Error('Already up-to-date.');
             } else if (currentCommit.parent2 === mergeTarget.id) {
                 throw new Error('Already up-to-date.');
+            } else if (this.isAncestor(currentCommit, mergeTarget)) {
+                this.fastForward(mergeTarget);
+                return 'Fast-Forward';
             } else {
                 this.commit({parent2: mergeTarget.id});
+            }
+        },
+
+        rebase: function (ref) {
+            var rebaseTarget = this.getCommit(ref),
+                currentCommit = this.getCommit('HEAD'),
+                isCommonAncestor,
+                rebaseTreeLoc,
+                toRebase = [], rebasedCommit,
+                remainingHusk;
+                
+            if (!rebaseTarget) {
+                throw new Error('Cannot find ref: ' + ref);
+            }
+
+            if (currentCommit.id === rebaseTarget.id) {
+                throw new Error('Already up-to-date.');
+            } else if (currentCommit.parent2 === rebaseTarget.id) {
+                throw new Error('Already up-to-date.');
+            }
+
+            isCommonAncestor = this.isAncestor(currentCommit, rebaseTarget);
+
+            if (isCommonAncestor) {
+                this.fastForward(rebaseTarget);
+                return 'Fast-Forward';
+            }
+            
+            rebaseTreeLoc = rebaseTarget.id
+            
+            while (!isCommonAncestor) {
+                toRebase.unshift(currentCommit);
+                currentCommit = this.getCommit(currentCommit.parent);
+                isCommonAncestor = this.isAncestor(currentCommit, rebaseTarget);
+            }
+
+            for (var i = 0; i < toRebase.length; i++) {
+                rebasedCommit = toRebase[i];
+
+                remainingHusk = {
+                    id: rebasedCommit.id,
+                    parent: rebasedCommit.parent,
+                    tags: []
+                };
+                
+                for (var t = 0; t < rebasedCommit.tags.length; t++) {
+                    var tagName = rebasedCommit.tags[i];
+                    if (tagName !== this.currentBranch && tagName !== 'HEAD') {
+                        remainingHusk.tags.unshift(tagName);
+                    }
+                }
+                
+                this.commitData.push(remainingHusk);
+                
+                rebasedCommit.parent = rebaseTreeLoc;
+                rebaseTreeLoc = HistoryView.generateId()
+                rebasedCommit.id = rebaseTreeLoc;
+                rebasedCommit.tags.length = 0;
+            }
+
+            if (this.currentBranch) {
+                rebasedCommit.tags.push(this.currentBranch);
+            }
+
+            this._renderCommits();
+
+            if (this.currentBranch) {
+                this.checkout(this.currentBranch);
+            } else {
+                this.checkout(rebasedCommit.id);
             }
         }
     };

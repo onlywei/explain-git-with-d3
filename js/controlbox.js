@@ -241,6 +241,15 @@ define(['d3'], function () {
             if (result === 'Fast-Forward') {
                 this.info('You have performed a fast-forward merge.');
             }
+        },
+        
+        rebase: function (args) {
+            var ref = args.shift(),
+                result = this.historyView.rebase(ref);
+
+            if (result === 'Fast-Forward') {
+                this.info('Fast-forwarded to ' + ref + '.');
+            }
         }
     };
 
