@@ -82,7 +82,7 @@
       </p>
       <p>
         In addition to checking out branches, you can also checkout individual commits. Try it.</br>
-        Make a new commit and then type <span class="cmd">git checkout 77oa0ph</span>
+        Make a new commit and then type <span class="cmd">git checkout bb92e0e</span>
         and see what happens.
       </p>
       <p>
@@ -156,7 +156,7 @@ require(['explaingit'], function (explainGit) {
 			name: 'Commit',
 			height: 250,
 			commitData: [
-				{id: '98ca9b5', tags: ['origin/master', 'master']}
+				{id: 'e137e9b', tags: ['origin/master', 'master']}
 			],
 			initialMessage: 'Type git commit a few times.'
 		});
@@ -177,7 +177,7 @@ require(['explaingit'], function (explainGit) {
 		explainGit.open({
 			name: 'Branch',
 			commitData: [
-				{id: '98ca9b5', tags: ['origin/master', 'master']}
+				{id: 'e137e9b', tags: ['origin/master', 'master']}
 			]
 		});
     };
@@ -198,9 +198,9 @@ require(['explaingit'], function (explainGit) {
 			name: 'Checkout',
 			height: 500,
 			commitData: [
-				{id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
-				{id: '77oa0ph', parent: '98ca9b5', tags: ['master']},
-				{id: 'amcqj4r', parent: '98ca9b5', tags: ['dev']}
+				{id: 'e137e9b', tags: ['origin/master', 'origin/dev']},
+				{id: 'bb92e0e', parent: 'e137e9b', tags: ['master']},
+				{id: 'e088135', parent: 'e137e9b', tags: ['dev']}
 			],
 			initialMessage:
 				'Use git checkout, git branch, and git commit commands until you understand.'
@@ -223,10 +223,10 @@ require(['explaingit'], function (explainGit) {
 			name: 'Checkout-b',
 			height: 500,
 			commitData: [
-				{id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
-				{id: 'def6ayi', parent: '98ca9b5'},
-				{id: '77oa0ph', parent: 'def6ayi', tags: ['master']},
-				{id: 'amcqj4r', parent: '98ca9b5', tags: ['dev']}
+				{id: 'e137e9b', tags: ['origin/master', 'origin/dev']},
+				{id: 'f5b32c8', parent: 'e137e9b'},
+				{id: 'bb92e0e', parent: 'f5b32c8', tags: ['master']},
+				{id: 'e088135', parent: 'e137e9b', tags: ['dev']}
 			],
 			initialMessage:
 				'Use git checkout -b and git commit commands until you understand.'
@@ -249,9 +249,9 @@ require(['explaingit'], function (explainGit) {
 			name: 'Reset',
 			height: 250,
 			commitData: [
-				{id: '98ca9b5', tags: ['origin/master']},
-                {id: 'i40jy4i', parent: '98ca9b5'},
-                {id: 'qmqa7b3', parent: 'i40jy4i', tags: ['master']}
+				{id: 'e137e9b', tags: ['origin/master']},
+                {id: '0e70093', parent: 'e137e9b'},
+                {id: '3e33afd', parent: '0e70093', tags: ['master']}
 			],
 			initialMessage: 'Type "git reset origin/master".'
 		});
@@ -273,14 +273,14 @@ require(['explaingit'], function (explainGit) {
 			name: 'Branch-d',
 			height: 500,
 			commitData: [
-				{id: '98ca9b5', tags: ['origin/master']},
-				{id: '77oa0ph', parent: '98ca9b5'},
-                {id: 'cj5mlg3', parent: '77oa0ph', tags: ['master']},
-                {id: '4gc3uuf', parent: '98ca9b5', tags: ['protoss']},
-                {id: 'def6ayi', parent: '77oa0ph'},
-				{id: 'amcqj4r', parent: 'def6ayi', tags: ['zerg']},
-                {id: 'a21i3m6', parent: '77oa0ph'},
-                {id: 'y73kv3k', parent: 'a21i3m6', tags: ['terran']}
+				{id: 'e137e9b', tags: ['origin/master']},
+				{id: 'bb92e0e', parent: 'e137e9b'},
+                {id: 'd25ee9b', parent: 'bb92e0e', tags: ['master']},
+                {id: '071ff28', parent: 'e137e9b', tags: ['protoss']},
+                {id: 'f5b32c8', parent: 'bb92e0e'},
+				{id: 'e088135', parent: 'f5b32c8', tags: ['zerg']},
+                {id: '9e6c322', parent: 'bb92e0e'},
+                {id: '593ae02', parent: '9e6c322', tags: ['terran']}
 			],
             currentBranch: 'terran',
 			initialMessage:
@@ -304,10 +304,10 @@ require(['explaingit'], function (explainGit) {
 			name: 'Merge',
 			height: 500,
 			commitData: [
-				{id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
-				{id: '77oa0ph', parent: '98ca9b5', tags: ['master']},
-                {id: 'def6ayi', parent: '98ca9b5', tags: ['ff']},
-				{id: 'amcqj4r', parent: 'def6ayi', tags: ['dev']}
+				{id: 'e137e9b', tags: ['origin/master', 'origin/dev']},
+				{id: 'bb92e0e', parent: 'e137e9b', tags: ['master']},
+                {id: 'f5b32c8', parent: 'e137e9b', tags: ['ff']},
+				{id: 'e088135', parent: 'f5b32c8', tags: ['dev']}
 			],
 			initialMessage:
 				'Type "git merge dev".'

@@ -256,7 +256,7 @@ define(['d3'], function () {
     }
 
     HistoryView.generateId = function () {
-        return Math.random().toString(36).substring(2, 9);
+        return Math.floor((1 + Math.random()) * 0x10000000).toString(16).substring(1);
     };
 
     HistoryView.prototype = {
