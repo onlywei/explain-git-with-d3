@@ -1,40 +1,16 @@
 define(['d3'], function () {
     "use strict";
 
-    var renderArrowheadMarker,
+    var REG_MARKER_END = 'url(#triangle)',
+        MERGE_MARKER_END = 'url(#purple-triangle)',
+        FADED_MARKER_END = 'url(#faded-triangle)',
+    
         preventOverlap,
         applyBranchlessClass,
         cx, cy, fixCirclePosition,
         px1, py1, fixPointerStartPosition,
         px2, py2, fixPointerEndPosition,
         fixIdPosition, tagY;
-
-    renderArrowheadMarker = function (svg) {
-        var setAttributes = function (selection) {
-            selection
-                .attr('refX', 5)
-                .attr('refY', 5)
-                .attr('markerUnits', 'strokeWidth')
-                .attr('markerWidth', 4)
-                .attr('markerHeight', 3)
-                .attr('orient', 'auto')
-                .attr('viewBox', '0 0 10 10')
-                .append('svg:path')
-                    .attr('d', 'M 0 0 L 10 5 L 0 10 z');
-        };
-
-        svg.append('svg:marker')
-            .attr('id', 'triangle')
-            .call(setAttributes);
-
-        svg.append('svg:marker')
-            .attr('id', 'faded-triangle')
-            .call(setAttributes);
-
-        svg.append('svg:marker')
-            .attr('id', 'purple-triangle')
-            .call(setAttributes);
-    };
 
     preventOverlap = function preventOverlap(commit, view) {
         var commitData = view.commitData,
@@ -67,9 +43,23 @@ define(['d3'], function () {
     };
 
     applyBranchlessClass = function (selection) {
+        if (selection.empty()) {
+            return;
+        }
+
         selection.classed('branchless', function (d) {
             return d.branchless;
         });
+
+        if (selection.classed('commit-pointer')) {
+            selection.attr('marker-end', function (d) {
+                return d.branchless ? FADED_MARKER_END : REG_MARKER_END;
+            });
+        } else if (selection.classed('merge-pointer')) {
+            selection.attr('marker-end', function (d) {
+                return d.branchless ? FADED_MARKER_END : MERGE_MARKER_END;
+            });
+        }
     };
 
     cx = function (commit, view) {
@@ -350,7 +340,6 @@ define(['d3'], function () {
             this.svgContainer = svgContainer;
             this.svg = svg;
 
-            renderArrowheadMarker(svg);
             this._renderCommits();
 
             svg.append('svg:text')
@@ -441,6 +430,7 @@ define(['d3'], function () {
                 .call(fixPointerStartPosition, view)
                 .attr('x2', function () { return d3.select(this).attr('x1'); })
                 .attr('y2', function () {  return d3.select(this).attr('y1'); })
+                .attr('marker-end', REG_MARKER_END)
                 .transition()
                 .duration(500)
                 .call(fixPointerEndPosition, view);
@@ -458,7 +448,7 @@ define(['d3'], function () {
                 }
             }
 
-            existingPointers = this.svg.selectAll('polyline.commit-pointer')
+            existingPointers = this.svg.selectAll('polyline.merge-pointer')
                 .data(mergeCommits, function (d) { return d.id; });
 
             existingPointers.transition().duration(500)
@@ -474,7 +464,7 @@ define(['d3'], function () {
                 .attr('id', function (d) {
                     return view.name + '-' + d.id + '-to-' + d.parent2;
                 })
-                .classed('commit-pointer', true)
+                .classed('merge-pointer', true)
                 .attr('points', function (d) {
                     var x1 = px1(d, view, 'parent2'),
                         y1 = py1(d, view, 'parent2'),
@@ -482,6 +472,7 @@ define(['d3'], function () {
 
                     return [p1, p1].join(' ');
                 })
+                .attr('marker-end', MERGE_MARKER_END)
                 .transition()
                 .duration(500)
                 .attr('points', function (d) {
@@ -569,7 +560,7 @@ define(['d3'], function () {
 
             this.svg.selectAll('circle.commit').call(applyBranchlessClass);
             this.svg.selectAll('line.commit-pointer').call(applyBranchlessClass);
-            this.svg.selectAll('polyline.commit-pointer').call(applyBranchlessClass);
+            this.svg.selectAll('polyline.merge-pointer').call(applyBranchlessClass);
         },
 
         _renderTags: function () {

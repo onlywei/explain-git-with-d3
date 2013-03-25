@@ -103,33 +103,20 @@ circle.commit.checked-out {
     stroke: #339900;
 }
 
-marker#triangle {
-	fill: #666;
-}
-
-marker#purple-triangle {
-    fill: #3300CC;
-}
-
-marker#faded-triangle {
-    fill: #DDD;
-}
-
 .commit-pointer {
 	stroke: #666;
 	stroke-width: 4;
-    marker-end: url(#triangle);
 }
 
-polyline.commit-pointer {
+.merge-pointer {
     stroke: #3300CC;
-    marker-end: url(#purple-triangle);
+    stroke-width: 4;
 }
 
-.commit-pointer.branchless {
+.commit-pointer.branchless,
+.merge-pointer.branchless {
     stroke: #DDD;
     stroke-width: 2;
-    marker-end: url(#faded-triangle);
 }
 
 text.id-label {
