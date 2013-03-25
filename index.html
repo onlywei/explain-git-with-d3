@@ -1,6 +1,7 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title>Explain Git with D3</title>
 <script data-main="js/main" src="http://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.4/require.min.js"></script>
 <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css">
@@ -34,12 +35,13 @@
       <a id="open-branch" class="openswitch" href="#">git branch</a>
     </div>
     <div class="twocol">
-      <h4>More Basics</h4>
+      <h4>&nbsp;</h4>
       <a id="open-checkout" class="openswitch" href="#">git checkout</a>
       <a id="open-checkout-b" class="openswitch" href="#">git checkout -b</a>
     </div>
-    <div class="fourcol">
-      <h4>Combining Two Branches</h4>
+    <div class="twocol">
+      <h4>Combine Branches</h4>
+      <a id="open-merge" class="openswitch" href="#">git merge</a>
     </div>
     <div class="fourcol last">
       <h4>Interacting with Remote Server</h4>
@@ -89,6 +91,16 @@
         You can combine <span class="cmd">git branch</span> and <span class="cmd">git checkout</span>
         into a single command by typing <span class="cmd">git checkout -b branchname</span>.
         This will create the branch if it does not already exist and immediately check it out.
+      </p>
+    </div>
+    <div id="ExplainGitMerge-Container" class="twelvecol concept-container">
+      <p>
+        <span class="cmd">git merge</span> will create a new commit with two parents. The resulting
+        commit snapshot will have the all of the work that has been done in both branches.
+      </p>
+      <p>
+        If there was no divergence between the two commits, git will do a "fast-forward" method merge.
+        To see this happen, checkout the 'ff' branch and then type <span class="cmd">git merge dev</span>.
       </p>
     </div>
   </div>
@@ -180,6 +192,32 @@ require(['explaingit'], function (explainGit) {
 			],
 			initialMessage:
 				'Use git checkout -b and git commit commands until you understand.'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-merge'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+
+		explainGit.open({
+			name: 'Merge',
+			height: 500,
+			commitData: [
+				{id: '98ca9b5', tags: ['origin/master', 'origin/dev']},
+				{id: '77oa0ph', parent: '98ca9b5', tags: ['master']},
+                {id: 'def6ayi', parent: '98ca9b5', tags: ['ff']},
+				{id: 'amcqj4r', parent: 'def6ayi', tags: ['dev']}
+			],
+			initialMessage:
+				'Type "git merge dev".'
 		});
     };
 
