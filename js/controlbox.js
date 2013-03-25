@@ -168,6 +168,10 @@ define(['d3'], function () {
 					);
 					args.length = 0;
 					break;
+                case '-d':
+                    var name = args.pop();
+                    this.historyView.deleteBranch(name);
+                    break;
 				default:
 					var remainingArgs = [arg].concat(args);
 					args.length = 0;

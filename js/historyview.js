@@ -580,6 +580,8 @@ define(['d3'], function () {
             existingTags = this.svg.selectAll('g.branch-tag')
                 .data(tagData, function (d) { return d.name; });
 
+            existingTags.exit().remove();
+
             existingTags.select('rect')
                 .transition()
                 .duration(500)
@@ -735,6 +737,35 @@ define(['d3'], function () {
             this.getCommit('HEAD').tags.push(name);
             this._renderTags();
             return this;
+        },
+
+        deleteBranch: function (name) {
+            var branchIndex,
+                commit;
+
+            if (!name || name.trim() === '') {
+                throw new Error('You need to give a branch name.');
+            }
+
+            if (name === this.currentBranch) {
+                throw new Error('Cannot delete the currently checked-out branch.');
+            }
+
+            branchIndex = this.branches.indexOf(name);
+
+            if (branchIndex === -1) {
+                throw new Error('That branch doesn\'t exist.');
+            }
+
+            this.branches.splice(branchIndex, 1);
+            commit = this.getCommit(name);
+            branchIndex = commit.tags.indexOf(name);
+
+            if (branchIndex > -1) {
+                commit.tags.splice(branchIndex, 1);
+            }
+
+            this._renderTags();
         },
 
         checkout: function (ref) {

@@ -42,6 +42,7 @@
     <div class="twocol">
       <h4>Undo/Delete</h4>
       <a id="open-reset" class="openswitch" href="#">git reset</a>
+      <a id="open-branch-d" class="openswitch" href="#">git branch -d</a>
     </div>
     <div class="twocol">
       <h4>Combine Branches</h4>
@@ -122,6 +123,14 @@
         Note that this won't delete untracked files, you will have to delete those separately with
         the command <span class="cmd">git clean -df</span>.
       </p>
+    </div>
+    <div id="ExplainGitBranch-d-Container" class="twelvecol concept-container">
+      <p>
+        <span class="cmd">git branch -d</span> is used to delete branches.
+        I have pre-created a bunch of branches for you to delete in the playground below.
+        Have at it.
+      </p>
+    </div>
     </div>
     <div id="ExplainGitMerge-Container" class="twelvecol concept-container">
       <p>
@@ -246,6 +255,37 @@ require(['explaingit'], function (explainGit) {
                 {id: 'qmqa7b3', parent: 'i40jy4i', tags: ['master']}
 			],
 			initialMessage: 'Type "git reset origin/master".'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-branch-d'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+
+		explainGit.open({
+			name: 'Branch-d',
+			height: 500,
+			commitData: [
+				{id: '98ca9b5', tags: ['origin/master']},
+				{id: '77oa0ph', parent: '98ca9b5'},
+                {id: 'cj5mlg3', parent: '77oa0ph', tags: ['master']},
+                {id: '4gc3uuf', parent: '98ca9b5', tags: ['protoss']},
+                {id: 'def6ayi', parent: '77oa0ph'},
+				{id: 'amcqj4r', parent: 'def6ayi', tags: ['zerg']},
+                {id: 'a21i3m6', parent: '77oa0ph'},
+                {id: 'y73kv3k', parent: 'a21i3m6', tags: ['terran']}
+			],
+            currentBranch: 'terran',
+			initialMessage:
+				'Delete some branches.'
 		});
     };
 
