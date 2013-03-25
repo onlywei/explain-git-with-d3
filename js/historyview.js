@@ -569,6 +569,7 @@ define(['d3'], function () {
 
             this.svg.selectAll('circle.commit').call(applyBranchlessClass);
             this.svg.selectAll('line.commit-pointer').call(applyBranchlessClass);
+            this.svg.selectAll('polyline.commit-pointer').call(applyBranchlessClass);
         },
 
         _renderTags: function () {

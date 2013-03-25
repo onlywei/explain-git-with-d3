@@ -1,7 +1,6 @@
 /* styles */
 .intro p, .concept-container p {
     padding-bottom: 10px;
-    color: #909090;
 }
 
 a.openswitch {
@@ -18,6 +17,7 @@ a.openswitch {
 .concept-container {
     padding-top: 10px;
     display: none;
+    color: #909090;
 }
 
 span.cmd {

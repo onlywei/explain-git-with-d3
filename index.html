@@ -40,6 +40,10 @@
       <a id="open-checkout-b" class="openswitch" href="#">git checkout -b</a>
     </div>
     <div class="twocol">
+      <h4>Undo/Delete</h4>
+      <a id="open-reset" class="openswitch" href="#">git reset</a>
+    </div>
+    <div class="twocol">
       <h4>Combine Branches</h4>
       <a id="open-merge" class="openswitch" href="#">git merge</a>
     </div>
@@ -93,13 +97,39 @@
         This will create the branch if it does not already exist and immediately check it out.
       </p>
     </div>
+    <div id="ExplainGitReset-Container" class="twelvecol concept-container">
+      <p>
+        <span class="cmd">git reset</span> will move HEAD and the current branch back to wherever
+        you specify, abandoning any commits that may be left behind. This is useful to undo a commit
+        that you no longer need.
+      </p>
+      <p>
+        This command is normally used with one of three flags: "--soft", "--mixed", and "--hard".
+        The soft and mixed flags deal with what to do with the work that was inside the commit after
+        you reset, and you can read about it <a href="http://git-scm.com/2011/07/11/reset.html">here</a>.
+        Since this visualization cannot graphically display that work, only the "--hard" flag will work
+        on this site.
+      </p>
+      <p>
+        Note that you must <b>never</b> use <span class="cmd">git reset</span> to abandon commits
+        that have already been pushed and merged into the origin. This can cause your local repository
+        to become out of sync with the origin. Don't do it unless you really know what you're doing.
+      </p>
+      <p>
+        One simple example of the use of this command is to completely restore your local repository
+        state to that of the origin.</br>
+        You can do so by typing <span class="cmd">git reset origin/master</span>.</br>
+        Note that this won't delete untracked files, you will have to delete those separately with
+        the command <span class="cmd">git clean -df</span>.
+      </p>
+    </div>
     <div id="ExplainGitMerge-Container" class="twelvecol concept-container">
       <p>
         <span class="cmd">git merge</span> will create a new commit with two parents. The resulting
         commit snapshot will have the all of the work that has been done in both branches.
       </p>
       <p>
-        If there was no divergence between the two commits, git will do a "fast-forward" method merge.
+        If there was no divergence between the two commits, git will do a "fast-forward" method merge.</br>
         To see this happen, checkout the 'ff' branch and then type <span class="cmd">git merge dev</span>.
       </p>
     </div>
@@ -192,6 +222,30 @@ require(['explaingit'], function (explainGit) {
 			],
 			initialMessage:
 				'Use git checkout -b and git commit commands until you understand.'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-reset'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+
+		explainGit.open({
+			name: 'Reset',
+			height: 250,
+			commitData: [
+				{id: '98ca9b5', tags: ['origin/master']},
+                {id: 'i40jy4i', parent: '98ca9b5'},
+                {id: 'qmqa7b3', parent: 'i40jy4i', tags: ['master']}
+			],
+			initialMessage: 'Type "git reset origin/master".'
 		});
     };
 
