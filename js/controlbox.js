@@ -7,6 +7,7 @@ define(['d3'], function () {
      */
     function ControlBox(config) {
         this.historyView = config.historyView;
+        this.originView = config.originView;
         this.initialMessage = config.initialMessage || 'Enter git commands below.';
         this._commandHistory = [];
         this._currentCommand = -1;
@@ -250,6 +251,66 @@ define(['d3'], function () {
             if (result === 'Fast-Forward') {
                 this.info('Fast-forwarded to ' + ref + '.');
             }
+        },
+        
+        fetch: function () {
+            if (!this.originView) {
+                throw new Error('There is no remote server to fetch from.');
+            }
+
+            var origin = this.originView,
+                local = this.historyView,
+                remotePattern = /^origin\/([^\/]+)$/,
+                rtb, isRTB, fb,
+                fetchBranches = {},
+                fetchIds = [], // just to make sure we don't fetch the same commit twice
+                fetchCommits = [], fetchCommit;
+
+            // determine which branches to fetch
+            for (rtb = 0; rtb < local.branches.length; rtb++) {
+                isRTB = remotePattern.exec(local.branches[rtb]);
+                if (isRTB) {
+                    fetchBranches[isRTB[1]] = 0;
+                }
+            }
+
+            // determine which commits the local repo is missing from the origin
+            for (fb in fetchBranches) {
+                if (origin.branches.indexOf(fb) > -1) {
+                    fetchCommit = origin.getCommit(fb);
+
+                    var notInLocal = local.getCommit(fetchCommit.id) === null;
+                    while (notInLocal) {
+                        if (fetchIds.indexOf(fetchCommit.id) === -1) {
+                            fetchCommits.unshift(fetchCommit);
+                            fetchIds.unshift(fetchCommit.id);
+                        }
+                        fetchBranches[fb] += 1;
+                        fetchCommit = origin.getCommit(fetchCommit.parent);
+                        notInLocal = local.getCommit(fetchCommit.id) === null;
+                    }
+                }
+            }
+
+            // add the fetched commits to the local commit data
+            for (var fc = 0; fc < fetchCommits.length; fc++) {
+                fetchCommit = fetchCommits[fc];
+                local.commitData.push({
+                    id: fetchCommit.id,
+                    parent: fetchCommit.parent,
+                    tags: []
+                });
+            }
+
+            // update the remote tracking branch tag locations
+            for (fb in fetchBranches) {
+                if (origin.branches.indexOf(fb) > -1) {
+                    var remoteLoc = origin.getCommit(fb).id;
+                    local._moveTag('origin/' + fb, remoteLoc);
+                }
+            }
+
+            local._renderCommits();
         }
     };
 

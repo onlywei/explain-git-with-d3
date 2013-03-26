@@ -51,6 +51,7 @@
     </div>
     <div class="fourcol last">
       <h4>Interacting with Remote Server</h4>
+      <a id="open-fetch" class="openswitch" href="#">git fetch</a>
     </div>
   </div>
   <div class="row">
@@ -63,6 +64,7 @@
         Pretend that you already have your files staged for commit and enter <span class="cmd">git commit</span>
 		as many times as you like in the terminal box.
       </p>
+      <div class="playground-container"></div>
     </div>
     <div id="ExplainGitBranch-Container" class="twelvecol concept-container">
       <p>
@@ -72,6 +74,7 @@
         Type <span class="cmd">git commit</span> and <span class="cmd">git branch</span> commands
         to your hearts desire until you understand this concept.
       </p>
+      <div class="playground-container"></div>
     </div>
     <div id="ExplainGitCheckout-Container" class="twelvecol concept-container">
       <p>
@@ -91,6 +94,7 @@
         and <span class="cmd">git checkout</span> commands to your hearts desire
 		until you understand this concept.
       </p>
+      <div class="playground-container"></div>
     </div>
     <div id="ExplainGitCheckout-b-Container" class="twelvecol concept-container">
       <p>
@@ -98,6 +102,7 @@
         into a single command by typing <span class="cmd">git checkout -b branchname</span>.
         This will create the branch if it does not already exist and immediately check it out.
       </p>
+      <div class="playground-container"></div>
     </div>
     <div id="ExplainGitReset-Container" class="twelvecol concept-container">
       <p>
@@ -124,6 +129,7 @@
         Note that this won't delete untracked files, you will have to delete those separately with
         the command <span class="cmd">git clean -df</span>.
       </p>
+      <div class="playground-container"></div>
     </div>
     <div id="ExplainGitBranch-d-Container" class="twelvecol concept-container">
       <p>
@@ -131,6 +137,7 @@
         I have pre-created a bunch of branches for you to delete in the playground below.
         Have at it.
       </p>
+      <div class="playground-container"></div>
     </div>
     <div id="ExplainGitMerge-Container" class="twelvecol concept-container">
       <p>
@@ -141,6 +148,7 @@
         If there was no divergence between the two commits, git will do a "fast-forward" method merge.</br>
         To see this happen, checkout the 'ff' branch and then type <span class="cmd">git merge dev</span>.
       </p>
+      <div class="playground-container"></div>
     </div>
     <div id="ExplainGitRebase-Container" class="twelvecol concept-container">
       <p>
@@ -155,6 +163,14 @@
         completely different IDs than the old commits, and leaves the old commits where they were. For this reason,
         you never want to rebase commits that have already been shared with the team you are working with.
       </p>
+      <div class="playground-container"></div>
+    </div>
+    <div id="ExplainGitFetch-Container" class="twelvecol concept-container">
+      <p>
+        <span class="cmd">git fetch</span> will update all of the "remote tracking branches" in your local repository.
+        Remote tracking branches are tagged in grey.
+      </p>
+      <div class="playground-container"></div>
     </div>
   </div>
 </div>
@@ -384,6 +400,43 @@ require(['explaingit'], function (explainGit) {
             currentBranch: 'dev',
 			initialMessage:
 				'Type "git rebase master".'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-fetch'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+        this.classList.add('selected');
+
+		explainGit.open({
+			name: 'Fetch',
+			height: 500,
+			commitData: [
+				{id: 'e137e9b', tags: ['origin/master']},
+                {id: '6ce726f', parent: 'e137e9b'},
+				{id: 'bb92e0e', parent: '6ce726f', tags: ['master']},
+                {id: '0cff760', parent: 'e137e9b', tags: ['origin/dev']},
+                {id: '4ed301d', parent: '0cff760', tags: ['dev']}
+			],
+            originData: [
+                {id: 'e137e9b'},
+                {id: '7eb7654', parent: 'e137e9b'},
+				{id: '090e2b8', parent: '7eb7654'},
+                {id: 'ee5df4b', parent: '090e2b8', tags: ['master']},
+                {id: '0cff760', parent: 'e137e9b'},
+                {id: '2f8d946', parent: '0cff760'},
+                {id: '29235ca', parent: '2f8d946', tags: ['dev']}
+            ],
+			initialMessage:
+				'Type "git fetch".'
 		});
     };
 

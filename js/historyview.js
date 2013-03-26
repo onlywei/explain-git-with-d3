@@ -234,10 +234,13 @@ define(['d3'], function () {
 
         this.width = config.width || 886;
         this.height = config.height || 400;
-        this.baseLine = this.height * (config.baseLine || 0.7);
+        this.baseLine = this.height * (config.baseLine || 0.6);
 
         this.commitRadius = config.commitRadius || 20;
         this.pointerMargin = this.commitRadius * 1.3;
+        
+        this.isRemote = typeof config.remoteName === 'string';
+        this.remoteName = config.remoteName;
 
         this.initialCommit = {
 			id: 'initial',
@@ -331,7 +334,8 @@ define(['d3'], function () {
             var svgContainer, svg;
 
 			svgContainer = container.append('div')
-                .classed('svg-container', true);
+                .classed('svg-container', true)
+                .classed('remote-container', this.isRemote);
 
             svg = svgContainer.append('svg:svg');
 
@@ -339,15 +343,29 @@ define(['d3'], function () {
                 .attr('width', this.width)
                 .attr('height', this.height);
 
+            if (this.isRemote) {
+                svg.append('svg:text')
+                    .classed('remote-name-display', true)
+                    .text(this.remoteName)
+                    .attr('x', 10)
+                    .attr('y', 25);
+            } else {
+                svg.append('svg:text')
+                    .classed('remote-name-display', true)
+                    .text('Local Repository')
+                    .attr('x', 10)
+                    .attr('y', 25);
+            
+                svg.append('svg:text')
+                    .classed('current-branch-display', true)
+                    .attr('x', 10)
+                    .attr('y', 45);
+            }
+
             this.svgContainer = svgContainer;
             this.svg = svg;
 
             this._renderCommits();
-
-            svg.append('svg:text')
-                .classed('current-branch-display', true)
-                .attr('x', 10)
-                .attr('y', 25);
 
             this._setCurrentBranch(this.currentBranch);
         },

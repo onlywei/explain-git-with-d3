@@ -23,6 +23,10 @@ a.openswitch.selected {
     display: none;
 }
 
+.playground-container {
+    position: relative;
+}
+
 span.cmd {
     background-color: #222222;
     color: #FFFFFF;
@@ -33,6 +37,19 @@ span.cmd {
 .svg-container {
     display: inline-block;
     border: 1px dotted #AAA;
+}
+
+.svg-container.remote-container {
+    position: absolute;
+    top: 0px; right: 0px;
+    background-color: #EFF1FF;
+    border-left: 1px dotted #AAA;
+    border-bottom: 1px dotted #AAA;
+}
+
+.remote-name-display {
+    font-weight: bold;
+    text-align: right;
 }
 
 .control-box {

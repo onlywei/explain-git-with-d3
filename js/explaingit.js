@@ -9,7 +9,8 @@ define(['historyview', 'controlbox', 'd3'], function (HistoryView, ControlBox, d
         var name = prefix + args.name,
             containerId = name + '-Container',
             container = d3.select('#' + containerId),
-            historyView,
+            playground = container.select('.playground-container'),
+            historyView, originView = null,
             controlBox;
 
         container.style('display', 'block');
@@ -17,13 +18,27 @@ define(['historyview', 'controlbox', 'd3'], function (HistoryView, ControlBox, d
         args.name = name;
         historyView = new HistoryView(args);
 
+        if (args.originData) {
+            originView = new HistoryView({
+                name: name + '-Origin',
+                width: 300,
+                height: 225,
+                commitRadius: 15,
+                remoteName: 'origin',
+                commitData: args.originData
+            });
+
+            originView.render(playground);
+        }
+
         controlBox = new ControlBox({
             historyView: historyView,
+            originView: originView,
             initialMessage: args.initialMessage
         });
 
-        controlBox.render(container);
-        historyView.render(container);
+        controlBox.render(playground);
+        historyView.render(playground);
 
         openSandBoxes.push({
             hv: historyView,
