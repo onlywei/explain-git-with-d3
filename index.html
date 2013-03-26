@@ -49,9 +49,13 @@
       <a id="open-merge" class="openswitch" href="#">git merge</a>
       <a id="open-rebase" class="openswitch" href="#">git rebase</a>
     </div>
-    <div class="fourcol last">
-      <h4>Interacting with Remote Server</h4>
+    <div class="twocol">
+      <h4>Remote Server</h4>
       <a id="open-fetch" class="openswitch" href="#">git fetch</a>
+    </div>
+    <div>
+      <h4>Free Play</h4>
+      <a id="open-freeplay" class="openswitch" href="#">Free Playground</a>
     </div>
   </div>
   <div class="row">
@@ -169,6 +173,12 @@
       <p>
         <span class="cmd">git fetch</span> will update all of the "remote tracking branches" in your local repository.
         Remote tracking branches are tagged in grey.
+      </p>
+      <div class="playground-container"></div>
+    </div>
+    <div id="ExplainGitFree-Container" class="twelvecol concept-container">
+      <p>
+        Do whatever you want in this free playground.
       </p>
       <div class="playground-container"></div>
     </div>
@@ -437,6 +447,36 @@ require(['explaingit'], function (explainGit) {
             ],
 			initialMessage:
 				'Type "git fetch".'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-freeplay'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+        this.classList.add('selected');
+
+		explainGit.open({
+			name: 'Free',
+			height: 500,
+			commitData: [
+				{id: 'e137e9b', tags: ['origin/master', 'master']}
+			],
+            originData: [
+                {id: 'e137e9b'},
+                {id: '7eb7654', parent: 'e137e9b'},
+				{id: '090e2b8', parent: '7eb7654'},
+                {id: 'ee5df4b', parent: '090e2b8', tags: ['master']}
+            ],
+			initialMessage:
+				'Have fun.'
 		});
     };
 
