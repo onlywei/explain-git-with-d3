@@ -89,18 +89,24 @@ circle.commit {
     stroke-width: 3;
 }
 
+circle.commit.checked-out {
+    fill: #CCFFCC !important;
+    stroke: #339900;
+}
+
 circle.commit.merge-commit {
-    stroke: #CC9900;
+    stroke: #663300;
+    fill: #FFFFCC;
+}
+
+circle.commit.rebased {
+    stroke: #3300CC;
+    fill: #CCCCFF;
 }
 
 circle.commit.branchless {
     fill: #FEFEFE;
     stroke: #DDD;
-}
-
-circle.commit.checked-out {
-    fill: #CCFFCC;
-    stroke: #339900;
 }
 
 .commit-pointer {
@@ -109,7 +115,7 @@ circle.commit.checked-out {
 }
 
 .merge-pointer {
-    stroke: #3300CC;
+    stroke: #663300;
     stroke-width: 4;
 }
 

@@ -2,7 +2,7 @@ define(['d3'], function () {
     "use strict";
 
     var REG_MARKER_END = 'url(#triangle)',
-        MERGE_MARKER_END = 'url(#purple-triangle)',
+        MERGE_MARKER_END = 'url(#brown-triangle)',
         FADED_MARKER_END = 'url(#faded-triangle)',
     
         preventOverlap,
@@ -388,6 +388,9 @@ define(['d3'], function () {
                 .data(this.commitData, function (d) { return d.id; })
                 .attr('id', function (d) {
                     return view.name + '-' + d.id;
+                })
+                .classed('rebased', function (d) {
+                    return d.rebased;
                 });
 
             existingCircles.transition()
@@ -895,6 +898,7 @@ define(['d3'], function () {
                 rebaseTreeLoc = HistoryView.generateId()
                 rebasedCommit.id = rebaseTreeLoc;
                 rebasedCommit.tags.length = 0;
+                rebasedCommit.rebased = true;
             }
 
             if (this.currentBranch) {
