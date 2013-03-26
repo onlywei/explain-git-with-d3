@@ -886,7 +886,7 @@ define(['d3'], function () {
                 };
                 
                 for (var t = 0; t < rebasedCommit.tags.length; t++) {
-                    var tagName = rebasedCommit.tags[i];
+                    var tagName = rebasedCommit.tags[t];
                     if (tagName !== this.currentBranch && tagName !== 'HEAD') {
                         remainingHusk.tags.unshift(tagName);
                     }
