@@ -188,7 +188,8 @@ require(['explaingit'], function (explainGit) {
 
 		explainGit.open({
 			name: 'Commit',
-			height: 250,
+			height: 200,
+            baseLine: 0.4,
 			commitData: [
 				{id: 'e137e9b', tags: ['origin/master', 'master']}
 			],
@@ -210,6 +211,7 @@ require(['explaingit'], function (explainGit) {
 
 		explainGit.open({
 			name: 'Branch',
+            baseLine: 0.6,
 			commitData: [
 				{id: 'e137e9b', tags: ['origin/master', 'master']}
 			]
@@ -281,7 +283,8 @@ require(['explaingit'], function (explainGit) {
 
 		explainGit.open({
 			name: 'Reset',
-			height: 250,
+			height: 200,
+            baseLine: 0.4,
 			commitData: [
 				{id: 'e137e9b', tags: ['origin/master']},
                 {id: '0e70093', parent: 'e137e9b'},
@@ -306,6 +309,7 @@ require(['explaingit'], function (explainGit) {
 		explainGit.open({
 			name: 'Branch-d',
 			height: 500,
+            baseLine: 0.6,
 			commitData: [
 				{id: 'e137e9b', tags: ['origin/master']},
 				{id: 'bb92e0e', parent: 'e137e9b'},

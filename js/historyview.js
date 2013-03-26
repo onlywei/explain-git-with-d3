@@ -14,7 +14,7 @@ define(['d3'], function () {
 
     preventOverlap = function preventOverlap(commit, view) {
         var commitData = view.commitData,
-            centerBranchLine = view.height / 2,
+            baseLine = view.baseLine,
             shift = view.commitRadius * 4.5,
             overlapped = null;
 
@@ -30,7 +30,7 @@ define(['d3'], function () {
             var oParent = view.getCommit(overlapped.parent),
                 parent = view.getCommit(commit.parent);
 
-            if (overlapped.cy < centerBranchLine) {
+            if (overlapped.cy < baseLine) {
                 overlapped = oParent.cy < parent.cy ? overlapped : commit;
                 overlapped.cy -= shift;
             } else {
@@ -78,7 +78,7 @@ define(['d3'], function () {
     cy = function (commit, view) {
         var parent = view.getCommit(commit.parent),
             parentCY = parent.cy,
-            centerBranchLine = view.height / 2,
+            baseLine = view.baseLine,
             shift = view.commitRadius * 4.5,
             branches = [], // count the existing branches
             branchIndex = 0;
@@ -93,7 +93,7 @@ define(['d3'], function () {
 
         branchIndex = branches.indexOf(commit.id);
 
-        if (parentCY === centerBranchLine) {
+        if (parentCY === baseLine) {
             var direction = 1;
             for (var bi = 0; bi < branchIndex; bi++) {
                 direction *= -1;
@@ -104,9 +104,9 @@ define(['d3'], function () {
             return parentCY + (shift * direction);
         }
 
-        if (parentCY < centerBranchLine) {
+        if (parentCY < baseLine) {
             return parentCY - (shift * branchIndex);
-        } else if (parentCY > centerBranchLine) {
+        } else if (parentCY > baseLine) {
             return parentCY + (shift * branchIndex);
         }
     };
@@ -205,7 +205,7 @@ define(['d3'], function () {
             tagIndex = tags.length;
         }
 
-        if (commitCY < (view.height / 2)) {
+        if (commitCY < (view.baseLine)) {
             return commitCY - 45 - (tagIndex * 25);
         } else {
             return commitCY + 40 + (tagIndex * 25);
@@ -234,6 +234,8 @@ define(['d3'], function () {
 
         this.width = config.width || 886;
         this.height = config.height || 400;
+        this.baseLine = this.height * (config.baseLine || 0.7);
+
         this.commitRadius = config.commitRadius || 20;
         this.pointerMargin = this.commitRadius * 1.3;
 
@@ -241,7 +243,7 @@ define(['d3'], function () {
 			id: 'initial',
 			parent: null,
 			cx: -(this.commitRadius * 2),
-			cy: this.height / 2
+			cy: this.baseLine
 		};
     }
 
