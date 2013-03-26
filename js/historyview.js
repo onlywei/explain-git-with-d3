@@ -665,15 +665,20 @@ define(['d3'], function () {
         },
 
         _setCurrentBranch: function (branch) {
-            var display = this.svg.select('text.current-branch-display');
+            var display = this.svg.select('text.current-branch-display'),
+                text = 'Current Branch: ';
 
             if (branch) {
-                display.text('Current Branch: ' + branch);
-            } else {
-                display.text('Current Branch: DETACHED HEAD');
+                text += branch;
+                this.currentBranch = branch;
             }
 
-            this.currentBranch = branch;
+            if (!branch || branch.indexOf('origin/') === 0) {
+                text += ' (DETACHED HEAD)';
+                this.currentBranch = null;
+            }
+
+            display.text(text);
         },
 
         _moveTag: function (tag, ref) {
