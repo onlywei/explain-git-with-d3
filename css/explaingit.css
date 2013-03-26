@@ -16,14 +16,16 @@ a.openswitch.selected {
     padding: 10px 0;
     border-bottom: 2px dashed #888;
     border-top: 2px dashed #888;
+    background-color: #EEE;
 }
 
 .concept-container {
-    padding-top: 10px;
+    padding-top: 20px;
     display: none;
 }
 
 .playground-container {
+    margin-top: 20px;
     position: relative;
 }
 
