@@ -17,12 +17,13 @@ a.openswitch {
 .concept-container {
     padding-top: 10px;
     display: none;
-    color: #909090;
 }
 
 span.cmd {
+    background-color: #222222;
+    color: #FFFFFF;
     font-family: Courier New;
-    color: #000;
+    padding: 0 0.2em;
 }
 
 .svg-container {
