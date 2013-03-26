@@ -41,7 +41,7 @@ define(['historyview', 'controlbox', 'd3'], function (HistoryView, ControlBox, d
         }
 
         openSandBoxes.length = 0;
-        d3.select('a.openswitch').style('display', '');
+        d3.selectAll('a.openswitch').classed('selected', false);
     };
 
     explainGit = {

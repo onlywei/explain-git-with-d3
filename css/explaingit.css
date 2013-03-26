@@ -8,6 +8,10 @@ a.openswitch {
     font-family: Courier New;
 }
 
+a.openswitch.selected {
+    font-weight: bold;
+}
+
 .command-list {
     padding: 10px 0;
     border-bottom: 2px dashed #888;
