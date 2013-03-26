@@ -52,6 +52,7 @@
     <div class="twocol">
       <h4>Remote Server</h4>
       <a id="open-fetch" class="openswitch" href="#">git fetch</a>
+      <a id="open-pull" class="openswitch" href="#">git pull</a>
     </div>
     <div>
       <h4>Free Play</h4>
@@ -173,6 +174,19 @@
       <p>
         <span class="cmd">git fetch</span> will update all of the "remote tracking branches" in your local repository.
         Remote tracking branches are tagged in grey.
+      </p>
+      <div class="playground-container"></div>
+    </div>
+    <div id="ExplainGitPull-Container" class="twelvecol concept-container">
+      <p>
+        A <span class="cmd">git pull</span> is a two step process that first does a <span class="cmd">git fetch</span>,
+        and then does a <span class="cmd">git merge</span> of the remote tracking branch associated with your current branch.
+        If you have no current branch, the process will stop after fetching.
+      </p>
+      <p>
+        If the argument "--rebase" was given by typing <span class="cmd">git pull --rebase</span>, the second step of
+        pull process will be a rebase instead of a merge. This can be set to the default behavior by configuration by typing:
+        <span class="cmd">git config branch.BRANCHNAME.rebase true</span>.
       </p>
       <div class="playground-container"></div>
     </div>
@@ -447,6 +461,37 @@ require(['explaingit'], function (explainGit) {
             ],
 			initialMessage:
 				'Type "git fetch".'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-pull'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+        this.classList.add('selected');
+
+		explainGit.open({
+			name: 'Pull',
+			height: 500,
+			commitData: [
+				{id: 'e137e9b', tags: ['origin/master']},
+                {id: '46d095b', parent: 'e137e9b', tags: ['master']}
+			],
+            originData: [
+                {id: 'e137e9b'},
+                {id: '7eb7654', parent: 'e137e9b'},
+				{id: '090e2b8', parent: '7eb7654'},
+                {id: 'ee5df4b', parent: '090e2b8', tags: ['master']}
+            ],
+			initialMessage:
+				'Try "git pull".'
 		});
     };
 

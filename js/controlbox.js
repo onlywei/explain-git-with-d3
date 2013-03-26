@@ -12,6 +12,7 @@ define(['d3'], function () {
         this._commandHistory = [];
         this._currentCommand = -1;
         this._tempCommand = '';
+        this.rebase = {}; // to configure branches for rebase
     }
 
     ControlBox.prototype = {
@@ -264,7 +265,8 @@ define(['d3'], function () {
                 rtb, isRTB, fb,
                 fetchBranches = {},
                 fetchIds = [], // just to make sure we don't fetch the same commit twice
-                fetchCommits = [], fetchCommit;
+                fetchCommits = [], fetchCommit,
+                resultMessage = '';
 
             // determine which branches to fetch
             for (rtb = 0; rtb < local.branches.length; rtb++) {
@@ -308,9 +310,57 @@ define(['d3'], function () {
                     var remoteLoc = origin.getCommit(fb).id;
                     local._moveTag('origin/' + fb, remoteLoc);
                 }
+
+                resultMessage += 'Fetched ' + fetchBranches[fb] + ' commits on ' + fb + '.</br>';
             }
 
+            this.info(resultMessage);
+
             local._renderCommits();
+        },
+
+        pull: function (args) {
+            var control = this,
+                local = this.historyView,
+                currentBranch = local.currentBranch,
+                rtBranch = 'origin/' + currentBranch,
+                isFastForward = false;
+            
+            this.fetch();
+
+            if (!currentBranch) {
+                throw new Error('You are not currently on a branch.');
+            }
+
+            if (local.branches.indexOf(rtBranch) === -1) {
+                throw new Error('Current branch is not set up for pulling.');
+            }
+
+            setTimeout(function () {
+                try {
+                    if (args[0] === '--rebase' || control.rebase[currentBranch] === 'true') {
+                        isFastForward = local.rebase(rtBranch) === 'Fast-Forward';
+                    } else {
+                        isFastForward = local.merge(rtBranch) === 'Fast-Forward';
+                    }
+                } catch (error) {
+                    control.error(error.message);
+                }
+
+                if (isFastForward) {
+                    control.info('Fast-forwarded to ' + rtBranch + '.');
+                }
+            }, 750);
+        },
+        
+        config: function (args) {
+            var path = args.shift().split('.');
+
+            if (path[0] === 'branch') {
+                if (path[2] === 'rebase') {
+                    this.rebase[path[1]] = args.pop();
+                }
+            }
         }
     };
 
