@@ -392,6 +392,7 @@ define(['d3'], function () {
 
         _renderCommits: function () {
             this._calculatePositionData();
+            this._calculatePositionData(); // do this twice to make sure
             this._renderCircles();
             this._renderPointers();
             this._renderMergePointers();
