@@ -12,7 +12,7 @@ define(['d3'], function () {
         this._commandHistory = [];
         this._currentCommand = -1;
         this._tempCommand = '';
-        this.rebase = {}; // to configure branches for rebase
+        this.rebaseConfig = {}; // to configure branches for rebase
     }
 
     ControlBox.prototype = {
@@ -338,7 +338,7 @@ define(['d3'], function () {
 
             setTimeout(function () {
                 try {
-                    if (args[0] === '--rebase' || control.rebase[currentBranch] === 'true') {
+                    if (args[0] === '--rebase' || control.rebaseConfig[currentBranch] === 'true') {
                         isFastForward = local.rebase(rtBranch) === 'Fast-Forward';
                     } else {
                         isFastForward = local.merge(rtBranch) === 'Fast-Forward';
