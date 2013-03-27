@@ -674,13 +674,11 @@ define(['d3'], function () {
             var display = this.svg.select('text.current-branch-display'),
                 text = 'Current Branch: ';
 
-            if (branch) {
+            if (branch && branch.indexOf('/') === -1) {
                 text += branch;
                 this.currentBranch = branch;
-            }
-
-            if (!branch || branch.indexOf('origin/') === 0) {
-                text += ' (DETACHED HEAD)';
+            } else {
+                text += ' DETACHED HEAD';
                 this.currentBranch = null;
             }
 
