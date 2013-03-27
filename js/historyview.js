@@ -568,28 +568,33 @@ define(['d3'], function () {
         },
 
         _markBranchlessCommits: function () {
+            var branch, commit, parent, parent2, c, b;
+
             // first mark every commit as branchless
-            for (var c = 0; c < this.commitData.length; c++) {
+            for (c = 0; c < this.commitData.length; c++) {
                 this.commitData[c].branchless = true;
             }
 
-            for (var b = 0; b < this.branches.length; b++) {
-                var commit = this.getCommit(this.branches[b]),
-                    parent = this.getCommit(commit.parent),
+            for (b = 0; b < this.branches.length; b++) {
+                branch = this.branches[b];
+                if (branch.indexOf('/') === -1) {
+                    commit = this.getCommit(branch);
+                    parent = this.getCommit(commit.parent);
                     parent2 = this.getCommit(commit.parent2);
 
-                commit.branchless = false;
+                    commit.branchless = false;
 
-                while (parent) {
-                    parent.branchless = false;
-                    parent = this.getCommit(parent.parent);
-                }
+                    while (parent) {
+                        parent.branchless = false;
+                        parent = this.getCommit(parent.parent);
+                    }
 
-                // just in case this is a merge commit
-                while (parent2) {
-                    parent2.branchless = false;
-                    parent2 = this.getCommit(parent2.parent);
-                }
+                    // just in case this is a merge commit
+                    while (parent2) {
+                        parent2.branchless = false;
+                        parent2 = this.getCommit(parent2.parent);
+                    }
+                }                
             }
 
             this.svg.selectAll('circle.commit').call(applyBranchlessClass);
