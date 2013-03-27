@@ -364,6 +364,9 @@ define(['d3'], function () {
 
             this.svgContainer = svgContainer;
             this.svg = svg;
+            this.arrowBox = svg.append('svg:g').classed('pointers', true);
+            this.commitBox = svg.append('svg:g').classed('commits', true);
+            this.tagBox = svg.append('svg:g').classed('tags', true);
 
             this._renderCommits();
 
@@ -405,7 +408,7 @@ define(['d3'], function () {
                 existingCircles,
                 newCircles;
 
-            existingCircles = this.svg.selectAll('circle.commit')
+            existingCircles = this.commitBox.selectAll('circle.commit')
                 .data(this.commitData, function (d) { return d.id; })
                 .attr('id', function (d) {
                     return view.name + '-' + d.id;
@@ -440,7 +443,7 @@ define(['d3'], function () {
                 existingPointers,
                 newPointers;
 
-            existingPointers = this.svg.selectAll('line.commit-pointer')
+            existingPointers = this.arrowBox.selectAll('line.commit-pointer')
                 .data(this.commitData, function (d) { return d.id; })
                 .attr('id', function (d) {
                     return view.name + '-' + d.id + '-to-' + d.parent;
@@ -452,7 +455,7 @@ define(['d3'], function () {
                 .call(fixPointerEndPosition, view);
 
             newPointers = existingPointers.enter()
-                .insert('svg:line', ':first-child')
+                .append('svg:line')
                 .attr('id', function (d) {
                     return view.name + '-' + d.id + '-to-' + d.parent;
                 })
@@ -478,7 +481,7 @@ define(['d3'], function () {
                 }
             }
 
-            existingPointers = this.svg.selectAll('polyline.merge-pointer')
+            existingPointers = this.arrowBox.selectAll('polyline.merge-pointer')
                 .data(mergeCommits, function (d) { return d.id; })
                 .attr('id', function (d) {
                     return view.name + '-' + d.id + '-to-' + d.parent2;
@@ -493,7 +496,7 @@ define(['d3'], function () {
                 });
 
             newPointers = existingPointers.enter()
-                .insert('svg:polyline', ':first-child')
+                .append('svg:polyline')
                 .attr('id', function (d) {
                     return view.name + '-' + d.id + '-to-' + d.parent2;
                 })
@@ -523,14 +526,14 @@ define(['d3'], function () {
                 existingLabels,
                 newLabels;
 
-            existingLabels = this.svg.selectAll('text.id-label')
+            existingLabels = this.commitBox.selectAll('text.id-label')
                 .data(this.commitData, function (d) { return d.id; })
                 .text(function (d) { return d.id + '..'; });
 
             existingLabels.transition().call(fixIdPosition, view);
 
             newLabels = existingLabels.enter()
-                .append('text')
+                .insert('svg:text', ':first-child')
                 .classed('id-label', true)
                 .text(function (d) { return d.id + '..'; })
                 .call(fixIdPosition, view);
@@ -607,7 +610,7 @@ define(['d3'], function () {
                 tagData = this._parseTagData(),
                 existingTags, newTags;
 
-            existingTags = this.svg.selectAll('g.branch-tag')
+            existingTags = this.tagBox.selectAll('g.branch-tag')
                 .data(tagData, function (d) { return d.name; });
 
             existingTags.exit().remove();
