@@ -368,7 +368,7 @@ define(['d3'], function () {
             this.commitBox = svg.append('svg:g').classed('commits', true);
             this.tagBox = svg.append('svg:g').classed('tags', true);
 
-            this._renderCommits();
+            this.renderCommits();
 
             this._setCurrentBranch(this.currentBranch);
         },
@@ -393,7 +393,7 @@ define(['d3'], function () {
             }
         },
 
-        _renderCommits: function () {
+        renderCommits: function () {
             this._calculatePositionData();
             this._calculatePositionData(); // do this twice to make sure
             this._renderCircles();
@@ -605,7 +605,7 @@ define(['d3'], function () {
             this.svg.selectAll('polyline.merge-pointer').call(applyBranchlessClass);
         },
 
-        _renderTags: function () {
+        renderTags: function () {
             var view = this,
                 tagData = this._parseTagData(),
                 existingTags, newTags;
@@ -688,7 +688,7 @@ define(['d3'], function () {
             display.text(text);
         },
 
-        _moveTag: function (tag, ref) {
+        moveTag: function (tag, ref) {
             var currentLoc = this.getCommit(tag),
                 newLoc = this.getCommit(ref);
 
@@ -700,11 +700,21 @@ define(['d3'], function () {
             return this;
         },
 
+        /**
+         * @method isAncestor
+         * @param ref1
+         * @param ref2
+         * @return {Boolean} whether or not ref1 is an ancestor of ref2
+         */
         isAncestor: function isAncestor(ref1, ref2) {
             var currentCommit = this.getCommit(ref1),
                 targetTree = this.getCommit(ref2),
                 inTree = false,
                 additionalTrees = [];
+
+            if (!currentCommit) {
+                return false;
+            }
 
             while (targetTree) {
                 if (targetTree.id === currentCommit.id) {
@@ -745,9 +755,9 @@ define(['d3'], function () {
             }
 
             this.commitData.push(commit);
-            this._moveTag(this.currentBranch, commit.id);
+            this.moveTag(this.currentBranch, commit.id);
 
-            this._renderCommits();
+            this.renderCommits();
 
             this.checkout(this.currentBranch);
             return this;
@@ -771,7 +781,7 @@ define(['d3'], function () {
             }
 
             this.getCommit('HEAD').tags.push(name);
-            this._renderTags();
+            this.renderTags();
             return this;
         },
 
@@ -801,7 +811,7 @@ define(['d3'], function () {
                 commit.tags.splice(branchIndex, 1);
             }
 
-            this._renderTags();
+            this.renderTags();
         },
 
         checkout: function (ref) {
@@ -819,8 +829,8 @@ define(['d3'], function () {
             }
 
             this._setCurrentBranch(ref === commit.id ? null : ref);
-            this._moveTag('HEAD', commit.id);
-            this._renderTags();
+            this.moveTag('HEAD', commit.id);
+            this.renderTags();
 
             newHead.classed('checked-out', true);
 
@@ -835,7 +845,7 @@ define(['d3'], function () {
             }
 
             if (this.currentBranch) {
-                this._moveTag(this.currentBranch, commit.id);
+                this.moveTag(this.currentBranch, commit.id);
                 this.checkout(this.currentBranch);
             } else {
                 this.checkout(commit.id);
@@ -848,7 +858,7 @@ define(['d3'], function () {
             var targetCommit = this.getCommit(ref);
 
             if (this.currentBranch) {
-                this._moveTag(this.currentBranch, targetCommit.id);
+                this.moveTag(this.currentBranch, targetCommit.id);
                 this.checkout(this.currentBranch);
             } else {
                 this.checkout(targetCommit.id);
@@ -937,7 +947,7 @@ define(['d3'], function () {
                 rebasedCommit.tags.push(this.currentBranch);
             }
 
-            this._renderCommits();
+            this.renderCommits();
 
             if (this.currentBranch) {
                 this.checkout(this.currentBranch);

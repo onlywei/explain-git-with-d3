@@ -54,6 +54,10 @@
       <a id="open-fetch" class="openswitch" href="#">git fetch</a>
       <a id="open-pull" class="openswitch" href="#">git pull</a>
     </div>
+    <div class="twocol last">
+      <h4>&nbsp;</h4>
+      <a id="open-push" class="openswitch" href="#">git push</a>
+    </div>
   </div>
   <div class="row concept-area">
     <div id="ExplainGitCommit-Container" class="twelvecol concept-container">
@@ -183,6 +187,18 @@
         If the argument "--rebase" was given by typing <span class="cmd">git pull --rebase</span>, the second step of
         pull process will be a rebase instead of a merge. This can be set to the default behavior by configuration by typing:
         <span class="cmd">git config branch.BRANCHNAME.rebase true</span>.
+      </p>
+      <div class="playground-container"></div>
+    </div>
+    <div id="ExplainGitPush-Container" class="twelvecol concept-container">
+      <p>
+        A <span class="cmd">git push</span> will find the commits you have on your local branch that the corresponding branch
+        on the origin server does not have, and send them to the remote repository.
+      </p>
+      <p>
+        By default, all pushes must cause a fast-forward merge on the remote repository. If there is any divergence between
+        your local branch and the remote branch, your push will be rejected. In this scenario, you need to pull first and then
+        you will be able to push again.
       </p>
       <div class="playground-container"></div>
     </div>
@@ -499,6 +515,36 @@ require(['explaingit'], function (explainGit) {
                 {id: '7eb7654', parent: 'e137e9b'},
 				{id: '090e2b8', parent: '7eb7654'},
                 {id: 'ee5df4b', parent: '090e2b8', tags: ['master']}
+            ],
+			initialMessage:
+				'Carefully compare the commit IDs between the origin and the local repository. ' + 
+                'Then type "git pull".'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-push'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+        this.classList.add('selected');
+
+		explainGit.open({
+			name: 'Push',
+			height: 500,
+			commitData: [
+				{id: 'e137e9b', tags: ['origin/master']},
+                {id: '46d095b', parent: 'e137e9b', tags: ['master']}
+			],
+            originData: [
+                {id: 'e137e9b'},
+                {id: '7eb7654', parent: 'e137e9b', tags: ['master']}
             ],
 			initialMessage:
 				'Carefully compare the commit IDs between the origin and the local repository. ' + 
