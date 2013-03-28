@@ -202,7 +202,17 @@
       </p>
       <div class="playground-container"></div>
     </div>
-    <div id="ExplainGitFree-Container" class="twelvecol concept-container">
+    <div id="ExplainGitFetchRebase-Container" class="twelvecol concept-container">
+      <p>
+        Below is a situation in which you are working in a local branch that is all your own. You want to receive the latest code
+        from the origin server's master branch. To update your local branch, you can do it without having to switch branches!
+      </p>
+      <p>
+        First do a <span class="cmd">git fetch</span>, then type <span class="cmd">git rebase origin/master</span>!
+      </p>
+      <div class="playground-container"></div>
+    </div>
+    <div id="ExplainGitFree-Container" class="twocol concept-container">
       <p>
         Do whatever you want in this free playground.
       </p>
@@ -216,8 +226,10 @@
     </div>
   </div>
   <div class="row example-list">
-    <div class="twocol">
-      <h4>Free Play</h4>
+    <div class="tencol">
+      <a id="open-fetchrebase" class="openswitch" href="#">Update Private Local Branch with Latest from Origin</a>
+    </div>
+    <div class="twocol last">
       <a id="open-freeplay" class="openswitch" href="#">Free Playground</a>
     </div>
   </div>
@@ -549,6 +561,39 @@ require(['explaingit'], function (explainGit) {
 			initialMessage:
 				'Carefully compare the commit IDs between the origin and the local repository. ' + 
                 'Then type "git pull".'
+		});
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-fetchrebase'),
+		open;
+
+    open = function () {
+		explainGit.reset();
+        this.classList.add('selected');
+
+		explainGit.open({
+			name: 'FetchRebase',
+			height: 500,
+			commitData: [
+				{id: 'e137e9b', tags: ['origin/master', 'master']},
+                {id: '46d095b', parent: 'e137e9b'},
+                {id: 'dccdc4d', parent: '46d095b', tags: ['my-branch']}
+			],
+            currentBranch: 'my-branch',
+            originData: [
+                {id: 'e137e9b'},
+                {id: '7eb7654', parent: 'e137e9b'},
+				{id: '090e2b8', parent: '7eb7654'},
+                {id: 'ee5df4b', parent: '090e2b8', tags: ['master']}
+            ],
+			initialMessage:
+				'First type "git fetch". Then type "git rebase origin/master".'
 		});
     };
 
