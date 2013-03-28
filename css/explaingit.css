@@ -1,26 +1,34 @@
 /* styles */
 .intro p, .concept-container p {
-    padding-bottom: 10px;
+    padding-top: 10px;
 }
 
 a.openswitch {
     display: block;
-    font-family: Courier New;
 }
 
 a.openswitch.selected {
     font-weight: bold;
 }
 
-.command-list {
+.command-list, .example-list {
+    margin-top: 10px;
+    margin-bottom: 10px;
     padding: 10px 0;
     border-bottom: 2px dashed #888;
     border-top: 2px dashed #888;
     background-color: #EEE;
 }
 
+.command-list a.openswitch {
+    font-family: Courier New;
+}
+
+.concept-area {
+    padding-bottom: 20px;
+}
+
 .concept-container {
-    padding-top: 20px;
     display: none;
 }
 
