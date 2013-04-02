@@ -42,7 +42,7 @@
     <div class="twocol">
       <h4>Undo/Delete</h4>
       <a id="open-reset" class="openswitch" href="#">git reset</a>
-      <a id="open-branch-d" class="openswitch" href="#">git branch -d</a>
+      
     </div>
     <div class="twocol">
       <h4>Combine Branches</h4>
@@ -73,7 +73,11 @@
     </div>
     <div id="ExplainGitBranch-Container" class="twelvecol concept-container">
       <p>
+        <span class="cmd">git branch name</span> will create a new branch named "name".
         Creating branches just creates a new tag pointing to the currently checked out commit.
+      </p>
+      <p>
+        Branches can be deleted using the command <span class="cmd">git branch -d name</span>.
       </p>
       <p>
         Type <span class="cmd">git commit</span> and <span class="cmd">git branch</span> commands
@@ -130,14 +134,6 @@
         Note that you must <b>never</b> use <span class="cmd">git reset</span> to abandon commits
         that have already been pushed and merged into the origin. This can cause your local repository
         to become out of sync with the origin. Don't do it unless you really know what you're doing.
-      </p>
-      <div class="playground-container"></div>
-    </div>
-    <div id="ExplainGitBranch-d-Container" class="twelvecol concept-container">
-      <p>
-        <span class="cmd">git branch -d</span> is used to delete branches.
-        I have pre-created a bunch of branches for you to delete in the playground below.
-        Have at it.
       </p>
       <div class="playground-container"></div>
     </div>
@@ -221,6 +217,14 @@
       </p>
       <div class="playground-container"></div>
     </div>
+    <div id="ExplainGitDeleteBranches-Container" class="twelvecol concept-container">
+      <p>
+        <span class="cmd">git branch -d</span> is used to delete branches.
+        I have pre-created a bunch of branches for you to delete in the playground below.
+        Have at it.
+      </p>
+      <div class="playground-container"></div>
+    </div>
     <div id="ExplainGitFree-Container" class="twelvecol concept-container">
       <p>
         Do whatever you want in this free playground.
@@ -238,6 +242,7 @@
     <div class="tencol">
       <a id="open-clean" class="openswitch" href="#">Restore Local Branch to State on Origin Server</a>
       <a id="open-fetchrebase" class="openswitch" href="#">Update Private Local Branch with Latest from Origin</a>
+      <a id="open-deletebranches" class="openswitch" href="#">Deleting Local Branches</a>
     </div>
     <div class="twocol last">
       <a id="open-freeplay" class="openswitch" href="#">Free Playground</a>
@@ -383,39 +388,6 @@ require(['explaingit'], function (explainGit) {
                 {id: '3e33afd', parent: '0e70093', tags: ['master']}
             ],
             initialMessage: 'Type "git reset HEAD^".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-branch-d'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
-            name: 'Branch-d',
-            height: 500,
-            baseLine: 0.6,
-            commitData: [
-                {id: 'e137e9b'},
-                {id: 'bb92e0e', parent: 'e137e9b'},
-                {id: 'd25ee9b', parent: 'bb92e0e', tags: ['master']},
-                {id: '071ff28', parent: 'e137e9b', tags: ['protoss']},
-                {id: 'f5b32c8', parent: 'bb92e0e'},
-                {id: 'e088135', parent: 'f5b32c8', tags: ['zerg']},
-                {id: '9e6c322', parent: 'bb92e0e'},
-                {id: '593ae02', parent: '9e6c322', tags: ['terran']}
-            ],
-            currentBranch: 'terran',
-            initialMessage:
-                'Delete some branches.'
         });
     };
 
@@ -630,6 +602,39 @@ require(['explaingit'], function (explainGit) {
             ],
             initialMessage:
                 'First type "git fetch". Then type "git rebase origin/master".'
+        });
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-deletebranches'),
+        open;
+
+    open = function () {
+        explainGit.reset();
+        this.classList.add('selected');
+
+        explainGit.open({
+            name: 'DeleteBranches',
+            height: 500,
+            baseLine: 0.6,
+            commitData: [
+                {id: 'e137e9b'},
+                {id: 'bb92e0e', parent: 'e137e9b'},
+                {id: 'd25ee9b', parent: 'bb92e0e', tags: ['master']},
+                {id: '071ff28', parent: 'e137e9b', tags: ['protoss']},
+                {id: 'f5b32c8', parent: 'bb92e0e'},
+                {id: 'e088135', parent: 'f5b32c8', tags: ['zerg']},
+                {id: '9e6c322', parent: 'bb92e0e'},
+                {id: '593ae02', parent: '9e6c322', tags: ['terran']}
+            ],
+            currentBranch: 'terran',
+            initialMessage:
+                'Delete some branches.'
         });
     };
 
