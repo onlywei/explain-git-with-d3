@@ -24,7 +24,7 @@ define(['d3'], function () {
                 .classed('control-box', true);
 
             cBoxContainer.style('height', this.historyView.height + 5 + 'px');
-            
+
             log = cBoxContainer.append('div')
                 .classed('log', true)
                 .style('height', this.historyView.height - 20 + 'px');
@@ -84,7 +84,7 @@ define(['d3'], function () {
 
             this.info(this.initialMessage);
         },
-        
+
         destroy: function () {
             this.log.remove();
             this.input.remove();
@@ -208,7 +208,7 @@ define(['d3'], function () {
         reset: function (args) {
             while (args.length > 0) {
                 var arg = args.shift();
-                
+
                 switch (arg) {
                 case '--soft':
                     this.info(
@@ -236,6 +236,10 @@ define(['d3'], function () {
             }
         },
 
+        clean: function (args) {
+            this.info('Deleting all of your untracked files...');
+        },
+
         merge: function (args) {
             var ref = args.shift(),
                 result = this.historyView.merge(ref);
@@ -244,7 +248,7 @@ define(['d3'], function () {
                 this.info('You have performed a fast-forward merge.');
             }
         },
-        
+
         rebase: function (args) {
             var ref = args.shift(),
                 result = this.historyView.rebase(ref);
@@ -253,7 +257,7 @@ define(['d3'], function () {
                 this.info('Fast-forwarded to ' + ref + '.');
             }
         },
-        
+
         fetch: function () {
             if (!this.originView) {
                 throw new Error('There is no remote server to fetch from.');
@@ -325,7 +329,7 @@ define(['d3'], function () {
                 currentBranch = local.currentBranch,
                 rtBranch = 'origin/' + currentBranch,
                 isFastForward = false;
-            
+
             this.fetch();
 
             if (!currentBranch) {

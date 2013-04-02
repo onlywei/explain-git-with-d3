@@ -123,16 +123,13 @@
         on this site.
       </p>
       <p>
+        The ref "HEAD^" is usually used together with this command. "HEAD^" means "the commit right
+        before HEAD. "HEAD^^" means "two commits before HEAD", and so on.
+      </p>
+      <p>
         Note that you must <b>never</b> use <span class="cmd">git reset</span> to abandon commits
         that have already been pushed and merged into the origin. This can cause your local repository
         to become out of sync with the origin. Don't do it unless you really know what you're doing.
-      </p>
-      <p>
-        One simple example of the use of this command is to completely restore your local repository
-        state to that of the origin.</br>
-        You can do so by typing <span class="cmd">git reset origin/master</span>.</br>
-        Note that this won't delete untracked files, you will have to delete those separately with
-        the command <span class="cmd">git clean -df</span>.
       </p>
       <div class="playground-container"></div>
     </div>
@@ -164,7 +161,7 @@
         You should pay close attention to the commit IDs of the circles as they move when you do this exercise.
       </p>
       <p>
-        The reason I put "move" in quotations because this process actually generates brand new commits with 
+        The reason I put "move" in quotations because this process actually generates brand new commits with
         completely different IDs than the old commits, and leaves the old commits where they were. For this reason,
         you never want to rebase commits that have already been shared with the team you are working with.
       </p>
@@ -202,6 +199,18 @@
       </p>
       <div class="playground-container"></div>
     </div>
+    <div id="ExplainGitClean-Container" class="twelvecol concept-container">
+      <p>
+        One simple example of the use of <span class="cmd">git reset</span> is to completely restore your local repository
+        state to that of the origin.</br>
+        You can do so by typing <span class="cmd">git reset origin/master</span>.
+      </p>
+      <p>
+        Note that this won't delete untracked files, you will have to delete those separately with
+        the command <span class="cmd">git clean -df</span>.
+      </p>
+      <div class="playground-container"></div>
+    </div>
     <div id="ExplainGitFetchRebase-Container" class="twelvecol concept-container">
       <p>
         Below is a situation in which you are working in a local branch that is all your own. You want to receive the latest code
@@ -227,6 +236,7 @@
   </div>
   <div class="row example-list">
     <div class="tencol">
+      <a id="open-clean" class="openswitch" href="#">Restore Local Branch to State on Origin Server</a>
       <a id="open-fetchrebase" class="openswitch" href="#">Update Private Local Branch with Latest from Origin</a>
     </div>
     <div class="twocol last">
@@ -240,7 +250,7 @@
      xmlns:xlink="http://www.w3.org/1999/xlink"
      xmlns:ev="http://www.w3.org/2001/xml-events"
      width="0" height="0">
-    
+
     <marker id="triangle" refX="5" refY="5" markerUnits="strokeWidth" fill="#666"
             markerWidth="4" markerHeight="3" orient="auto" viewBox="0 0 10 10">
         <path d="M 0 0 L 10 5 L 0 10 z"/>
@@ -366,13 +376,13 @@ require(['explaingit'], function (explainGit) {
         explainGit.open({
             name: 'Reset',
             height: 200,
-            baseLine: 0.4,
+            baseLine: 0.5,
             commitData: [
-                {id: 'e137e9b', tags: ['origin/master']},
+                {id: 'e137e9b'},
                 {id: '0e70093', parent: 'e137e9b'},
                 {id: '3e33afd', parent: '0e70093', tags: ['master']}
             ],
-            initialMessage: 'Type "git reset origin/master".'
+            initialMessage: 'Type "git reset HEAD^".'
         });
     };
 
@@ -497,7 +507,7 @@ require(['explaingit'], function (explainGit) {
                 {id: '29235ca', parent: '2f8d946', tags: ['dev']}
             ],
             initialMessage:
-                'Carefully compare the commit IDs between the origin and the local repository. ' + 
+                'Carefully compare the commit IDs between the origin and the local repository. ' +
                 'Then type "git fetch".'
         });
     };
@@ -529,7 +539,7 @@ require(['explaingit'], function (explainGit) {
                 {id: 'ee5df4b', parent: '090e2b8', tags: ['master']}
             ],
             initialMessage:
-                'Carefully compare the commit IDs between the origin and the local repository. ' + 
+                'Carefully compare the commit IDs between the origin and the local repository. ' +
                 'Then type "git pull".'
         });
     };
@@ -559,8 +569,34 @@ require(['explaingit'], function (explainGit) {
                 {id: '7eb7654', parent: 'e137e9b', tags: ['master']}
             ],
             initialMessage:
-                'Carefully compare the commit IDs between the origin and the local repository. ' + 
+                'Carefully compare the commit IDs between the origin and the local repository. ' +
                 'Then type "git push".'
+        });
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-clean'),
+        open;
+
+    open = function () {
+        explainGit.reset();
+        this.classList.add('selected');
+
+        explainGit.open({
+            name: 'Clean',
+            height: 200,
+            baseLine: 0.4,
+            commitData: [
+                {id: 'e137e9b', tags: ['origin/master']},
+                {id: '0e70093', parent: 'e137e9b'},
+                {id: '3e33afd', parent: '0e70093', tags: ['master']}
+            ],
+            initialMessage: 'Type "git reset origin/master".'
         });
     };
 

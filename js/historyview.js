@@ -4,7 +4,7 @@ define(['d3'], function () {
     var REG_MARKER_END = 'url(#triangle)',
         MERGE_MARKER_END = 'url(#brown-triangle)',
         FADED_MARKER_END = 'url(#faded-triangle)',
-    
+
         preventOverlap,
         applyBranchlessClass,
         cx, cy, fixCirclePosition,
@@ -238,7 +238,7 @@ define(['d3'], function () {
 
         this.commitRadius = config.commitRadius || 20;
         this.pointerMargin = this.commitRadius * 1.3;
-        
+
         this.isRemote = typeof config.remoteName === 'string';
         this.remoteName = config.remoteName;
 
@@ -355,7 +355,7 @@ define(['d3'], function () {
                     .text('Local Repository')
                     .attr('x', 10)
                     .attr('y', 25);
-            
+
                 svg.append('svg:text')
                     .classed('current-branch-display', true)
                     .attr('x', 10)
@@ -597,7 +597,7 @@ define(['d3'], function () {
                         parent2.branchless = false;
                         parent2 = this.getCommit(parent2.parent);
                     }
-                }                
+                }
             }
 
             this.svg.selectAll('circle.commit').call(applyBranchlessClass);
@@ -892,7 +892,7 @@ define(['d3'], function () {
                 rebaseTreeLoc,
                 toRebase = [], rebasedCommit,
                 remainingHusk;
-                
+
             if (!rebaseTarget) {
                 throw new Error('Cannot find ref: ' + ref);
             }
@@ -909,9 +909,9 @@ define(['d3'], function () {
                 this.fastForward(rebaseTarget);
                 return 'Fast-Forward';
             }
-            
+
             rebaseTreeLoc = rebaseTarget.id
-            
+
             while (!isCommonAncestor) {
                 toRebase.unshift(currentCommit);
                 currentCommit = this.getCommit(currentCommit.parent);
@@ -926,16 +926,16 @@ define(['d3'], function () {
                     parent: rebasedCommit.parent,
                     tags: []
                 };
-                
+
                 for (var t = 0; t < rebasedCommit.tags.length; t++) {
                     var tagName = rebasedCommit.tags[t];
                     if (tagName !== this.currentBranch && tagName !== 'HEAD') {
                         remainingHusk.tags.unshift(tagName);
                     }
                 }
-                
+
                 this.commitData.push(remainingHusk);
-                
+
                 rebasedCommit.parent = rebaseTreeLoc;
                 rebaseTreeLoc = HistoryView.generateId()
                 rebasedCommit.id = rebaseTreeLoc;
