@@ -243,11 +243,11 @@ define(['d3'], function () {
         this.remoteName = config.remoteName;
 
         this.initialCommit = {
-			id: 'initial',
-			parent: null,
-			cx: -(this.commitRadius * 2),
-			cy: this.baseLine
-		};
+            id: 'initial',
+            parent: null,
+            cx: -(this.commitRadius * 2),
+            cy: this.baseLine
+        };
     }
 
     HistoryView.generateId = function () {
@@ -255,7 +255,7 @@ define(['d3'], function () {
     };
 
     HistoryView.prototype = {
-		/**
+        /**
          * @method getCommit
          * @param ref {String} the id or a tag name that refers to the commit
          * @return {Object} the commit datum object
@@ -333,7 +333,7 @@ define(['d3'], function () {
         render: function (container) {
             var svgContainer, svg;
 
-			svgContainer = container.append('div')
+            svgContainer = container.append('div')
                 .classed('svg-container', true)
                 .classed('remote-container', this.isRemote);
 
@@ -373,16 +373,16 @@ define(['d3'], function () {
             this._setCurrentBranch(this.currentBranch);
         },
 
-		destroy: function () {
-			this.svg.remove();
+        destroy: function () {
+            this.svg.remove();
             this.svgContainer.remove();
 
-			for (var prop in this) {
-				if (this.hasOwnProperty(prop)) {
-					this[prop] = null;
-				}
-			}
-		},
+            for (var prop in this) {
+                if (this.hasOwnProperty(prop)) {
+                    this[prop] = null;
+                }
+            }
+        },
 
         _calculatePositionData: function () {
             for (var i = 0; i < this.commitData.length; i++) {

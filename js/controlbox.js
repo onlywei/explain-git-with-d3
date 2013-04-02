@@ -17,15 +17,15 @@ define(['d3'], function () {
 
     ControlBox.prototype = {
         render: function (container) {
-			var cBox = this,
-				cBoxContainer, log, input;
+            var cBox = this,
+                cBoxContainer, log, input;
 
             cBoxContainer = container.append('div')
                 .classed('control-box', true);
 
             cBoxContainer.style('height', this.historyView.height + 5 + 'px');
             
-			log = cBoxContainer.append('div')
+            log = cBoxContainer.append('div')
                 .classed('log', true)
                 .style('height', this.historyView.height - 20 + 'px');
 
@@ -37,65 +37,65 @@ define(['d3'], function () {
                 var e = d3.event;
 
                 switch (e.keyCode) {
-				case 13:
-					if (this.value.trim() === '') {
-						break;
-					}
+                case 13:
+                    if (this.value.trim() === '') {
+                        break;
+                    }
 
-					cBox._commandHistory.unshift(this.value);
-					cBox._tempCommand = '';
-					cBox._currentCommand = -1;
-					cBox.command(this.value);
-					this.value = '';
-					e.stopImmediatePropagation();
-					break;
-				case 38:
-					var previousCommand = cBox._commandHistory[cBox._currentCommand + 1];
-					if (cBox._currentCommand === -1) {
-						cBox._tempCommand = this.value;
-					}
+                    cBox._commandHistory.unshift(this.value);
+                    cBox._tempCommand = '';
+                    cBox._currentCommand = -1;
+                    cBox.command(this.value);
+                    this.value = '';
+                    e.stopImmediatePropagation();
+                    break;
+                case 38:
+                    var previousCommand = cBox._commandHistory[cBox._currentCommand + 1];
+                    if (cBox._currentCommand === -1) {
+                        cBox._tempCommand = this.value;
+                    }
 
-					if (typeof previousCommand === 'string') {
-						cBox._currentCommand += 1;
-						this.value = previousCommand;
-						this.value = this.value; // set cursor to end
-					}
-					e.stopImmediatePropagation();
-					break;
-				case 40:
-					var nextCommand = cBox._commandHistory[cBox._currentCommand - 1];
-					if (typeof nextCommand === 'string') {
-						cBox._currentCommand -= 1;
-						this.value = nextCommand;
-						this.value = this.value; // set cursor to end
-					} else {
-						cBox._currentCommand = -1;
-						this.value = cBox._tempCommand;
-						this.value = this.value; // set cursor to end
-					}
-					e.stopImmediatePropagation();
-					break;
+                    if (typeof previousCommand === 'string') {
+                        cBox._currentCommand += 1;
+                        this.value = previousCommand;
+                        this.value = this.value; // set cursor to end
+                    }
+                    e.stopImmediatePropagation();
+                    break;
+                case 40:
+                    var nextCommand = cBox._commandHistory[cBox._currentCommand - 1];
+                    if (typeof nextCommand === 'string') {
+                        cBox._currentCommand -= 1;
+                        this.value = nextCommand;
+                        this.value = this.value; // set cursor to end
+                    } else {
+                        cBox._currentCommand = -1;
+                        this.value = cBox._tempCommand;
+                        this.value = this.value; // set cursor to end
+                    }
+                    e.stopImmediatePropagation();
+                    break;
                 }
             });
 
             this.container = cBoxContainer;
-			this.log = log;
+            this.log = log;
             this.input = input;
 
             this.info(this.initialMessage);
         },
-		
-		destroy: function () {
-			this.log.remove();
-			this.input.remove();
-			this.container.remove();
+        
+        destroy: function () {
+            this.log.remove();
+            this.input.remove();
+            this.container.remove();
 
-			for (var prop in this) {
-				if (this.hasOwnProperty(prop)) {
-					this[prop] = null;
-				}
-			}
-		},
+            for (var prop in this) {
+                if (this.hasOwnProperty(prop)) {
+                    this[prop] = null;
+                }
+            }
+        },
 
         _scrollToBottom: function () {
             var log = this.log.node();
@@ -164,20 +164,20 @@ define(['d3'], function () {
                 var arg = args.shift();
 
                 switch (arg) {
-				case '--remote':
-					this.info(
-						'This command normally displays all of your remote tracking branches.'
-					);
-					args.length = 0;
-					break;
+                case '--remote':
+                    this.info(
+                        'This command normally displays all of your remote tracking branches.'
+                    );
+                    args.length = 0;
+                    break;
                 case '-d':
                     var name = args.pop();
                     this.historyView.deleteBranch(name);
                     break;
-				default:
-					var remainingArgs = [arg].concat(args);
-					args.length = 0;
-					this.historyView.branch(remainingArgs.join(' '));
+                default:
+                    var remainingArgs = [arg].concat(args);
+                    args.length = 0;
+                    this.historyView.branch(remainingArgs.join(' '));
                 }
             }
         },
@@ -187,20 +187,20 @@ define(['d3'], function () {
                 var arg = args.shift();
 
                 switch (arg) {
-				case '-b':
-					var name = args[args.length - 1];
-					try {
-						this.historyView.branch(name);
-					} catch (err) {
-						if (err.message.indexOf('already exists') === -1) {
-							throw new Error(err.message);
-						}
-					}
-					break;
-				default:
-					var remainingArgs = [arg].concat(args);
-					args.length = 0;
-					this.historyView.checkout(remainingArgs.join(' '));
+                case '-b':
+                    var name = args[args.length - 1];
+                    try {
+                        this.historyView.branch(name);
+                    } catch (err) {
+                        if (err.message.indexOf('already exists') === -1) {
+                            throw new Error(err.message);
+                        }
+                    }
+                    break;
+                default:
+                    var remainingArgs = [arg].concat(args);
+                    args.length = 0;
+                    this.historyView.checkout(remainingArgs.join(' '));
                 }
             }
         },

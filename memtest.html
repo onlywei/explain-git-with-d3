@@ -21,22 +21,22 @@ require(['explaingit'], function (explainGit) {
     var open = function () {
         openSwitch.style.display = 'none';
 
-		explainGit.open({
-			name: 'Memtest',
-			height: 250,
-			commitData: [
-				{id: '98ca9b5', tags: ['origin/master', 'master']}
-			]
-		});
+        explainGit.open({
+            name: 'Memtest',
+            height: 250,
+            commitData: [
+                {id: '98ca9b5', tags: ['origin/master', 'master']}
+            ]
+        });
     };
 
-	document.getElementById('start-test').addEventListener('click', function () {
-		for (var i = 0; i < 100; i++) {
-			open();
-			explainGit.reset();
-			console.log('test run: ' + i);
-		}
-	}, false);
+    document.getElementById('start-test').addEventListener('click', function () {
+        for (var i = 0; i < 100; i++) {
+            open();
+            explainGit.reset();
+            console.log('test run: ' + i);
+        }
+    }, false);
 });
 </script>
 <h3><a href="index.html">Back to Home</a></h3>
