@@ -131,6 +131,11 @@ circle.commit.merge-commit {
     fill: #FFFFCC;
 }
 
+circle.commit.reverted {
+    fill: #FFC;
+    stroke: #933;
+}
+
 circle.commit.rebased {
     stroke: #3300CC;
     fill: #CCCCFF;

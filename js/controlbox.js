@@ -240,6 +240,10 @@ define(['d3'], function () {
             this.info('Deleting all of your untracked files...');
         },
 
+        revert: function (args) {
+            this.historyView.revert(args.shift());
+        },
+
         merge: function (args) {
             var ref = args.shift(),
                 result = this.historyView.merge(ref);

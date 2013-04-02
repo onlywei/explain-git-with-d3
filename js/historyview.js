@@ -413,6 +413,9 @@ define(['d3'], function () {
                 .attr('id', function (d) {
                     return view.name + '-' + d.id;
                 })
+                .classed('reverted', function (d) {
+                    return d.reverted;
+                })
                 .classed('rebased', function (d) {
                     return d.rebased;
                 });
@@ -852,6 +855,21 @@ define(['d3'], function () {
             }
 
             return this;
+        },
+
+        revert: function (ref) {
+            var commit = this.getCommit(ref);
+
+            if (!commit) {
+                throw new Error('Cannot find ref: ' + ref);
+            }
+
+            if (this.isAncestor(commit, 'HEAD')) {
+                commit.reverted = true;
+                this.commit({reverts: commit.id});
+            } else {
+                throw new Error(ref + 'is not an ancestor of HEAD.');
+            }
         },
 
         fastForward: function (ref) {

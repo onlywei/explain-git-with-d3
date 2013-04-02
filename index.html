@@ -40,9 +40,9 @@
       <a id="open-checkout-b" class="openswitch" href="#">git checkout -b</a>
     </div>
     <div class="twocol">
-      <h4>Undo/Delete</h4>
+      <h4>Undo Commits</h4>
       <a id="open-reset" class="openswitch" href="#">git reset</a>
-      
+      <a id="open-revert" class="openswitch" href="#">git revert</a>
     </div>
     <div class="twocol">
       <h4>Combine Branches</h4>
@@ -134,6 +134,17 @@
         Note that you must <b>never</b> use <span class="cmd">git reset</span> to abandon commits
         that have already been pushed and merged into the origin. This can cause your local repository
         to become out of sync with the origin. Don't do it unless you really know what you're doing.
+      </p>
+      <div class="playground-container"></div>
+    </div>
+    <div id="ExplainGitRevert-Container" class="twelvecol concept-container">
+      <p>
+        To undo commits that have already been pushed and shared with the team, we cannot use the
+        <span class="cmd">git reset</span> command. Instead, we have to use <span class="cmd">git revert</span>.
+      </p>
+      <p>
+        <span class="cmd">git revert</span> will create a new commit that will undo all of the work that
+        was done in the commit you want to revert.
       </p>
       <div class="playground-container"></div>
     </div>
@@ -388,6 +399,32 @@ require(['explaingit'], function (explainGit) {
                 {id: '3e33afd', parent: '0e70093', tags: ['master']}
             ],
             initialMessage: 'Type "git reset HEAD^".'
+        });
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-revert'),
+        open;
+
+    open = function () {
+        explainGit.reset();
+        this.classList.add('selected');
+
+        explainGit.open({
+            name: 'Revert',
+            height: 200,
+            baseLine: 0.5,
+            commitData: [
+                {id: 'e137e9b'},
+                {id: '0e70093', parent: 'e137e9b'},
+                {id: '3e33afd', parent: '0e70093', tags: ['master']}
+            ],
+            initialMessage: 'Type "git revert 0e70093".'
         });
     };
 
