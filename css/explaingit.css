@@ -220,6 +220,11 @@ g.branch-tag > rect {
 	stroke-width: 2;
 }
 
+g.branch-tag.git-tag > rect {
+	fill: #7FC9FF;
+	stroke: #0026FF;
+}
+
 g.branch-tag.remote-branch > rect {
 	fill: #CCC;
 	stroke: #888;
