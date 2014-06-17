@@ -46,6 +46,7 @@ span.cmd {
 
 .svg-container {
     display: inline-block;
+    overflow: auto;
     border: 1px dotted #AAA;
 }
 
