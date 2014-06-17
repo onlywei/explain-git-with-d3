@@ -642,7 +642,9 @@ define(['d3'], function () {
                 .append('g')
                 .attr('class', function (d) {
                     var classes = 'branch-tag';
-                    if (d.name.indexOf('/') >= 0) {
+                    if (d.name.indexOf('[') === 0 && d.name.indexOf(']') === d.name.length - 1) {
+                        classes += ' git-tag';
+                    } else if (d.name.indexOf('/') >= 0) {
                         classes += ' remote-branch';
                     } else if (d.name.toUpperCase() === 'HEAD') {
                         classes += ' head-tag';
@@ -664,7 +666,11 @@ define(['d3'], function () {
                 });
 
             newTags.append('svg:text')
-                .text(function (d) { return d.name; })
+                .text(function (d) {
+                    if (d.name.indexOf('[') === 0 && d.name.indexOf(']') === d.name.length - 1)
+                        return d.name.substring(1, d.name.length - 1); 
+                    return d.name; 
+                })
                 .attr('y', function (d) {
                     return tagY(d, view) + 14;
                 })
@@ -786,6 +792,10 @@ define(['d3'], function () {
             this.getCommit('HEAD').tags.push(name);
             this.renderTags();
             return this;
+        },
+
+        tag: function (name) {
+            this.branch('[' + name + ']');
         },
 
         deleteBranch: function (name) {
