@@ -205,6 +205,30 @@ define(['d3'], function () {
             }
         },
 
+        tag: function (args) {
+            if (args.length < 1) {
+                this.info(
+                    'You need to give a tag name. ' +
+                    'Normally if you don\'t give a name, ' +
+                    'this command will list your local tags on the screen.'
+                );
+
+                return;
+            }
+            
+            while (args.length > 0) {
+                var arg = args.shift();
+
+                try {
+                    this.historyView.tag(arg);
+                } catch (err) {
+                    if (err.message.indexOf('already exists') === -1) {
+                        throw new Error(err.message);
+                    }
+                }
+            }
+        },
+
         reset: function (args) {
             while (args.length > 0) {
                 var arg = args.shift();
