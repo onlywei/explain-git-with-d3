@@ -341,7 +341,8 @@ define(['d3'], function () {
 
             svg.attr('id', this.name)
                 .attr('width', this.width)
-                .attr('height', this.height);
+                .attr('height', this.height)
+                .attr('style', 'width: ' + this.width + 'px');
 
             if (this.isRemote) {
                 svg.append('svg:text')
@@ -368,6 +369,15 @@ define(['d3'], function () {
             this.commitBox = svg.append('svg:g').classed('commits', true);
             this.tagBox = svg.append('svg:g').classed('tags', true);
 
+            var config = this;
+            this.refreshSizeTimer = setInterval(function(){
+                var ele = document.getElementById(svg.node().id);
+                if (ele.getBBox().width > config.width)
+                    svg.attr('width', ele.getBBox().width);
+                else
+                    svg.attr('width', config.width);
+            }, 1000);
+            
             this.renderCommits();
 
             this._setCurrentBranch(this.currentBranch);
@@ -376,6 +386,7 @@ define(['d3'], function () {
         destroy: function () {
             this.svg.remove();
             this.svgContainer.remove();
+            clearInterval(this.refreshSizeTimer);
 
             for (var prop in this) {
                 if (this.hasOwnProperty(prop)) {
