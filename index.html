@@ -62,6 +62,7 @@
     <div class="twocol last">
       <h4>&nbsp;</h4>
       <a id="open-push" class="openswitch" href="#">git push</a>
+      <a id="open-tag" class="openswitch" href="#">git tag</a>
     </div>
   </div>
   <div class="row concept-area">
@@ -73,6 +74,20 @@
       <p>
         Pretend that you already have your files staged for commit and enter <span class="cmd">git commit</span>
         as many times as you like in the terminal box.
+      </p>
+      <div class="playground-container"></div>
+    </div>
+    <div id="ExplainGitTag-Container" class="twelvecol concept-container">
+      <p>
+        <span class="cmd">git tag name</span> will create a new tag named "name".
+        Creating tags just creates a new tag pointing to the currently checked out commit.
+      </p>
+      <p>
+        Tags can be deleted using the command <span class="cmd">git tag -d name</span> (coming soon).
+      </p>
+      <p>
+        Type <span class="cmd">git commit</span> and <span class="cmd">git tag</span> commands
+        to your hearts desire until you understand this concept.
       </p>
       <div class="playground-container"></div>
     </div>
@@ -326,6 +341,28 @@ require(['explaingit'], function (explainGit) {
 
         explainGit.open({
             name: 'Branch',
+            baseLine: 0.6,
+            commitData: [
+                {id: 'e137e9b', tags: ['master']}
+            ]
+        });
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-tag'),
+        open;
+
+    open = function () {
+        explainGit.reset();
+        this.classList.add('selected');
+
+        explainGit.open({
+            name: 'Tag',
             baseLine: 0.6,
             commitData: [
                 {id: 'e137e9b', tags: ['master']}
