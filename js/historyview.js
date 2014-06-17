@@ -335,14 +335,14 @@ define(['d3'], function () {
 
             svgContainer = container.append('div')
                 .classed('svg-container', true)
-                .classed('remote-container', this.isRemote);
-
+                .classed('remote-container', this.isRemote)
+                .attr('style', 'width: ' + this.width + 'px');
+                
             svg = svgContainer.append('svg:svg');
 
             svg.attr('id', this.name)
                 .attr('width', this.width)
-                .attr('height', this.height)
-                .attr('style', 'width: ' + this.width + 'px');
+                .attr('height', this.height);
 
             if (this.isRemote) {
                 svg.append('svg:text')
@@ -370,12 +370,21 @@ define(['d3'], function () {
             this.tagBox = svg.append('svg:g').classed('tags', true);
 
             var config = this;
-            this.refreshSizeTimer = setInterval(function(){
+            this.refreshSizeTimer = setInterval(function() {
                 var ele = document.getElementById(svg.node().id);
+                var container = ele.parentNode;
+                var currentWidth = ele.offsetWidth;
+                var newWidth;
+ 
                 if (ele.getBBox().width > config.width)
-                    svg.attr('width', ele.getBBox().width);
+                    newWidth = Math.round(ele.getBBox().width);
                 else
-                    svg.attr('width', config.width);
+                    newWidth = config.width;
+                    
+                if (currentWidth != newWidth) {
+                    svg.attr('width', newWidth);
+                    container.scrollLeft = container.scrollWidth;
+                }
             }, 1000);
             
             this.renderCommits();
