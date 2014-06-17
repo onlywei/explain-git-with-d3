@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/explaingit.css">
 </head>
 <body>
-<a href="https://github.com/onlywei/explain-git-with-d3">
+<a href="https://github.com/onlywei/explain-git-with-d3" id="fork-me">
   <img style="position: absolute; top: 0; right: 0; border: 0;"
     src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
     alt="Fork me on GitHub">
@@ -265,9 +265,10 @@
       <a id="open-zen" class="openswitch" href="#">Zen Mode</a>
     </div>
   </div>
-  <div id="ExplainGitZen-Container" style="display:none">
+</div>
+
+<div id="ExplainGitZen-Container" style="display:none">
     <div class="playground-container"></div>
-  </div>
 </div>
 
 <svg version="1.1" baseProfile="full"
@@ -733,11 +734,8 @@ require(['explaingit'], function (explainGit) {
 
         explainGit.open({
             name: 'Zen',
-            height: 500,
+            width: '100%',
             commitData: [
-                {id: 'e137e9b', tags: ['origin/master', 'master']}
-            ],
-            originData: [
                 {id: 'e137e9b', tags: ['master']}
             ],
             initialMessage:
