@@ -262,7 +262,11 @@
     </div>
     <div class="twocol last">
       <a id="open-freeplay" class="openswitch" href="#">Free Playground</a>
+      <a id="open-zen" class="openswitch" href="#">Zen Mode</a>
     </div>
+  </div>
+  <div id="ExplainGitZen-Container" style="display:none">
+    <div class="playground-container"></div>
   </div>
 </div>
 
@@ -704,6 +708,37 @@ require(['explaingit'], function (explainGit) {
                 {id: '7eb7654', parent: 'e137e9b'},
                 {id: '090e2b8', parent: '7eb7654'},
                 {id: 'ee5df4b', parent: '090e2b8', tags: ['master']}
+            ],
+            initialMessage:
+                'Have fun.'
+        });
+    };
+
+    openSwitch.addEventListener('click', open, false);
+});
+</script>
+<script type="text/javascript">
+require(['explaingit'], function (explainGit) {
+    var openSwitch = document.getElementById('open-zen'),
+        open;
+
+    open = function () {
+        var elements = document.getElementsByClassName('row');
+        for(var i = 0; i != elements.length; ++i)
+        {
+          elements[i].style.display = 'none';
+        }
+        document.getElementById('fork-me').style.display = 'none';
+        explainGit.reset();
+
+        explainGit.open({
+            name: 'Zen',
+            height: 500,
+            commitData: [
+                {id: 'e137e9b', tags: ['origin/master', 'master']}
+            ],
+            originData: [
+                {id: 'e137e9b', tags: ['master']}
             ],
             initialMessage:
                 'Have fun.'
