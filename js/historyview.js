@@ -285,8 +285,24 @@ define(['d3'], function () {
                     break;
                 }
 
-                if (commit.tags.indexOf(ref) >= 0) {
-                    matchedCommit = commit;
+                var matchedTag = function() { 
+                    for (var j = 0; j < commit.tags.length; j++) {
+                        var tag = commit.tags[j];
+                        if (tag === ref) {
+                            matchedCommit = commit;
+                            return true;
+                        }
+                        
+                        if (tag.indexOf('[') === 0 && tag.indexOf(']') === tag.length - 1) {
+                            tag = tag.substring(1, tag.length - 1);
+                        }
+                        if (tag === ref) {
+                            matchedCommit = commit;
+                            return true;
+                        }
+                    }
+                }();
+                if (matchedTag === true) {
                     break;
                 }
             }
