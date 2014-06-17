@@ -23,11 +23,9 @@ define(['d3'], function () {
             cBoxContainer = container.append('div')
                 .classed('control-box', true);
 
-            cBoxContainer.style('height', this.historyView.height + 5 + 'px');
 
             log = cBoxContainer.append('div')
-                .classed('log', true)
-                .style('height', this.historyView.height - 20 + 'px');
+                .classed('log', true);
 
             input = cBoxContainer.append('input')
                 .attr('type', 'text')
