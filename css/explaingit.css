@@ -51,7 +51,7 @@ span.cmd {
 
 .svg-container {
     margin-left:250px;
-    display: inline-block;
+    display: block;
     overflow: auto;
     border: 1px dotted #AAA;
 }
