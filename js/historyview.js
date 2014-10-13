@@ -939,7 +939,7 @@ define(['d3'], function () {
             }
         },
 
-        merge: function (ref) {
+        merge: function (ref, noFF) {
             var mergeTarget = this.getCommit(ref),
                 currentCommit = this.getCommit('HEAD');
 
@@ -951,7 +951,7 @@ define(['d3'], function () {
                 throw new Error('Already up-to-date.');
             } else if (currentCommit.parent2 === mergeTarget.id) {
                 throw new Error('Already up-to-date.');
-            } else if (this.isAncestor(currentCommit, mergeTarget)) {
+            } else if (this.isAncestor(currentCommit, mergeTarget) && noFF !== true) {
                 this.fastForward(mergeTarget);
                 return 'Fast-Forward';
             } else {

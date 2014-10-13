@@ -279,8 +279,18 @@ define(['d3'], function () {
         },
 
         merge: function (args) {
+            var noFF = false;
+            if (args.length == 2)
+            {
+                var mergeSwitch = args.pop();
+                if (mergeSwitch === '--no-ff') {
+                    noFF = true;
+                } else {
+                    this.info('This demo only supports the --no-ff switch..');
+                }
+            }
             var ref = args.shift(),
-                result = this.historyView.merge(ref);
+                result = this.historyView.merge(ref, noFF);
 
             if (result === 'Fast-Forward') {
                 this.info('You have performed a fast-forward merge.');
