@@ -23,11 +23,9 @@ define(['d3'], function () {
             cBoxContainer = container.append('div')
                 .classed('control-box', true);
 
-            cBoxContainer.style('height', this.historyView.height + 5 + 'px');
 
             log = cBoxContainer.append('div')
-                .classed('log', true)
-                .style('height', this.historyView.height - 20 + 'px');
+                .classed('log', true);
 
             input = cBoxContainer.append('input')
                 .attr('type', 'text')
@@ -201,6 +199,30 @@ define(['d3'], function () {
                     var remainingArgs = [arg].concat(args);
                     args.length = 0;
                     this.historyView.checkout(remainingArgs.join(' '));
+                }
+            }
+        },
+
+        tag: function (args) {
+            if (args.length < 1) {
+                this.info(
+                    'You need to give a tag name. ' +
+                    'Normally if you don\'t give a name, ' +
+                    'this command will list your local tags on the screen.'
+                );
+
+                return;
+            }
+            
+            while (args.length > 0) {
+                var arg = args.shift();
+
+                try {
+                    this.historyView.tag(arg);
+                } catch (err) {
+                    if (err.message.indexOf('already exists') === -1) {
+                        throw new Error(err.message);
+                    }
                 }
             }
         },

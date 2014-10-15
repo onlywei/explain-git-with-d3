@@ -77,7 +77,7 @@ define(['d3'], function () {
 
     cy = function (commit, view) {
         var parent = view.getCommit(commit.parent),
-            parentCY = parent.cy,
+            parentCY = parent.cy || cy(parent, view),
             baseLine = view.baseLine,
             shift = view.commitRadius * 4.5,
             branches = [], // count the existing branches
@@ -232,8 +232,9 @@ define(['d3'], function () {
         this.branches = [];
         this.currentBranch = config.currentBranch || 'master';
 
-        this.width = config.width || 886;
+        this.width = config.width;
         this.height = config.height || 400;
+        this.orginalBaseLine = config.baseLine;
         this.baseLine = this.height * (config.baseLine || 0.6);
 
         this.commitRadius = config.commitRadius || 20;
@@ -285,8 +286,24 @@ define(['d3'], function () {
                     break;
                 }
 
-                if (commit.tags.indexOf(ref) >= 0) {
-                    matchedCommit = commit;
+                var matchedTag = function() { 
+                    for (var j = 0; j < commit.tags.length; j++) {
+                        var tag = commit.tags[j];
+                        if (tag === ref) {
+                            matchedCommit = commit;
+                            return true;
+                        }
+                        
+                        if (tag.indexOf('[') === 0 && tag.indexOf(']') === tag.length - 1) {
+                            tag = tag.substring(1, tag.length - 1);
+                        }
+                        if (tag === ref) {
+                            matchedCommit = commit;
+                            return true;
+                        }
+                    }
+                }();
+                if (matchedTag === true) {
                     break;
                 }
             }
@@ -336,7 +353,7 @@ define(['d3'], function () {
             svgContainer = container.append('div')
                 .classed('svg-container', true)
                 .classed('remote-container', this.isRemote);
-
+                
             svg = svgContainer.append('svg:svg');
 
             svg.attr('id', this.name)
@@ -376,6 +393,7 @@ define(['d3'], function () {
         destroy: function () {
             this.svg.remove();
             this.svgContainer.remove();
+            clearInterval(this.refreshSizeTimer);
 
             for (var prop in this) {
                 if (this.hasOwnProperty(prop)) {
@@ -392,14 +410,42 @@ define(['d3'], function () {
                 preventOverlap(commit, this);
             }
         },
+        
+        _resizeSvg: function() {
+            var ele = document.getElementById(this.svg.node().id);
+            var container = ele.parentNode;
+            var currentWidth = ele.offsetWidth;
+            var newWidth;
+
+            if (ele.getBBox().width > container.offsetWidth)
+                newWidth = Math.round(ele.getBBox().width);
+            else
+                newWidth = container.offsetWidth - 5;
+
+            if (currentWidth != newWidth) {
+                this.svg.attr('width', newWidth);
+                container.scrollLeft = container.scrollWidth;
+            }
+        },
 
         renderCommits: function () {
+            if (typeof this.height === 'string' && this.height.indexOf('%') >= 0) {
+                var perc = this.height.substring(0, this.height.length - 1) / 100.0;
+                var baseLineCalcHeight = Math.round(this.svg.node().parentNode.offsetHeight * perc) - 65;
+                var newBaseLine = Math.round(baseLineCalcHeight * (this.originalBaseLine || 0.6));
+                if (newBaseLine !== this.baseLine) {
+                    this.baseLine = newBaseLine;
+                    this.initialCommit.cy = newBaseLine;
+                    this.svg.attr('height', baseLineCalcHeight);
+                }
+            }
             this._calculatePositionData();
             this._calculatePositionData(); // do this twice to make sure
             this._renderCircles();
             this._renderPointers();
             this._renderMergePointers();
             this._renderIdLabels();
+            this._resizeSvg();
             this.checkout(this.currentBranch);
         },
 
@@ -642,7 +688,9 @@ define(['d3'], function () {
                 .append('g')
                 .attr('class', function (d) {
                     var classes = 'branch-tag';
-                    if (d.name.indexOf('/') >= 0) {
+                    if (d.name.indexOf('[') === 0 && d.name.indexOf(']') === d.name.length - 1) {
+                        classes += ' git-tag';
+                    } else if (d.name.indexOf('/') >= 0) {
                         classes += ' remote-branch';
                     } else if (d.name.toUpperCase() === 'HEAD') {
                         classes += ' head-tag';
@@ -664,7 +712,11 @@ define(['d3'], function () {
                 });
 
             newTags.append('svg:text')
-                .text(function (d) { return d.name; })
+                .text(function (d) {
+                    if (d.name.indexOf('[') === 0 && d.name.indexOf(']') === d.name.length - 1)
+                        return d.name.substring(1, d.name.length - 1); 
+                    return d.name; 
+                })
                 .attr('y', function (d) {
                     return tagY(d, view) + 14;
                 })
@@ -786,6 +838,10 @@ define(['d3'], function () {
             this.getCommit('HEAD').tags.push(name);
             this.renderTags();
             return this;
+        },
+
+        tag: function (name) {
+            this.branch('[' + name + ']');
         },
 
         deleteBranch: function (name) {

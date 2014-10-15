@@ -1,4 +1,9 @@
 /* styles */
+
+body, html {
+    height: 100%;
+}
+
 .intro p, .concept-container p {
     padding-top: 10px;
 }
@@ -45,7 +50,9 @@ span.cmd {
 }
 
 .svg-container {
-    display: inline-block;
+    margin-left:250px;
+    display: block;
+    overflow: auto;
     border: 1px dotted #AAA;
 }
 
@@ -57,6 +64,32 @@ span.cmd {
     border-bottom: 1px dotted #AAA;
 }
 
+#ExplainGitZen-Container {
+    position: absolute;
+    top: 0; bottom: 0; right: 0; left: 0;
+}
+
+#ExplainGitZen-Container .svg-container {
+    display: inline-block;
+    border: 1px dotted #AAA;
+    position: absolute;
+    top: 0; bottom: 0; right: 0; left: 250px;
+    margin-left: 0;
+}
+
+#ExplainGitZen-Container .svg-container.remote-container {
+    position: absolute;
+    top: 0px; right: 0px; left: auto; bottom: auto;
+    background-color: #EFF1FF;
+    border-left: 1px dotted #AAA;
+    border-bottom: 1px dotted #AAA;
+}
+
+#ExplainGitZen-Container .playground-container {
+    position: absolute;
+    top: 0; bottom: 20px; right: 20px; left: 20px;
+}
+
 .remote-name-display {
     font-weight: bold;
     text-align: right;
@@ -64,6 +97,8 @@ span.cmd {
 
 .control-box {
     display: inline-block;
+    position: absolute;
+    top: 0px; bottom: 0;
     width: 250px;
     vertical-align: bottom;
     background-color: #000;
@@ -79,6 +114,8 @@ span.cmd {
 
 .control-box .log {
     overflow-y: auto;
+    position: absolute;
+    top: 0px; bottom: 20px; left: 0; right: 0;
     border-bottom: 1px solid #AAA;
 }
 
@@ -88,8 +125,16 @@ span.cmd {
     font-size: 14px;
 }
 
-.control-box .log .command-entry,
+.control-box .log .command-entry {
+    padding-left: 15px;
+    color: #FFF;
+    line-height: 14px;
+    background: url(../images/prompt.gif) no-repeat left center transparent;
+}
+
 .control-box input[type="text"] {
+    position: absolute;
+    bottom: 0; 
     padding-left: 15px;
     color: #FFF;
     line-height: 14px;
@@ -147,8 +192,8 @@ circle.commit.branchless {
 }
 
 .commit-pointer {
-	stroke: #666;
-	stroke-width: 4;
+    stroke: #666;
+    stroke-width: 4;
 }
 
 .merge-pointer {
@@ -173,6 +218,11 @@ g.branch-tag > rect {
 	fill: #FFCC66;
 	stroke: #CC9900;
 	stroke-width: 2;
+}
+
+g.branch-tag.git-tag > rect {
+	fill: #7FC9FF;
+	stroke: #0026FF;
 }
 
 g.branch-tag.remote-branch > rect {
