@@ -4,20 +4,28 @@
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title>Explain Git with D3</title>
 <script data-main="js/main" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.4/require.min.js"></script>
+
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/2.1.0/normalize.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/1140/2.0/1140.css">
 <link rel="stylesheet" href="css/explaingit.css">
+<link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+
 </head>
 <body>
-<a href="https://github.com/onlywei/explain-git-with-d3" id="fork-me">
-  <img style="position: absolute; top: 0; right: 0; border: 0;"
-    src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
-    alt="Fork me on GitHub">
-</a>
+  <header class="container">
+    <div class="row intro">
+      <div class="twelvecol">
+        <h1>Explain Git visually</h1>
+        <i class="fa fa-github-alt fa-lg"></i>        
+        <a href="https://github.com/onlywei/explain-git-with-d3" id="fork-me"> <h5> Fork-me<h5></a>
+      </div>
+    </div>
+  </header>
 <div class="container">
   <div class="row intro">
     <div class="twelvecol">
-      <h1>Visualizing Git Concepts with D3</h1>
+      
       <p>
         This website is designed to help you understand some basic git concepts visually.
         This is my first attempt at using both SVG and D3. I hope it is helpful to you.
@@ -35,32 +43,32 @@
   </div>
   <div class="row command-list">
     <div class="twocol">
-      <h4>Basic Commands</h3>
+      <h5>Basic Commands</h5>
       <a id="open-commit" class="openswitch" href="#">git commit</a>
       <a id="open-branch" class="openswitch" href="#">git branch</a>
     </div>
     <div class="twocol">
-      <h4>&nbsp;</h4>
+      <h5>&nbsp;</h5>
       <a id="open-checkout" class="openswitch" href="#">git checkout</a>
       <a id="open-checkout-b" class="openswitch" href="#">git checkout -b</a>
     </div>
     <div class="twocol">
-      <h4>Undo Commits</h4>
+      <h5>Undo Commits</h5>
       <a id="open-reset" class="openswitch" href="#">git reset</a>
       <a id="open-revert" class="openswitch" href="#">git revert</a>
     </div>
     <div class="twocol">
-      <h4>Combine Branches</h4>
+      <h5>Combine Branches</h5>
       <a id="open-merge" class="openswitch" href="#">git merge</a>
       <a id="open-rebase" class="openswitch" href="#">git rebase</a>
     </div>
     <div class="twocol">
-      <h4>Remote Server</h4>
+      <h5>Remote Server</h5>
       <a id="open-fetch" class="openswitch" href="#">git fetch</a>
       <a id="open-pull" class="openswitch" href="#">git pull</a>
     </div>
     <div class="twocol last">
-      <h4>&nbsp;</h4>
+      <h5>&nbsp;</h5>
       <a id="open-push" class="openswitch" href="#">git push</a>
       <a id="open-tag" class="openswitch" href="#">git tag</a>
     </div>

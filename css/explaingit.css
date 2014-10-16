@@ -1,5 +1,19 @@
 /* styles */
+header {    
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    background-color: #CE54DF;
+    color: #ffffff;
+    box-shadow: 0px 3px 0px rgba(169, 68, 183, 0.9); 
+}
 
+ header h1{
+     text-shadow: 0px 3px 0px rgba(169, 68, 183, 1); 
+ }
+    header a h5 { color: #ffffff; display: inline;}
+    header i { color: #ffffff; }
+    
 body, html {
     height: 100%;
 }
@@ -7,6 +21,9 @@ body, html {
 .intro p, .concept-container p {
     padding-top: 10px;
 }
+
+a { text-decoration: none;}
+p a { color: #CE54DF; }
 
 a.openswitch {
     display: block;
@@ -19,9 +36,7 @@ a.openswitch.selected {
 .command-list, .example-list {
     margin-top: 10px;
     margin-bottom: 10px;
-    padding: 10px 0;
-    border-bottom: 2px dashed #888;
-    border-top: 2px dashed #888;
+    padding: 10px 10px;
     background-color: #EEE;
 }
 
@@ -43,10 +58,12 @@ a.openswitch.selected {
 }
 
 span.cmd {
-    background-color: #222222;
-    color: #FFFFFF;
+    background-color: #F0F0F0;    
+    color: #181818;
     font-family: Courier New;
     padding: 0 0.2em;
+    border-radius: 3px;
+    border: 1px solid #E4E4E4;
 }
 
 .svg-container {
