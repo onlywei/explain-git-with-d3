@@ -163,19 +163,31 @@ define(['d3'], function () {
 
                 switch (arg) {
                 case '--remote':
+                case '-r':
                     this.info(
                         'This command normally displays all of your remote tracking branches.'
                     );
                     args.length = 0;
                     break;
+                case '--all':
+                case '-a':
+                    this.info(
+                        'This command normally displays all of your tracking branches, both remote and local.'
+                    );
+                    break;
+                case '--delete':
                 case '-d':
                     var name = args.pop();
                     this.historyView.deleteBranch(name);
                     break;
                 default:
-                    var remainingArgs = [arg].concat(args);
-                    args.length = 0;
-                    this.historyView.branch(remainingArgs.join(' '));
+                    if (arg.charAt(0) == '-') {
+                        this.error();
+                    } else {
+                        var remainingArgs = [arg].concat(args);
+                        args.length = 0;
+                        this.historyView.branch(remainingArgs.join(' '));
+                    }
                 }
             }
         },
