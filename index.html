@@ -521,20 +521,18 @@ require(['explaingit'], function (explainGit) {
         }
     };
 
-    window.addEventListener("hashchange", open, false);
-    window.addEventListener("load", open, false);
+    window.addEventListener('hashchange', open, false);
+    window.addEventListener('load', open, false);
     
     function open() {
         var hash = window.location.hash.substr(1),
             linkId = 'open-' + hash,
             example = examples[hash];
-            
-        
         
         if (example) {
             explainGit.reset();
             document.getElementById(linkId).classList.add('selected');
-            explainGit.open(Object.create(example));
+            explainGit.open(example);
         } else if (hash === 'zen') {
             var elements = document.getElementsByClassName('row');
             for(var i = 0; i != elements.length; ++i)
