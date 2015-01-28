@@ -36,33 +36,33 @@
   <div class="row command-list">
     <div class="twocol">
       <h4>Basic Commands</h3>
-      <a id="open-commit" class="openswitch" href="#">git commit</a>
-      <a id="open-branch" class="openswitch" href="#">git branch</a>
+      <a id="open-commit" class="openswitch" href="#commit">git commit</a>
+      <a id="open-branch" class="openswitch" href="#branch">git branch</a>
     </div>
     <div class="twocol">
       <h4>&nbsp;</h4>
-      <a id="open-checkout" class="openswitch" href="#">git checkout</a>
-      <a id="open-checkout-b" class="openswitch" href="#">git checkout -b</a>
+      <a id="open-checkout" class="openswitch" href="#checkout">git checkout</a>
+      <a id="open-checkout-b" class="openswitch" href="#checkout-b">git checkout -b</a>
     </div>
     <div class="twocol">
       <h4>Undo Commits</h4>
-      <a id="open-reset" class="openswitch" href="#">git reset</a>
-      <a id="open-revert" class="openswitch" href="#">git revert</a>
+      <a id="open-reset" class="openswitch" href="#reset">git reset</a>
+      <a id="open-revert" class="openswitch" href="#revert">git revert</a>
     </div>
     <div class="twocol">
       <h4>Combine Branches</h4>
-      <a id="open-merge" class="openswitch" href="#">git merge</a>
-      <a id="open-rebase" class="openswitch" href="#">git rebase</a>
+      <a id="open-merge" class="openswitch" href="#merge">git merge</a>
+      <a id="open-rebase" class="openswitch" href="#rebase">git rebase</a>
     </div>
     <div class="twocol">
       <h4>Remote Server</h4>
-      <a id="open-fetch" class="openswitch" href="#">git fetch</a>
-      <a id="open-pull" class="openswitch" href="#">git pull</a>
+      <a id="open-fetch" class="openswitch" href="#fetch">git fetch</a>
+      <a id="open-pull" class="openswitch" href="#pull">git pull</a>
     </div>
     <div class="twocol last">
       <h4>&nbsp;</h4>
-      <a id="open-push" class="openswitch" href="#">git push</a>
-      <a id="open-tag" class="openswitch" href="#">git tag</a>
+      <a id="open-push" class="openswitch" href="#push">git push</a>
+      <a id="open-tag" class="openswitch" href="#tag">git tag</a>
     </div>
   </div>
   <div class="row concept-area">
@@ -271,13 +271,13 @@
   </div>
   <div class="row example-list">
     <div class="tencol">
-      <a id="open-clean" class="openswitch" href="#">Restore Local Branch to State on Origin Server</a>
-      <a id="open-fetchrebase" class="openswitch" href="#">Update Private Local Branch with Latest from Origin</a>
-      <a id="open-deletebranches" class="openswitch" href="#">Deleting Local Branches</a>
+      <a id="open-clean" class="openswitch" href="#clean">Restore Local Branch to State on Origin Server</a>
+      <a id="open-fetchrebase" class="openswitch" href="#fetchrebase">Update Private Local Branch with Latest from Origin</a>
+      <a id="open-deletebranches" class="openswitch" href="#deletebranches">Deleting Local Branches</a>
     </div>
     <div class="twocol last">
-      <a id="open-freeplay" class="openswitch" href="#">Free Playground</a>
-      <a id="open-zen" class="openswitch" href="#">Zen Mode</a>
+      <a id="open-freeplay" class="openswitch" href="#freeplay">Free Playground</a>
+      <a id="open-zen" class="openswitch" href="#zen">Zen Mode</a>
     </div>
   </div>
 </div>
@@ -308,14 +308,8 @@
 
 <script type="text/javascript">
 require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-commit'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+    var examples = {
+        'commit': {
             name: 'Commit',
             height: 200,
             baseLine: 0.4,
@@ -323,67 +317,22 @@ require(['explaingit'], function (explainGit) {
                 {id: 'e137e9b', tags: ['master']}
             ],
             initialMessage: 'Type git commit a few times.'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-branch'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'branch': {
             name: 'Branch',
             baseLine: 0.6,
             commitData: [
                 {id: 'e137e9b', tags: ['master']}
             ]
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-tag'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'tag': {
             name: 'Tag',
             baseLine: 0.6,
             commitData: [
                 {id: 'e137e9b', tags: ['master']}
             ]
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-checkout'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'checkout': {
             name: 'Checkout',
             height: 500,
             commitData: [
@@ -393,23 +342,8 @@ require(['explaingit'], function (explainGit) {
             ],
             initialMessage:
                 'Use git checkout, git branch, and git commit commands until you understand.'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-checkout-b'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'checkout-b': {
             name: 'Checkout-b',
             height: 500,
             commitData: [
@@ -420,23 +354,8 @@ require(['explaingit'], function (explainGit) {
             ],
             initialMessage:
                 'Use git checkout -b and git commit commands until you understand.'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-reset'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'reset': {
             name: 'Reset',
             height: 200,
             baseLine: 0.5,
@@ -446,23 +365,8 @@ require(['explaingit'], function (explainGit) {
                 {id: '3e33afd', parent: '0e70093', tags: ['master']}
             ],
             initialMessage: 'Type "git reset HEAD^".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-revert'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'revert': {
             name: 'Revert',
             height: 200,
             baseLine: 0.5,
@@ -472,23 +376,8 @@ require(['explaingit'], function (explainGit) {
                 {id: '3e33afd', parent: '0e70093', tags: ['master']}
             ],
             initialMessage: 'Type "git revert 0e70093".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-merge'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'merge': {
             name: 'Merge',
             height: 500,
             commitData: [
@@ -499,23 +388,8 @@ require(['explaingit'], function (explainGit) {
             ],
             initialMessage:
                 'Type "git merge dev".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-rebase'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'rebase': {
             name: 'Rebase',
             height: 500,
             commitData: [
@@ -527,23 +401,8 @@ require(['explaingit'], function (explainGit) {
             currentBranch: 'dev',
             initialMessage:
                 'Type "git rebase master".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-fetch'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'fetch': {
             name: 'Fetch',
             height: 500,
             commitData: [
@@ -565,23 +424,8 @@ require(['explaingit'], function (explainGit) {
             initialMessage:
                 'Carefully compare the commit IDs between the origin and the local repository. ' +
                 'Then type "git fetch".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-pull'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'pull': {
             name: 'Pull',
             height: 500,
             commitData: [
@@ -597,23 +441,8 @@ require(['explaingit'], function (explainGit) {
             initialMessage:
                 'Carefully compare the commit IDs between the origin and the local repository. ' +
                 'Then type "git pull".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-push'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'push': {
             name: 'Push',
             height: 500,
             commitData: [
@@ -627,23 +456,8 @@ require(['explaingit'], function (explainGit) {
             initialMessage:
                 'Carefully compare the commit IDs between the origin and the local repository. ' +
                 'Then type "git push".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-clean'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'clean': {
             name: 'Clean',
             height: 200,
             baseLine: 0.4,
@@ -653,23 +467,8 @@ require(['explaingit'], function (explainGit) {
                 {id: '3e33afd', parent: '0e70093', tags: ['master']}
             ],
             initialMessage: 'Type "git reset origin/master".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-fetchrebase'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'fetchrebase': {
             name: 'FetchRebase',
             height: 500,
             commitData: [
@@ -686,23 +485,8 @@ require(['explaingit'], function (explainGit) {
             ],
             initialMessage:
                 'First type "git fetch". Then type "git rebase origin/master".'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-deletebranches'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'deletebranches': {
             name: 'DeleteBranches',
             height: 500,
             baseLine: 0.6,
@@ -719,23 +503,8 @@ require(['explaingit'], function (explainGit) {
             currentBranch: 'terran',
             initialMessage:
                 'Delete some branches.'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-freeplay'),
-        open;
-
-    open = function () {
-        explainGit.reset();
-        this.classList.add('selected');
-
-        explainGit.open({
+        },
+        'freeplay': {
             name: 'Free',
             height: 500,
             commitData: [
@@ -749,38 +518,42 @@ require(['explaingit'], function (explainGit) {
             ],
             initialMessage:
                 'Have fun.'
-        });
-    };
-
-    openSwitch.addEventListener('click', open, false);
-});
-</script>
-<script type="text/javascript">
-require(['explaingit'], function (explainGit) {
-    var openSwitch = document.getElementById('open-zen'),
-        open;
-
-    open = function () {
-        var elements = document.getElementsByClassName('row');
-        for(var i = 0; i != elements.length; ++i)
-        {
-          elements[i].style.display = 'none';
         }
-        document.getElementById('fork-me').style.display = 'none';
-        explainGit.reset();
-
-        explainGit.open({
-            name: 'Zen',
-            height: '100%',
-            commitData: [
-                {id: 'e137e9b', tags: ['master']}
-            ],
-            initialMessage:
-                'Have fun.'
-        });
     };
 
-    openSwitch.addEventListener('click', open, false);
+    window.addEventListener('hashchange', open, false);
+    window.addEventListener('load', open, false);
+    
+    function open() {
+        var hash = window.location.hash.substr(1),
+            linkId = 'open-' + hash,
+            example = examples[hash];
+        
+        if (example) {
+            explainGit.reset();
+            document.getElementById(linkId).classList.add('selected');
+            explainGit.open(example);
+        } else if (hash === 'zen') {
+            var elements = document.getElementsByClassName('row');
+            for(var i = 0; i != elements.length; ++i)
+            {
+              elements[i].style.display = 'none';
+            }
+            document.getElementById('fork-me').style.display = 'none';
+            
+            explainGit.reset();
+
+            explainGit.open({
+                name: 'Zen',
+                height: '100%',
+                commitData: [
+                    {id: 'e137e9b', tags: ['master']}
+                ],
+                initialMessage:
+                    'Have fun.'
+            });
+        }
+    }
 });
 </script>
 </body>

@@ -5,8 +5,9 @@ define(['historyview', 'controlbox', 'd3'], function (HistoryView, ControlBox, d
         reset,
         explainGit;
 
-    open = function (args) {
-        var name = prefix + args.name,
+    open = function (_args) {
+        var args = Object.create(_args),
+            name = prefix + args.name,
             containerId = name + '-Container',
             container = d3.select('#' + containerId),
             playground = container.select('.playground-container'),
