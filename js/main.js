@@ -1,4 +1,4 @@
-﻿if (!String.prototype.trim) {
+if (!String.prototype.trim) {
     String.prototype.trim = function () {
       return this.replace(/^\s+|\s+$/g,'');
     };
@@ -45,7 +45,7 @@ if (!Array.prototype.indexOf) {
 
 require.config({
     paths: {
-        'd3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min'
+        'd3': '../vendor/d3.min'
     },
     shim: {
         'd3': {
