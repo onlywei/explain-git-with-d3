@@ -1,0 +1,17 @@
+{
+  "name": "explain-git-with-d3",
+  "version": "1.0.0",
+  "description": "explain-git-with-d3",
+  "scripts": {
+    "build": "browserify index.js --debug > app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/only-wei/explain-git-with-d3.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/only-wei/explain-git-with-d3/issues"
+  }
+}

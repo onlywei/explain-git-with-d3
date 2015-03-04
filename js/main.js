@@ -42,14 +42,3 @@ if (!Array.prototype.indexOf) {
         return -1;
     }
 }
-
-require.config({
-    paths: {
-        'd3': '../vendor/d3.min'
-    },
-    shim: {
-        'd3': {
-            exports: 'd3'
-        }
-    }
-});
