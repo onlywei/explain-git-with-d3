@@ -13,5 +13,8 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/only-wei/explain-git-with-d3/issues"
+  },
+  "dependencies": {
+    "d3": "^3.5.5"
   }
 }
