@@ -21,7 +21,17 @@ open = function (_args) {
     container.style('display', 'block');
 
     args.name = name;
+    args.container = playground;
+
     historyView = new HistoryView(args);
+    controlBox = new ControlBox({
+        historyView: historyView,
+        originView: originView,
+        initialMessage: args.initialMessage
+    });
+
+    controlBox.render(playground);
+    historyView.init();
 
     if (args.originData) {
         originView = new HistoryView({
@@ -30,20 +40,10 @@ open = function (_args) {
             height: 225,
             commitRadius: 15,
             remoteName: 'origin',
-            commitData: args.originData
+            commitData: args.originData,
+            container: playground
         });
-
-        originView.render(playground);
     }
-
-    controlBox = new ControlBox({
-        historyView: historyView,
-        originView: originView,
-        initialMessage: args.initialMessage
-    });
-
-    controlBox.render(playground);
-    historyView.render(playground);
 
     openSandBoxes.push({
         hv: historyView,
