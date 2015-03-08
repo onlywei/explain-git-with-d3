@@ -12,16 +12,19 @@ var Commits = function(repository) {
 };
 
 Commits.prototype = {
-    add: function(parentCommit) {
+    add: function(parentCommit, parentCommit2) {
         var newCommit = {
             sha: generateSha(),
-            parents: [parentCommit]
+            parent: parentCommit,
+            parent2: parentCommit2 || null
         };
         this.commits.push(newCommit);
-        this.head = newCommit;
-        if (this.currentBranch !== null) {
-            this.currentBranch.target = newCommit;
+        this.repository.head = newCommit;
+        if (this.repository.currentBranch !== null) {
+            this.repository.currentBranch.target = newCommit;
         }
+        
+        return newCommit;
     },
 
     get: function(sha) {
@@ -48,7 +51,7 @@ Commits.prototype = {
     
     getUnreachableCommits: function() {
         
-    }
+    },
 };
 
 module.exports = Commits;

@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "explain-git-with-d3",
   "scripts": {
-    "build": "browserify index.js --debug > app.js"
+    "build": "browserify index.js --debug > app.js",
+    "run": "beefy index.js --open --live"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,8 @@
   },
   "dependencies": {
     "d3": "^3.5.5"
+  },
+  "devDependencies": {
+    "beefy": "^2.1.3"
   }
 }

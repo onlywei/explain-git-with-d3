@@ -17,7 +17,7 @@ Refs.prototype = {
                 name: name,
                 target: commit,
                 isRemote: false,
-                isTracked: this.config.isTracked
+                isTracking: this.config.isTracking
             };
             this.refs.push(ref);
         }

@@ -1,6 +1,7 @@
 var d3 = require('d3');
+var Repository = require('./repository');
 
-"use strict";
+'use strict';
 
 var REG_MARKER_END = 'url(#triangle)',
     MERGE_MARKER_END = 'url(#brown-triangle)',
@@ -14,7 +15,7 @@ var REG_MARKER_END = 'url(#triangle)',
     fixIdPosition, tagY;
 
 preventOverlap = function preventOverlap(commit, view) {
-    var commitData = view.commitData,
+    var commitData = view.repository.commits.commits,
         baseLine = view.baseLine,
         shift = view.commitRadius * 4.5,
         overlapped = null;
@@ -64,35 +65,29 @@ applyBranchlessClass = function (selection) {
 };
 
 cx = function (commit, view) {
-    var parent = view.getCommit(commit.parent),
+    var parent = commit.parent || view.noParentPosition,
         parentCX = parent.cx;
-
-    if (typeof commit.parent2 === 'string') {
-        var parent2 = view.getCommit(commit.parent2);
-
-        parentCX = parent.cx > parent2.cx ? parent.cx : parent2.cx;
-    }
 
     return parentCX + (view.commitRadius * 4.5);
 };
 
 cy = function (commit, view) {
-    var parent = view.getCommit(commit.parent),
+    var parent = commit.parent || view.noParentPosition,
         parentCY = parent.cy || cy(parent, view),
         baseLine = view.baseLine,
         shift = view.commitRadius * 4.5,
         branches = [], // count the existing branches
         branchIndex = 0;
 
-    for (var i = 0; i < view.commitData.length; i++) {
-        var d = view.commitData[i];
+    for (var i = 0; i < view.repository.commits.commits.length; i++) {
+        var d = view.repository.commits.commits[i];
 
         if (d.parent === commit.parent) {
-            branches.push(d.id);
+            branches.push(d.sha);
         }
     }
 
-    branchIndex = branches.indexOf(commit.id);
+    branchIndex = branches.indexOf(commit.sha);
 
     if (commit.isNoFFBranch === true) {
         branchIndex++;
@@ -133,7 +128,7 @@ fixCirclePosition = function (selection) {
 px1 = function (commit, view, pp) {
     pp = pp || 'parent';
 
-    var parent = view.getCommit(commit[pp]),
+    var parent = commit[pp] || view.noParentPosition,
         startCX = commit.cx,
         diffX = startCX - parent.cx,
         diffY = parent.cy - commit.cy,
@@ -146,7 +141,7 @@ px1 = function (commit, view, pp) {
 py1 = function (commit, view, pp) {
     pp = pp || 'parent';
 
-    var parent = view.getCommit(commit[pp]),
+    var parent = commit[pp] || view.noParentPosition,
         startCY = commit.cy,
         diffX = commit.cx - parent.cx,
         diffY = parent.cy - startCY,
@@ -166,7 +161,7 @@ fixPointerStartPosition = function (selection, view) {
 px2 = function (commit, view, pp) {
     pp = pp || 'parent';
 
-    var parent = view.getCommit(commit[pp]),
+    var parent = commit[pp] || view.noParentPosition,
         endCX = parent.cx,
         diffX = commit.cx - endCX,
         diffY = parent.cy - commit.cy,
@@ -178,7 +173,7 @@ px2 = function (commit, view, pp) {
 py2 = function (commit, view, pp) {
     pp = pp || 'parent';
 
-    var parent = view.getCommit(commit[pp]),
+    var parent = commit[pp] || view.noParentPosition,
         endCY = parent.cy,
         diffX = commit.cx - parent.cx,
         diffY = endCY - commit.cy,
@@ -203,10 +198,10 @@ fixIdPosition = function (selection, view) {
     });
 };
 
-tagY = function tagY(t, view) {
-    var commit = view.getCommit(t.commit),
+tagY = function(t, view) {
+    var commit = t.target,
         commitCY = commit.cy,
-        tags = commit.tags,
+        tags = view.repository.getRefs().map(function(r) { return r.name; }),
         tagIndex = tags.indexOf(t.name);
 
     if (tagIndex === -1) {
@@ -225,20 +220,9 @@ tagY = function tagY(t, view) {
  * @constructor
  */
 function HistoryView(config) {
-    var commitData = config.commitData || [],
-        commit;
-
-    for (var i = 0; i < commitData.length; i++) {
-        commit = commitData[i];
-        !commit.parent && (commit.parent = 'initial');
-        !commit.tags && (commit.tags = []);
-    }
+    this.repository = new Repository();
 
     this.name = config.name || 'UnnamedHistoryView';
-    this.commitData = commitData;
-
-    this.branches = [];
-    this.currentBranch = config.currentBranch || 'master';
 
     this.width = config.width;
     this.height = config.height || 400;
@@ -251,80 +235,13 @@ function HistoryView(config) {
     this.isRemote = typeof config.remoteName === 'string';
     this.remoteName = config.remoteName;
 
-    this.initialCommit = {
-        id: 'initial',
-        parent: null,
+    this.noParentPosition = {
         cx: -(this.commitRadius * 2),
         cy: this.baseLine
     };
 }
 
-HistoryView.generateId = function () {
-    return Math.floor((1 + Math.random()) * 0x10000000).toString(16).substring(1);
-};
-
 HistoryView.prototype = {
-    /**
-     * @method getCommit
-     * @param ref {String} the id or a tag name that refers to the commit
-     * @return {Object} the commit datum object
-     */
-    getCommit: function getCommit(ref) {
-        var commitData = this.commitData,
-            headMatcher = /HEAD(\^+)/.exec(ref),
-            matchedCommit = null;
-
-        if (ref === 'initial') {
-            return this.initialCommit;
-        }
-
-        if (headMatcher) {
-            ref = 'HEAD';
-        }
-
-        for (var i = 0; i < commitData.length; i++) {
-            var commit = commitData[i];
-            if (commit === ref) {
-                matchedCommit = commit;
-                break;
-            }
-
-            if (commit.id === ref) {
-                matchedCommit = commit;
-                break;
-            }
-
-            var matchedTag = function() { 
-                for (var j = 0; j < commit.tags.length; j++) {
-                    var tag = commit.tags[j];
-                    if (tag === ref) {
-                        matchedCommit = commit;
-                        return true;
-                    }
-
-                    if (tag.indexOf('[') === 0 && tag.indexOf(']') === tag.length - 1) {
-                        tag = tag.substring(1, tag.length - 1);
-                    }
-                    if (tag === ref) {
-                        matchedCommit = commit;
-                        return true;
-                    }
-                }
-            }();
-            if (matchedTag === true) {
-                break;
-            }
-        }
-
-        if (headMatcher && matchedCommit) {
-            for (var h = 0; h < headMatcher[1].length; h++) {
-                matchedCommit = getCommit.call(this, matchedCommit.parent);
-            }
-        }
-
-        return matchedCommit;
-    },
-
     /**
      * @method getCircle
      * @param ref {String} the id or a tag name that refers to the commit
@@ -338,13 +255,13 @@ HistoryView.prototype = {
             return circle;
         }
 
-        commit = this.getCommit(ref);
+        commit = this.repository.commits.find(ref);
 
         if (!commit) {
             return null;
         }
 
-        return this.svg.select('#' + this.name + '-' + commit.id);
+        return this.svg.select('#' + this.name + '-' + commit.sha);
     },
 
     getCircles: function () {
@@ -395,7 +312,7 @@ HistoryView.prototype = {
 
         this.renderCommits();
 
-        this._setCurrentBranch(this.currentBranch);
+        this._setCurrentBranch(this.repository.currentBranch);
     },
 
     destroy: function () {
@@ -411,8 +328,8 @@ HistoryView.prototype = {
     },
 
     _calculatePositionData: function () {
-        for (var i = 0; i < this.commitData.length; i++) {
-            var commit = this.commitData[i];
+        for (var i = 0; i < this.repository.commits.commits.length; i++) {
+            var commit = this.repository.commits.commits[i];
             commit.cx = cx(commit, this);
             commit.cy = cy(commit, this);
             preventOverlap(commit, this);
@@ -449,23 +366,24 @@ HistoryView.prototype = {
         }
         this._calculatePositionData();
         this._calculatePositionData(); // do this twice to make sure
+        this.renderTags();
         this._renderCircles();
         this._renderPointers();
         this._renderMergePointers();
         this._renderIdLabels();
         this._resizeSvg();
-        this.checkout(this.currentBranch);
     },
 
     _renderCircles: function () {
         var view = this,
             existingCircles,
-            newCircles;
+            newCircles,
+            commits = this.repository.commits.commits;
 
         existingCircles = this.commitBox.selectAll('circle.commit')
-            .data(this.commitData, function (d) { return d.id; })
+            .data(commits, function (d) { return d.sha; })
             .attr('id', function (d) {
-                return view.name + '-' + d.id;
+                return view.name + '-' + d.sha;
             })
             .classed('reverted', function (d) {
                 return d.reverted;
@@ -481,7 +399,7 @@ HistoryView.prototype = {
         newCircles = existingCircles.enter()
             .append('svg:circle')
             .attr('id', function (d) {
-                return view.name + '-' + d.id;
+                return view.name + '-' + d.sha;
             })
             .classed('commit', true)
             .classed('merge-commit', function (d) {
@@ -498,12 +416,13 @@ HistoryView.prototype = {
     _renderPointers: function () {
         var view = this,
             existingPointers,
-            newPointers;
+            newPointers,
+            commits = this.repository.commits.commits;
 
         existingPointers = this.arrowBox.selectAll('line.commit-pointer')
-            .data(this.commitData, function (d) { return d.id; })
+            .data(commits, function (d) { return d.sha; })
             .attr('id', function (d) {
-                return view.name + '-' + d.id + '-to-' + d.parent;
+                return view.name + '-' + d.sha + '-to-' + d.parent;
             });
 
         existingPointers.transition()
@@ -514,7 +433,7 @@ HistoryView.prototype = {
         newPointers = existingPointers.enter()
             .append('svg:line')
             .attr('id', function (d) {
-                return view.name + '-' + d.id + '-to-' + d.parent;
+                return view.name + '-' + d.sha + '-to-' + d.parent;
             })
             .classed('commit-pointer', true)
             .call(fixPointerStartPosition, view)
@@ -531,17 +450,17 @@ HistoryView.prototype = {
             mergeCommits = [],
             existingPointers, newPointers;
 
-        for (var i = 0; i < this.commitData.length; i++) {
-            var commit = this.commitData[i];
+        for (var i = 0; i < this.repository.commits.commits.length; i++) {
+            var commit = this.repository.commits.commits[i];
             if (typeof commit.parent2 === 'string') {
                 mergeCommits.push(commit);
             }
         }
 
         existingPointers = this.arrowBox.selectAll('polyline.merge-pointer')
-            .data(mergeCommits, function (d) { return d.id; })
+            .data(mergeCommits, function (d) { return d.sha; })
             .attr('id', function (d) {
-                return view.name + '-' + d.id + '-to-' + d.parent2;
+                return view.name + '-' + d.sha + '-to-' + d.parent2;
             });
 
         existingPointers.transition().duration(500)
@@ -555,7 +474,7 @@ HistoryView.prototype = {
         newPointers = existingPointers.enter()
             .append('svg:polyline')
             .attr('id', function (d) {
-                return view.name + '-' + d.id + '-to-' + d.parent2;
+                return view.name + '-' + d.sha + '-to-' + d.parent2;
             })
             .classed('merge-pointer', true)
             .attr('points', function (d) {
@@ -581,18 +500,19 @@ HistoryView.prototype = {
     _renderIdLabels: function () {
         var view = this,
             existingLabels,
-            newLabels;
+            newLabels,
+            commits = this.repository.commits.commits;
 
         existingLabels = this.commitBox.selectAll('text.id-label')
-            .data(this.commitData, function (d) { return d.id; })
-            .text(function (d) { return d.id + '..'; });
+            .data(commits, function (d) { return d.sha; })
+            .text(function (d) { return d.sha + '..'; });
 
         existingLabels.transition().call(fixIdPosition, view);
 
         newLabels = existingLabels.enter()
             .insert('svg:text', ':first-child')
             .classed('id-label', true)
-            .text(function (d) { return d.id + '..'; })
+            .text(function (d) { return d.sha + '..'; })
             .call(fixIdPosition, view);
     },
 
@@ -600,8 +520,8 @@ HistoryView.prototype = {
         var tagData = [], i,
             headCommit = null;
 
-        for (i = 0; i < this.commitData.length; i++) {
-            var c = this.commitData[i];
+        for (i = 0; i < this.repository.commits.commits.length; i++) {
+            var c = this.repository.commits.commits[i];
 
             for (var t = 0; t < c.tags.length; t++) {
                 var tagName = c.tags[t];
@@ -611,14 +531,14 @@ HistoryView.prototype = {
                     this.branches.push(tagName);
                 }
 
-                tagData.push({name: tagName, commit: c.id});
+                tagData.push({name: tagName, commit: c.sha});
             }
         }
 
         if (!headCommit) {
             headCommit = this.getCommit(this.currentBranch);
             headCommit.tags.push('HEAD');
-            tagData.push({name: 'HEAD', commit: headCommit.id});
+            tagData.push({name: 'HEAD', commit: headCommit.sha});
         }
 
         // find out which commits are not branchless
@@ -628,6 +548,7 @@ HistoryView.prototype = {
     },
 
     _markBranchlessCommits: function () {
+        return;
         var branch, commit, parent, parent2, c, b;
 
         // first mark every commit as branchless
@@ -664,7 +585,7 @@ HistoryView.prototype = {
 
     renderTags: function () {
         var view = this,
-            tagData = this._parseTagData(),
+            tagData = this.repository.getRefs(),
             existingTags, newTags;
 
         existingTags = this.tagBox.selectAll('g.branch-tag')
@@ -677,7 +598,7 @@ HistoryView.prototype = {
             .duration(500)
             .attr('y', function (d) { return tagY(d, view); })
             .attr('x', function (d) {
-                var commit = view.getCommit(d.commit),
+                var commit = d.target,
                     width = Number(d3.select(this).attr('width'));
 
                 return commit.cx - (width / 2);
@@ -687,18 +608,15 @@ HistoryView.prototype = {
             .transition()
             .duration(500)
             .attr('y', function (d) { return tagY(d, view) + 14; })
-            .attr('x', function (d) {
-                var commit = view.getCommit(d.commit);
-                return commit.cx;
-            });
+            .attr('x', function (d) { return d.target.cx; });
 
         newTags = existingTags.enter()
             .append('g')
             .attr('class', function (d) {
                 var classes = 'branch-tag';
-                if (d.name.indexOf('[') === 0 && d.name.indexOf(']') === d.name.length - 1) {
+                if (d.isTracking === false) {
                     classes += ' git-tag';
-                } else if (d.name.indexOf('/') >= 0) {
+                } else if (d.isRemote === true) {
                     classes += ' remote-branch';
                 } else if (d.name.toUpperCase() === 'HEAD') {
                     classes += ' head-tag';
@@ -713,25 +631,16 @@ HistoryView.prototype = {
             .attr('height', 20)
             .attr('y', function (d) { return tagY(d, view); })
             .attr('x', function (d) {
-                var commit = view.getCommit(d.commit),
+                var commit = d.target,
                     width = Number(d3.select(this).attr('width'));
 
                 return commit.cx - (width / 2);
             });
 
         newTags.append('svg:text')
-            .text(function (d) {
-                if (d.name.indexOf('[') === 0 && d.name.indexOf(']') === d.name.length - 1)
-                    return d.name.substring(1, d.name.length - 1); 
-                return d.name; 
-            })
-            .attr('y', function (d) {
-                return tagY(d, view) + 14;
-            })
-            .attr('x', function (d) {
-                var commit = view.getCommit(d.commit);
-                return commit.cx;
-            });
+            .text(function (d) { return d.name; })
+            .attr('y', function (d) { return tagY(d, view) + 14; })
+            .attr('x', function (d) { return d.target.cx; });
 
         this._markBranchlessCommits();
     },
@@ -769,7 +678,7 @@ HistoryView.prototype = {
      * @param ref2
      * @return {Boolean} whether or not ref1 is an ancestor of ref2
      */
-    isAncestor: function isAncestor(ref1, ref2) {
+    isAncestor: function(ref1, ref2) {
         var currentCommit = this.getCommit(ref1),
             targetTree = this.getCommit(ref2),
             inTree = false,
@@ -780,7 +689,7 @@ HistoryView.prototype = {
         }
 
         while (targetTree) {
-            if (targetTree.id === currentCommit.id) {
+            if (targetTree.sha === currentCommit.sha) {
                 inTree = true;
                 targetTree = null;
             } else {

@@ -1,5 +1,5 @@
-require('./main');
-var explainGit = require('./js/explaingit.js');
+require('./js/main');
+var explainGit = require('./js/explaingit');
 
 'use strict';
 
