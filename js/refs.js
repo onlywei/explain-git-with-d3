@@ -20,9 +20,11 @@ Refs.prototype = {
                 isTracking: this.config.isTracking
             };
             this.refs.push(ref);
+            return ref;
         }
         else {
             existing.target = commit;
+            return existing;
         }
     },
     

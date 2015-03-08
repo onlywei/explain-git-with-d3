@@ -372,6 +372,7 @@ HistoryView.prototype = {
         this._renderMergePointers();
         this._renderIdLabels();
         this._resizeSvg();
+        this._setCurrentBranch(this.repository.currentBranch);
     },
 
     _renderCircles: function () {
@@ -516,64 +517,34 @@ HistoryView.prototype = {
             .call(fixIdPosition, view);
     },
 
-    _parseTagData: function () {
-        var tagData = [], i,
-            headCommit = null;
-
-        for (i = 0; i < this.repository.commits.commits.length; i++) {
-            var c = this.repository.commits.commits[i];
-
-            for (var t = 0; t < c.tags.length; t++) {
-                var tagName = c.tags[t];
-                if (tagName.toUpperCase() === 'HEAD') {
-                    headCommit = c;
-                } else if (this.branches.indexOf(tagName) === -1) {
-                    this.branches.push(tagName);
-                }
-
-                tagData.push({name: tagName, commit: c.sha});
-            }
-        }
-
-        if (!headCommit) {
-            headCommit = this.getCommit(this.currentBranch);
-            headCommit.tags.push('HEAD');
-            tagData.push({name: 'HEAD', commit: headCommit.sha});
-        }
-
-        // find out which commits are not branchless
-
-
-        return tagData;
-    },
-
     _markBranchlessCommits: function () {
-        return;
-        var branch, commit, parent, parent2, c, b;
+        var ref, commit, parent, parent2, c, b,
+            refs = this.repository.getRefs(),
+            commits = this.repository.commits.commits;
 
         // first mark every commit as branchless
-        for (c = 0; c < this.commitData.length; c++) {
-            this.commitData[c].branchless = true;
+        for (c = 0; c < commits.length; c++) {
+            commits[c].branchless = true;
         }
 
-        for (b = 0; b < this.branches.length; b++) {
-            branch = this.branches[b];
-            if (branch.indexOf('/') === -1) {
-                commit = this.getCommit(branch);
-                parent = this.getCommit(commit.parent);
-                parent2 = this.getCommit(commit.parent2);
+        for (b = 0; b < refs.length; b++) {
+            ref = refs[b];
+            if (ref.isRemote !== true) {
+                commit = ref.target;
+                parent = commit.parent;
+                parent2 = commit.parent2;
 
                 commit.branchless = false;
 
                 while (parent) {
                     parent.branchless = false;
-                    parent = this.getCommit(parent.parent);
+                    parent = parent.parent;
                 }
 
                 // just in case this is a merge commit
                 while (parent2) {
                     parent2.branchless = false;
-                    parent2 = this.getCommit(parent2.parent);
+                    parent2 = parent2.parent;
                 }
             }
         }
@@ -645,31 +616,18 @@ HistoryView.prototype = {
         this._markBranchlessCommits();
     },
 
+    // TODO Rename
     _setCurrentBranch: function (branch) {
         var display = this.svg.select('text.current-branch-display'),
             text = 'Current Branch: ';
 
-        if (branch && branch.indexOf('/') === -1) {
-            text += branch;
-            this.currentBranch = branch;
+        if (branch && branch.isRemote !== true) {
+            text += branch.name;
         } else {
             text += ' DETACHED HEAD';
-            this.currentBranch = null;
         }
 
         display.text(text);
-    },
-
-    moveTag: function (tag, ref) {
-        var currentLoc = this.getCommit(tag),
-            newLoc = this.getCommit(ref);
-
-        if (currentLoc) {
-            currentLoc.tags.splice(currentLoc.tags.indexOf(tag), 1);
-        }
-
-        newLoc.tags.push(tag);
-        return this;
     },
 
     /**
@@ -713,25 +671,9 @@ HistoryView.prototype = {
     },
 
     commit: function (commit) {
-        commit = commit || {};
-
-        !commit.id && (commit.id = HistoryView.generateId());
-        !commit.tags && (commit.tags = []);
-
-        if (!commit.parent) {
-            if (!this.currentBranch) {
-                throw new Error('Not a good idea to make commits while in a detached HEAD state.');
-            }
-
-            commit.parent = this.getCommit(this.currentBranch).id;
-        }
-
-        this.commitData.push(commit);
-        this.moveTag(this.currentBranch, commit.id);
-
+        this.repository.commits.add(this.repository.head);
         this.renderCommits();
 
-        this.checkout(this.currentBranch);
         return this;
     },
 
@@ -791,7 +733,7 @@ HistoryView.prototype = {
     },
 
     checkout: function (ref) {
-        var commit = this.getCommit(ref);
+        var commit = ref;
 
         if (!commit) {
             throw new Error('Cannot find commit: ' + ref);
