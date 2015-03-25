@@ -181,7 +181,7 @@ define(['d3'], function () {
                     this.historyView.deleteBranch(name);
                     break;
                 default:
-                    if (arg.charAt(0) == '-') {
+                    if (arg.charAt(0) === '-') {
                         this.error();
                     } else {
                         var remainingArgs = [arg].concat(args);
@@ -280,7 +280,7 @@ define(['d3'], function () {
 
         merge: function (args) {
             var noFF = false;
-            if (args.length == 2)
+            if (args.length === 2)
             {
                 var mergeSwitch = args.pop();
                 if (mergeSwitch === '--no-ff') {
