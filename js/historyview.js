@@ -93,6 +93,13 @@ define(['d3'], function () {
 
         branchIndex = branches.indexOf(commit.id);
 
+        if (commit.isNoFFBranch === true) {
+            branchIndex++;
+        }
+        if (commit.isNoFFCommit === true) {
+            branchIndex--;
+        }
+
         if (parentCY === baseLine) {
             var direction = 1;
             for (var bi = 0; bi < branchIndex; bi++) {
@@ -939,7 +946,7 @@ define(['d3'], function () {
             }
         },
 
-        merge: function (ref) {
+        merge: function (ref, noFF) {
             var mergeTarget = this.getCommit(ref),
                 currentCommit = this.getCommit('HEAD');
 
@@ -951,6 +958,15 @@ define(['d3'], function () {
                 throw new Error('Already up-to-date.');
             } else if (currentCommit.parent2 === mergeTarget.id) {
                 throw new Error('Already up-to-date.');
+            } else if (noFF === true) {
+                var branchStartCommit = this.getCommit(mergeTarget.parent);
+                while (branchStartCommit.parent !== currentCommit.id) {
+                    branchStartCommit = this.getCommit(branchStartCommit.parent);
+                }
+                
+                branchStartCommit.isNoFFBranch = true;
+                
+                this.commit({parent2: mergeTarget.id, isNoFFCommit: true});
             } else if (this.isAncestor(currentCommit, mergeTarget)) {
                 this.fastForward(mergeTarget);
                 return 'Fast-Forward';
