@@ -144,12 +144,12 @@ define(['d3'], function () {
         },
 
         commit: function (args) {
-            if (args.length === 2) {
+            if (args.length >= 2) {
                 var arg = args.shift();
 
                 switch (arg) {
                     case '-m':
-                        var mess = args[args.length - 1];
+                        var mess = args.join(" ");
                         this.historyView.commit({},mess);
                         break;
                     default:
