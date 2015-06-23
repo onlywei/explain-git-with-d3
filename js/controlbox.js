@@ -149,8 +149,8 @@ define(['d3'], function () {
 
                 switch (arg) {
                     case '-m':
-                        var mess = args.join(" ");
-                        this.historyView.commit({},mess);
+                        var message = args.join(" ");
+                        this.historyView.commit({},message);
                         break;
                     default:
                         this.historyView.commit();

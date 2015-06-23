@@ -579,7 +579,7 @@ define(['d3'], function () {
 
         _renderIdLabels: function () {
             this._renderText('id-label', function (d) { return d.id + '..'; }, 14);
-            this._renderText('mess-label', function (d) { return d.mess; }, 24);
+            this._renderText('message-label', function (d) { return d.message; }, 24);
         },
 
         _renderText: function(className, getText, delta) {
@@ -807,13 +807,13 @@ define(['d3'], function () {
             return inTree;
         },
 
-        commit: function (commit, mess) {
+        commit: function (commit, message) {
             commit = commit || {};
 
             !commit.id && (commit.id = HistoryView.generateId());
             !commit.tags && (commit.tags = []);
 
-            commit.mess = mess;
+            commit.message = message;
             if (!commit.parent) {
                 if (!this.currentBranch) {
                     throw new Error('Not a good idea to make commits while in a detached HEAD state.');
@@ -986,7 +986,7 @@ define(['d3'], function () {
                 currentCommit = this.getCommit('HEAD'),
                 isCommonAncestor,
                 rebaseTreeLoc,
-                rebaseMess,
+                rebaseMessage,
                 toRebase = [], rebasedCommit,
                 remainingHusk;
 
@@ -1017,12 +1017,12 @@ define(['d3'], function () {
 
             for (var i = 0; i < toRebase.length; i++) {
                 rebasedCommit = toRebase[i];
-                rebaseMess = rebasedCommit.mess;
+                rebaseMessage = rebasedCommit.message;
 
                 remainingHusk = {
                     id: rebasedCommit.id,
                     parent: rebasedCommit.parent,
-                    mess: rebasedCommit.mess,
+                    message: rebasedCommit.message,
                     tags: []
                 };
 
@@ -1038,7 +1038,7 @@ define(['d3'], function () {
                 rebasedCommit.parent = rebaseTreeLoc;
                 rebaseTreeLoc = HistoryView.generateId()
                 rebasedCommit.id = rebaseTreeLoc;
-                rebasedCommit.mess = rebaseMess;
+                rebasedCommit.message = rebaseMessage;
                 rebasedCommit.tags.length = 0;
                 rebasedCommit.rebased = true;
             }
