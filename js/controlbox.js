@@ -143,8 +143,22 @@ define(['d3'], function () {
             this._scrollToBottom();
         },
 
-        commit: function () {
-            this.historyView.commit();
+        commit: function (args) {
+            if (args.length === 2) {
+                var arg = args.shift();
+
+                switch (arg) {
+                    case '-m':
+                        var mess = args[args.length - 1];
+                        this.historyView.commit({},mess);
+                        break;
+                    default:
+                        this.historyView.commit();
+                        break;
+                }
+            } else {
+                this.historyView.commit();
+            }
         },
 
         branch: function (args) {
