@@ -194,11 +194,11 @@ define(['d3'], function () {
         });
     };
 
-    fixIdPosition = function (selection, view) {
+    fixIdPosition = function (selection, view, delta) {
         selection.attr('x', function (d) {
             return d.cx;
         }).attr('y', function (d) {
-            return d.cy + view.commitRadius + 14;
+            return d.cy + view.commitRadius + delta;
         });
     };
 
@@ -215,7 +215,7 @@ define(['d3'], function () {
         if (commitCY < (view.baseLine)) {
             return commitCY - 45 - (tagIndex * 25);
         } else {
-            return commitCY + 40 + (tagIndex * 25);
+            return commitCY + 50 + (tagIndex * 25);
         }
     };
 
@@ -578,21 +578,26 @@ define(['d3'], function () {
         },
 
         _renderIdLabels: function () {
+            this._renderText('id-label', function (d) { return d.id + '..'; }, 14);
+            this._renderText('message-label', function (d) { return d.message; }, 24);
+        },
+
+        _renderText: function(className, getText, delta) {
             var view = this,
-                existingLabels,
-                newLabels;
+                existingTexts,
+                newtexts;
 
-            existingLabels = this.commitBox.selectAll('text.id-label')
+            existingTexts = this.commitBox.selectAll('text.' + className)
                 .data(this.commitData, function (d) { return d.id; })
-                .text(function (d) { return d.id + '..'; });
+                .text(getText);
 
-            existingLabels.transition().call(fixIdPosition, view);
+            existingTexts.transition().call(fixIdPosition, view, delta);
 
-            newLabels = existingLabels.enter()
+            newtexts = existingTexts.enter()
                 .insert('svg:text', ':first-child')
-                .classed('id-label', true)
-                .text(function (d) { return d.id + '..'; })
-                .call(fixIdPosition, view);
+                .classed(className, true)
+                .text(getText)
+                .call(fixIdPosition, view, delta);
         },
 
         _parseTagData: function () {
@@ -802,12 +807,13 @@ define(['d3'], function () {
             return inTree;
         },
 
-        commit: function (commit) {
+        commit: function (commit, message) {
             commit = commit || {};
 
             !commit.id && (commit.id = HistoryView.generateId());
             !commit.tags && (commit.tags = []);
 
+            commit.message = message;
             if (!commit.parent) {
                 if (!this.currentBranch) {
                     throw new Error('Not a good idea to make commits while in a detached HEAD state.');
@@ -980,6 +986,7 @@ define(['d3'], function () {
                 currentCommit = this.getCommit('HEAD'),
                 isCommonAncestor,
                 rebaseTreeLoc,
+                rebaseMessage,
                 toRebase = [], rebasedCommit,
                 remainingHusk;
 
@@ -1000,7 +1007,7 @@ define(['d3'], function () {
                 return 'Fast-Forward';
             }
 
-            rebaseTreeLoc = rebaseTarget.id
+            rebaseTreeLoc = rebaseTarget.id;
 
             while (!isCommonAncestor) {
                 toRebase.unshift(currentCommit);
@@ -1010,10 +1017,12 @@ define(['d3'], function () {
 
             for (var i = 0; i < toRebase.length; i++) {
                 rebasedCommit = toRebase[i];
+                rebaseMessage = rebasedCommit.message;
 
                 remainingHusk = {
                     id: rebasedCommit.id,
                     parent: rebasedCommit.parent,
+                    message: rebasedCommit.message,
                     tags: []
                 };
 
@@ -1029,6 +1038,7 @@ define(['d3'], function () {
                 rebasedCommit.parent = rebaseTreeLoc;
                 rebaseTreeLoc = HistoryView.generateId()
                 rebasedCommit.id = rebaseTreeLoc;
+                rebasedCommit.message = rebaseMessage;
                 rebasedCommit.tags.length = 0;
                 rebasedCommit.rebased = true;
             }

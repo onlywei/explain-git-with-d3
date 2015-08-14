@@ -210,8 +210,16 @@ circle.commit.branchless {
 text.id-label {
 	text-anchor: middle;
 	font-family: Courier New;
+	font-weight: bolder;
 	fill: #666;
 	font-size: 10px;
+}
+
+text.message-label {
+    text-anchor: middle;
+    font-family: Courier New;
+    fill: #666;
+    font-size: 10px;
 }
 
 g.branch-tag > rect {
