@@ -488,7 +488,7 @@ define(['d3'], function () {
                 })
                 .call(fixCirclePosition)
                 .attr('r', 1)
-                .transition()
+                .transition("inflate")
                 .duration(500)
                 .attr('r', this.commitRadius);
 
