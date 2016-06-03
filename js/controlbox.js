@@ -189,6 +189,14 @@ define(['d3'], function () {
             }
         },
 
+        "cherry-pick": function (args) {
+          if (args.length < 1) {
+            this.info('You need to give a commit ID');
+          } else {
+            this.historyView.commit({},this.historyView.getCommit(args[0]).message);
+          }
+        },
+
         branch: function (args) {
             if (args.length < 1) {
                 this.info(
