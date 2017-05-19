@@ -172,11 +172,8 @@
     </div>
     <div id="ExplainGitMerge-Container" class="twelvecol concept-container">
       <p>
-        <span class="cmd">git merge</span> دستورگیت مرج ایجاد میکند یک کامیت به همراه دومرجع .
-نتایج کامیت ذخیره خواهد شد به صورت یک عکس که شامل تمام کارهایی است که بروی هر بخش انجام شده است
-
-
-اگرهیچ اختلافی بین دوکامیت وجود نداشته باشد گیت انجام خواهددادیک متد بازگشت سریع از حالت مرجع برای اینکه اتفاق افتادن این حالت را ببینیم برنچ راچک کرده و دستورگیت مرج دیو را اجرا میکنیم
+        <span class="cmd">git merge</span> will create a new commit with two parents. The resulting
+        commit snapshot will have the all of the work that has been done in both branches.
       </p>
       <p>
         If there was no divergence between the two commits, git will do a "fast-forward" method merge.</br>
@@ -207,14 +204,14 @@
     </div>
     <div id="ExplainGitPull-Container" class="twelvecol concept-container">
       <p>
-        A <span class="cmd">git pull</span> is a two step process that first does a <span class="cmd">git fetch</span>,
-        and then does a <span class="cmd">git merge</span> of the remote tracking branch associated with your current branch.
-        If you have no current branch, the process will stop after fetching.
+        یک<span class="cmd">git pull</span> یک فرایند دو مرحله ای است که برای اولین بار می کند است <span class="cmd">git fetch</span>,
+        و پس از آن می کند <span class="cmd">git merge</span> از شاخه ردیابی از راه دور در ارتباط با شاخه فعلی خود را.
+        اگر شما هیچ شاخه فعلی، این روند پس از جذب متوقف خواهد شد.
       </p>
       <p>
-        If the argument "--rebase" was given by typing <span class="cmd">git pull --rebase</span>, the second step of
-        pull process will be a rebase instead of a merge. This can be set to the default behavior by configuration by typing:
-        <span class="cmd">git config branch.BRANCHNAME.rebase true</span>.
+        اگر آرگومان "--rebase" با تایپ کردن داده شد <span class="cmd">git pull --rebase</span>, گام دوم
+       فرآیند کشش یک REBASE جای باشد از یک ادغام. 69/5000
+این را می توان به عملکرد پیشفرض پیکربندی با تایپ کردن مجموعه:       <span class="cmd">branch.BRANCHNAME.rebase پیکربندی دستگاه گیت true</span>.
       </p>
       <div class="playground-container"></div>
     </div>
