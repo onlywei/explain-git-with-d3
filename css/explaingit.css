@@ -161,8 +161,8 @@ span.cmd {
 }
 
 circle.commit {
-    fill: #EEEEEE;
-    stroke: #888888;
+    fill: #FFB;
+    stroke: #C90;
     stroke-width: 3;
 }
 
