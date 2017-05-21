@@ -1,5 +1,4 @@
-﻿<!DOCTYPE html>
-<html>
+﻿<!DOCTYPE html><html dir="rtl" lang="fa">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <title>Explain Git with D3</title>
@@ -16,7 +15,7 @@
 </a>
 <div class="container">
   <div class="row intro">
-    <div class="twelvecol" dir="rtl">
+    <div class="twelvecol">
       <h1>Visualizing Git Concepts with D3</h1>
       <p>
         
@@ -137,26 +136,16 @@
     </div>
     <div id="ExplainGitReset-Container" class="twelvecol concept-container">
       <p>
-        <span class="cmd">git reset</span> will move HEAD and the current branch back to wherever
-        you specify, abandoning any commits that may be left behind. This is useful to undo a commit
-        that you no longer need.
+        <span class="cmd">git reset</span>هد حرکت خواهد کرد و شاخه رو برمیگرداند به جایی که شما مشخص کردید، جدا از هر <span class="cmd">commit</span> که ممکن است پشت سر بگذارید. این کار زمانی سودمند است که شما بخواهید <span class="cmd">commit</span>را که دیگر نیازی ندارید به حالت قبلی بازگردانید.  </p>
+      <p>
+   این دستور معمولا با یکی از سه فلگ <span class="cmd">Soft-Mixed,Hard</span> استفاده می شود.فلگ های<span class="cmd">Soft,Mixed</span> با آنچه که درون <span class="cmd">commit</span> بعد از ریست کردن بود سروکار دارد و شما میتونید درباره اون اینجا بخونید.. <a href="http://git-scm.com/2011/07/11/reset.html">کلیک کنید</a>.
+  از آنجایی که این تصویر نمیتونه به صورت گرافیکی آن کار را نمایش دهد، فقط <span class="cmd">Flag</span> هارد روی این سایت کار خواهد کرد.
       </p>
       <p>
-        This command is normally used with one of three flags: "--soft", "--mixed", and "--hard".
-        The soft and mixed flags deal with what to do with the work that was inside the commit after
-        you reset, and you can read about it <a href="http://git-scm.com/2011/07/11/reset.html">here</a>.
-        Since this visualization cannot graphically display that work, only the "--hard" flag will work
-        on this site.
+     کد <span class="cmd">"HEAD^" </span> معمولا با این دستور با همدیگر کار می کنند. <span class="cmd">"HEAD^" </span> به این معنی است: یک <span class="cmd">commit </span> دقیقا قبل از هد. <span class="cmd">"HEAD^^"  </span> یعنی دو تغییر بعد از هد و به همین صورت.
       </p>
       <p>
-        The ref "HEAD^" is usually used together with this command. "HEAD^" means "the commit right
-        before HEAD. "HEAD^^" means "two commits before HEAD", and so on.
-      </p>
-      <p>
-        Note that you must <b>never</b> use <span class="cmd">git reset</span> to abandon commits
-        that have already been pushed and merged into the origin. This can cause your local repository
-        to become out of sync with the origin. Don't do it unless you really know what you're doing.
-      </p>
+   دقت کنید که هرگز نباید دستور  <span class="cmd">git reset </span>  را برای لغو تغییراتی که ثبت و یکپارچه با داده های اصلی شده اند استفاده کنید.این می تواند منجر به این شود که مخزن محلی شما با داده های اصلی ناهماهنگ شود.این کار را انجام ندهید مگر اینگه بدانید واقعا چه کاری می خواهید انجام دهید </p>
       <div class="playground-container"></div>
     </div>
     <div id="ExplainGitRevert-Container" class="twelvecol concept-container">
