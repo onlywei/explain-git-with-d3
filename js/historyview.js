@@ -1,4 +1,4 @@
-define(['d3'], function () {
+define(['d3', 'd3.contextMenu'], function (d3, contextMenu) {
     "use strict";
 
     var REG_MARKER_END = 'url(#triangle)',
@@ -7,6 +7,7 @@ define(['d3'], function () {
 
         preventOverlap,
         applyBranchlessClass,
+        openContextMenu,
         cx, cy, fixCirclePosition,
         px1, py1, fixPointerStartPosition,
         px2, py2, fixPointerEndPosition,
@@ -61,6 +62,23 @@ define(['d3'], function () {
             });
         }
     };
+    
+    openContextMenu = function(canCommit, ref, view) {
+        var menu = [];
+        if (canCommit) {
+            menu = menu.concat([
+                {title: "Commit", action: function() { view.commit(); }},
+                {divider: true}
+            ]);   
+        }
+        menu = menu.concat([
+            {title: 'Reset', action: function() { view.reset(ref); }},
+            {title: 'Checkout', action: function() { view.checkout(ref); }},
+            {title: 'Merge', action: function() { view.merge(ref); }},
+            {title: 'Rebase', action: function() { view.rebase(ref); }},
+        ]);
+        contextMenu(menu)();
+    }
 
     cx = function (commit, view) {
         var parent = view.getCommit(commit.parent),
@@ -486,6 +504,9 @@ define(['d3'], function () {
                 .classed('merge-commit', function (d) {
                     return typeof d.parent2 === 'string';
                 })
+                .on('contextmenu', function(d) {
+                    openContextMenu(d3.select(this).classed('checked-out'), d.id, view);
+                })
                 .call(fixCirclePosition)
                 .attr('r', 1)
                 .transition("inflate")
@@ -708,6 +729,9 @@ define(['d3'], function () {
                         classes += ' head-tag';
                     }
                     return classes;
+                })
+                .on('contextmenu', function(d) {
+                    openContextMenu(d3.select(this).classed('head-tag'), d.name, view);
                 });
 
             newTags.append('svg:rect')

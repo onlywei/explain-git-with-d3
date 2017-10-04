@@ -1,4 +1,4 @@
-define(['historyview', 'controlbox', 'd3'], function (HistoryView, ControlBox, d3) {
+define(['historyview', 'controlbox', 'd3', 'd3.contextMenu'], function (HistoryView, ControlBox, d3, contextMenu) {
     var prefix = 'ExplainGit',
         openSandBoxes = [],
         open,
@@ -37,6 +37,16 @@ define(['historyview', 'controlbox', 'd3'], function (HistoryView, ControlBox, d
             originView: originView,
             initialMessage: args.initialMessage
         });
+        
+        if (originView) {
+            originView.svg.on('contextmenu', function() {
+                contextMenu([
+                    {title: 'Fetch', action: function() { controlBox.command('git fetch');}},
+                    {title: 'Push', action: function() { controlBox.command('git push origin'); }},
+                    {title: 'Pull', action: function() { controlBox.command('git pull'); }}
+                ])();
+            })
+        }
 
         controlBox.render(playground);
         historyView.render(playground);
