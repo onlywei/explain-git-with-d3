@@ -278,12 +278,17 @@
     <div class="twocol last">
       <a id="open-freeplay" class="openswitch" href="#freeplay">Free Playground</a>
       <a id="open-zen" class="openswitch" href="#zen">Zen Mode</a>
+      <a id="open-zen-remote" class="openswitch" href="#zenremote">Zen Mode with remote</a>
     </div>
   </div>
 </div>
 
 <div id="ExplainGitZen-Container" style="display:none">
     <div class="playground-container"></div>
+</div>
+
+<div id="ExplainGitZenRemote-Container" style="display:none">
+  <div class="playground-container"></div>
 </div>
 
 <svg version="1.1" baseProfile="full"
@@ -519,7 +524,7 @@ require(['explaingit'], function (explainGit) {
             initialMessage:
                 'Have fun.'
         }
-    };
+  };
 
     window.addEventListener('hashchange', open, false);
     window.addEventListener('load', open, false);
@@ -547,10 +552,33 @@ require(['explaingit'], function (explainGit) {
                 name: 'Zen',
                 height: '100%',
                 commitData: [
-                    {id: 'e137e9b', tags: ['master'], message: 'first commit'}
+                    {id: 'e137e9b', tags: ['master'], message: 'initial commit'}
                 ],
                 initialMessage:
                     'Have fun.'
+            });
+        } else if (hash === 'zenremote') {
+            var elements = document.getElementsByClassName('row');
+            for(var i = 0; i != elements.length; ++i)
+            {
+              elements[i].style.display = 'none';
+            }
+            document.getElementById('fork-me').style.display = 'none';
+            
+            explainGit.reset();
+
+            explainGit.open({
+                name: 'ZenRemote',
+                height: '100%',
+                commitData: [
+                    {id: 'e137e9b', tags: ['origin/master', 'master'], message: 'initial commit'}
+                ],
+                commitRadius: 15,
+                originData: [
+                    {id: 'e137e9b', tags: ['master'], message: 'initial commit'}
+                ],
+                initialMessage:
+                    'Formation Git'
             });
         }
     }
