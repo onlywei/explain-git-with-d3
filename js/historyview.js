@@ -960,9 +960,7 @@ define(['d3'], function () {
                 throw new Error('Cannot find ref: ' + ref);
             }
 
-            if (currentCommit.id === mergeTarget.id) {
-                throw new Error('Already up-to-date.');
-            } else if (currentCommit.parent2 === mergeTarget.id) {
+            if (this.isAncestor(mergeTarget, currentCommit)) {
                 throw new Error('Already up-to-date.');
             } else if (noFF === true) {
                 var branchStartCommit = this.getCommit(mergeTarget.parent);
