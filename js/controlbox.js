@@ -105,7 +105,7 @@ define(['d3'], function () {
                 return;
             }
 
-            var split = entry.split(' ');
+            var split = entry.split(' ').filter(function(elm) { return elm !== ''; });
 
             this.log.append('div')
                 .classed('command-entry', true)
