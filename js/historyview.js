@@ -394,7 +394,7 @@ define(['d3'], function () {
 
             this.renderCommits();
 
-            this._setCurrentBranch(this.currentBranch);
+            this.checkout(this.currentBranch);
         },
 
         destroy: function () {
@@ -453,7 +453,6 @@ define(['d3'], function () {
             this._renderMergePointers();
             this._renderIdLabels();
             this._resizeSvg();
-            this.checkout(this.currentBranch);
         },
 
         _renderCircles: function () {
