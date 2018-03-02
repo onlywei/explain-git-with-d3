@@ -965,7 +965,7 @@ define(['d3'], function () {
             } else if (currentCommit.parent2 === mergeTarget.id) {
                 throw new Error('Already up-to-date.');
             } else if (noFF === true) {
-                var branchStartCommit = this.getCommit(mergeTarget.parent);
+                var branchStartCommit = mergeTarget;
                 while (branchStartCommit.parent !== currentCommit.id) {
                     branchStartCommit = this.getCommit(branchStartCommit.parent);
                 }
