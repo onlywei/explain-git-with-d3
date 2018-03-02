@@ -814,19 +814,21 @@ define(['d3'], function () {
 
             commit.message = message;
             if (!commit.parent) {
-                if (!this.currentBranch) {
-                    throw new Error('Not a good idea to make commits while in a detached HEAD state.');
-                }
-
-                commit.parent = this.getCommit(this.currentBranch).id;
+                commit.parent = this.getCommit('HEAD').id;
             }
 
             this.commitData.push(commit);
-            this.moveTag(this.currentBranch, commit.id);
+            if (this.currentBranch) {
+                this.moveTag(this.currentBranch, commit.id);
+            }
 
             this.renderCommits();
-
-            this.checkout(this.currentBranch);
+            
+            if (this.currentBranch) {
+                this.checkout(this.currentBranch);
+            } else {
+                this.checkout(commit.id);
+            }
             return this;
         },
 
