@@ -7,4 +7,4 @@ This simple project is designed to help people understand some basic git concept
 
 This is my first attempt at using both SVG and D3. I hope it is helpful to you.
 
-The page can be accessed via: http://onlywei.github.io/explain-git-with-d3/
+The page can be accessed via: https://onlywei.github.io/explain-git-with-d3/
