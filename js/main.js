@@ -45,11 +45,16 @@ if (!Array.prototype.indexOf) {
 
 require.config({
     paths: {
-        'd3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min'
+        'd3': 'https://cdnjs.cloudflare.com/ajax/libs/d3/3.5.12/d3.min',
+        'd3.contextMenu' : 'd3-context-menu'
     },
     shim: {
         'd3': {
             exports: 'd3'
+        },
+        'd3.contextMenu': {
+            deps: ['d3'],
+            exports: 'd3.contextMenu'
         }
     }
 });
