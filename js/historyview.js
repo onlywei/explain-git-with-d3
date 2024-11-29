@@ -669,7 +669,8 @@ define(['d3'], function () {
         renderTags: function () {
             var view = this,
                 tagData = this._parseTagData(),
-                existingTags, newTags;
+                existingTags, newTags,
+                currentBranch = this.currentBranch;
 
             existingTags = this.tagBox.selectAll('g.branch-tag')
                 .data(tagData, function (d) { return d.name; });
@@ -707,6 +708,9 @@ define(['d3'], function () {
                     } else if (d.name.toUpperCase() === 'HEAD') {
                         classes += ' head-tag';
                     }
+                    if (d.name == currentBranch) {
+                        classes += " current-branch"
+                    }
                     return classes;
                 });
 
@@ -736,6 +740,19 @@ define(['d3'], function () {
                     var commit = view.getCommit(d.commit);
                     return commit.cx;
                 });
+
+            this.tagBox.selectAll('g.branch-tag').attr('class', function(d) {
+                var cls = d3.select(this).attr('class').split(" "),
+                    currentBranchIndex = cls.indexOf('current-branch');
+                if (d.name == currentBranch) {
+                    if (currentBranchIndex < 0) {
+                        cls.push('current-branch');
+                    }
+                } else if (currentBranchIndex >= 0) {
+                    cls.splice(currentBranchIndex, 1);
+                }
+                return cls.join(' ');
+            });
 
             this._markBranchlessCommits();
         },
