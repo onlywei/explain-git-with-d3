@@ -69,6 +69,10 @@ span.cmd {
     top: 0; bottom: 0; right: 0; left: 0;
 }
 
+#ExplainGitZenRemote-Container .id-label{
+    font-size: 15px;
+}
+
 #ExplainGitZen-Container .svg-container {
     display: inline-block;
     border: 1px dotted #AAA;
@@ -77,15 +81,39 @@ span.cmd {
     margin-left: 0;
 }
 
-#ExplainGitZen-Container .svg-container.remote-container {
+#ExplainGitZen-Container .playground-container {
     position: absolute;
-    top: 0px; right: 0px; left: auto; bottom: auto;
-    background-color: #EFF1FF;
-    border-left: 1px dotted #AAA;
-    border-bottom: 1px dotted #AAA;
+    top: 0; bottom: 20px; right: 20px; left: 20px;
 }
 
-#ExplainGitZen-Container .playground-container {
+#ExplainGitZenRemote-Container {
+    position: absolute;
+    top: 0; bottom: 0; right: 0; left: 0;
+}
+
+#ExplainGitZenRemote-Container .id-label{
+    font-size: 12px;
+}
+
+#ExplainGitZenRemote-Container .svg-container {
+    display: inline-block;
+    border: 1px dotted #AAA;
+    position: absolute;
+    top: 0; bottom: 40%; right: 0; left: 250px;
+    margin-left: 0;
+}
+
+#ExplainGitZenRemote-Container .svg-container.remote-container {
+    display: inline-block;
+    border: 1px dotted #AAA;
+    position: absolute;
+    top: 60%; bottom: 0; right: 0; left: 250px;
+    margin-left: 0;
+    background-color: #EFF1FF;
+    overflow: auto;    
+}
+
+#ExplainGitZenRemote-Container .playground-container {
     position: absolute;
     top: 0; bottom: 20px; right: 20px; left: 20px;
 }
@@ -122,7 +150,7 @@ span.cmd {
 .control-box .log,
 .control-box input[type="text"] {
     font-family: Courier New;
-    font-size: 14px;
+    font-size: 15px;
 }
 
 .control-box .log .command-entry {
