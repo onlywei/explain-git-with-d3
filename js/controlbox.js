@@ -76,6 +76,34 @@ define(['d3'], function () {
                 }
             });
 
+            input.on('paste', function() {
+                var e = d3.event;
+
+                var pastedText = undefined;
+                if (window.clipboardData && window.clipboardData.getData) { // IE
+                    pastedText = window.clipboardData.getData('Text');
+                } else if (e.clipboardData && e.clipboardData.getData) {
+                    pastedText = e.clipboardData.getData('text/plain');
+                }
+
+                var commands = [];
+
+                if(pastedText.indexOf("\n") != -1) {
+                    commands = pastedText.replace(/\\r+/g, '').split("\n");
+
+                    commands.forEach(function(el) {
+                        cBox._commandHistory.unshift(el);
+                        cBox._tempCommand = '';
+                        cBox._currentCommand = -1;
+                        cBox.command(el);
+                    });
+
+                    e.preventDefault();
+                }
+
+                e.stopImmediatePropagation();
+            });
+
             this.container = cBoxContainer;
             this.log = log;
             this.input = input;
@@ -159,6 +187,14 @@ define(['d3'], function () {
             } else {
                 this.historyView.commit();
             }
+        },
+
+        "cherry-pick": function (args) {
+          if (args.length < 1) {
+            this.info('You need to give a commit ID');
+          } else {
+            this.historyView.commit({},this.historyView.getCommit(args[0]).message);
+          }
         },
 
         branch: function (args) {
