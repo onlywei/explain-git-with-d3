@@ -1,4 +1,4 @@
-define(['historyview', 'controlbox', 'd3'], function (HistoryView, ControlBox, d3) {
+define(['historyview', 'controlbox', 'd3', 'config'], function (HistoryView, ControlBox, d3, config) {
     var prefix = 'ExplainGit',
         openSandBoxes = [],
         open,
@@ -25,7 +25,7 @@ define(['historyview', 'controlbox', 'd3'], function (HistoryView, ControlBox, d
                 width: 300,
                 height: 225,
                 commitRadius: 15,
-                remoteName: 'origin',
+                remoteName: config.remoteName,
                 commitData: args.originData
             });
 

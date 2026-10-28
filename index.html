@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="css/explaingit.css">
 </head>
 <body>
-<a href="https://github.com/onlywei/explain-git-with-d3" id="fork-me">
+<a href="https://github.com/martinkropp/explain-git-with-d3" id="fork-me">
   <img style="position: absolute; top: 0; right: 0; border: 0;"
     src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"
     alt="Fork me on GitHub">
@@ -41,6 +41,7 @@
     </div>
     <div class="twocol">
       <h4>&nbsp;</h4>
+      <a id="open-switch" class="openswitch" href="#switch">git switch</a>
       <a id="open-checkout" class="openswitch" href="#checkout">git checkout</a>
       <a id="open-checkout-b" class="openswitch" href="#checkout-b">git checkout -b</a>
     </div>
@@ -105,12 +106,20 @@
       </p>
       <div class="playground-container"></div>
     </div>
+    <div id="ExplainGitSwitch-Container" class="twelvecol concept-container">
+      <p>
+        <span class="cmd">git switch</span> is the newer command for switching branches.
+        Type <span class="cmd">git switch <span class="dev-branch">dev</span></span> to switch to another branch,
+        or <span class="cmd">git switch -c branchname</span> to create a new branch and switch to it.
+      </p>
+      <div class="playground-container"></div>
+    </div>    
     <div id="ExplainGitCheckout-Container" class="twelvecol concept-container">
       <p>
         <span class="cmd">git checkout</span> has many uses,
         but the main one is to switch between branches.</br>
-        For example, to switch from master branch to dev branch,
-        I would type <span class="cmd">git checkout dev</span>.
+        For example, to switch from <span class="default-branch">main</span> branch to <span class="dev-branch">dev</span> branch,
+        I would type <span class="cmd">git checkout <span class="dev-branch">dev</span></span>.
         After that, if I do a git commit, notice where it goes. Try it.
       </p>
       <p>
@@ -147,6 +156,13 @@
         on this site.
       </p>
       <p>
+        To undo changes to files that are not committed yet, git has a separate command,
+        <span class="cmd">git restore</span>. <span class="cmd">git restore file.txt</span> discards the
+        changes in your working directory, and <span class="cmd">git restore --staged file.txt</span>
+        unstages a file. Since this site doesn't show files, <span class="cmd">git restore</span> is not
+        simulated here. You can read about it <a href="https://git-scm.com/docs/git-restore">here</a>.
+      </p>
+      <p>
         The ref "HEAD^" is usually used together with this command. "HEAD^" means "the commit right
         before HEAD. "HEAD^^" means "two commits before HEAD", and so on.
       </p>
@@ -175,7 +191,7 @@
       </p>
       <p>
         If there was no divergence between the two commits, git will do a "fast-forward" method merge.</br>
-        To see this happen, checkout the 'ff' branch and then type <span class="cmd">git merge dev</span>.
+        To see this happen, checkout the 'ff' branch and then type <span class="cmd">git merge <span class="dev-branch">dev</span></span>.
       </p>
       <div class="playground-container"></div>
     </div>
@@ -230,7 +246,7 @@
       <p>
         One simple example of the use of <span class="cmd">git reset</span> is to completely restore your local repository
         state to that of the origin.</br>
-        You can do so by typing <span class="cmd">git reset origin/master</span>.
+        You can do so by typing <span class="cmd">git reset origin/<span class="default-branch">main</span></span>.
       </p>
       <p>
         Note that this won't delete untracked files, you will have to delete those separately with
@@ -241,10 +257,10 @@
     <div id="ExplainGitFetchRebase-Container" class="twelvecol concept-container">
       <p>
         Below is a situation in which you are working in a local branch that is all your own. You want to receive the latest code
-        from the origin server's master branch. To update your local branch, you can do it without having to switch branches!
+        from the origin server's <span class="default-branch">main</span> branch. To update your local branch, you can do it without having to switch branches!
       </p>
       <p>
-        First do a <span class="cmd">git fetch</span>, then type <span class="cmd">git rebase origin/master</span>!
+        First do a <span class="cmd">git fetch</span>, then type <span class="cmd">git rebase origin/<span class="default-branch">main</span></span>!
       </p>
       <div class="playground-container"></div>
     </div>
@@ -284,6 +300,7 @@
 
 <div id="ExplainGitZen-Container" style="display:none">
     <div class="playground-container"></div>
+    <a class="exit-zen" href="#">Exit Zen Mode</a>
 </div>
 
 <svg version="1.1" baseProfile="full"
@@ -307,14 +324,30 @@
 </svg>
 
 <script type="text/javascript">
-require(['explaingit'], function (explainGit) {
+require(['explaingit', 'config'], function (explainGit, config) {
+    var defaultBranch = config.defaultBranch,
+        remoteName = config.remoteName,
+        remoteDefaultBranch = remoteName + '/' + defaultBranch,
+        devBranch = 'dev';
+
+    // fill the branch names mentioned in the explanation texts
+    function fillLabels(className, text) {
+        var labels = document.getElementsByClassName(className);
+        for (var i = 0; i < labels.length; i++) {
+            labels[i].textContent = text;
+        }
+    }
+
+    fillLabels('default-branch', defaultBranch);
+    fillLabels('dev-branch', devBranch);
+
     var examples = {
         'commit': {
             name: 'Commit',
             height: 200,
             baseLine: 0.4,
             commitData: [
-                {id: 'e137e9b', tags: ['master']}
+                {id: 'e137e9b', tags: [defaultBranch]}
             ],
             initialMessage: 'Type git commit a few times.'
         },
@@ -322,23 +355,34 @@ require(['explaingit'], function (explainGit) {
             name: 'Branch',
             baseLine: 0.6,
             commitData: [
-                {id: 'e137e9b', tags: ['master']}
+                {id: 'e137e9b', tags: [defaultBranch]}
             ]
         },
         'tag': {
             name: 'Tag',
             baseLine: 0.6,
             commitData: [
-                {id: 'e137e9b', tags: ['master']}
+                {id: 'e137e9b', tags: [defaultBranch]}
             ]
+        },
+        'switch': {
+            name: 'Switch',
+            height: 500,
+            commitData: [
+                {id: 'e137e9b'},
+                {id: 'bb92e0e', parent: 'e137e9b', tags: [defaultBranch]},
+                {id: 'e088135', parent: 'e137e9b', tags: [devBranch]}
+            ],
+            initialMessage:
+                'Use git switch, git branch, and git commit commands until you understand.'
         },
         'checkout': {
             name: 'Checkout',
             height: 500,
             commitData: [
                 {id: 'e137e9b'},
-                {id: 'bb92e0e', parent: 'e137e9b', tags: ['master']},
-                {id: 'e088135', parent: 'e137e9b', tags: ['dev']}
+                {id: 'bb92e0e', parent: 'e137e9b', tags: [defaultBranch]},
+                {id: 'e088135', parent: 'e137e9b', tags: [devBranch]}
             ],
             initialMessage:
                 'Use git checkout, git branch, and git commit commands until you understand.'
@@ -349,8 +393,8 @@ require(['explaingit'], function (explainGit) {
             commitData: [
                 {id: 'e137e9b'},
                 {id: 'f5b32c8', parent: 'e137e9b'},
-                {id: 'bb92e0e', parent: 'f5b32c8', tags: ['master']},
-                {id: 'e088135', parent: 'e137e9b', tags: ['dev']}
+                {id: 'bb92e0e', parent: 'f5b32c8', tags: [defaultBranch]},
+                {id: 'e088135', parent: 'e137e9b', tags: [devBranch]}
             ],
             initialMessage:
                 'Use git checkout -b and git commit commands until you understand.'
@@ -362,7 +406,7 @@ require(['explaingit'], function (explainGit) {
             commitData: [
                 {id: 'e137e9b'},
                 {id: '0e70093', parent: 'e137e9b'},
-                {id: '3e33afd', parent: '0e70093', tags: ['master']}
+                {id: '3e33afd', parent: '0e70093', tags: [defaultBranch]}
             ],
             initialMessage: 'Type "git reset HEAD^".'
         },
@@ -373,7 +417,7 @@ require(['explaingit'], function (explainGit) {
             commitData: [
                 {id: 'e137e9b'},
                 {id: '0e70093', parent: 'e137e9b'},
-                {id: '3e33afd', parent: '0e70093', tags: ['master']}
+                {id: '3e33afd', parent: '0e70093', tags: [defaultBranch]}
             ],
             initialMessage: 'Type "git revert 0e70093".'
         },
@@ -382,44 +426,44 @@ require(['explaingit'], function (explainGit) {
             height: 500,
             commitData: [
                 {id: 'e137e9b'},
-                {id: 'bb92e0e', parent: 'e137e9b', tags: ['master']},
+                {id: 'bb92e0e', parent: 'e137e9b', tags: [defaultBranch]},
                 {id: 'f5b32c8', parent: 'e137e9b', tags: ['ff']},
-                {id: 'e088135', parent: 'f5b32c8', tags: ['dev']}
+                {id: 'e088135', parent: 'f5b32c8', tags: [devBranch]}
             ],
             initialMessage:
-                'Type "git merge dev".'
+                'Type "git merge ' + devBranch + '".'
         },
         'rebase': {
             name: 'Rebase',
             height: 500,
             commitData: [
                 {id: 'e137e9b'},
-                {id: 'bb92e0e', parent: 'e137e9b', tags: ['master']},
+                {id: 'bb92e0e', parent: 'e137e9b', tags: [defaultBranch]},
                 {id: 'f5b32c8', parent: 'e137e9b'},
-                {id: 'e088135', parent: 'f5b32c8', tags: ['dev']}
+                {id: 'e088135', parent: 'f5b32c8', tags: [devBranch]}
             ],
-            currentBranch: 'dev',
+            currentBranch: devBranch,
             initialMessage:
-                'Type "git rebase master".'
+                'Type "git rebase ' + defaultBranch + '".'
         },
         'fetch': {
             name: 'Fetch',
             height: 500,
             commitData: [
-                {id: 'e137e9b', tags: ['origin/master']},
+                {id: 'e137e9b', tags: [remoteDefaultBranch]},
                 {id: '6ce726f', parent: 'e137e9b'},
-                {id: 'bb92e0e', parent: '6ce726f', tags: ['master']},
-                {id: '0cff760', parent: 'e137e9b', tags: ['origin/dev']},
-                {id: '4ed301d', parent: '0cff760', tags: ['dev']}
+                {id: 'bb92e0e', parent: '6ce726f', tags: [defaultBranch]},
+                {id: '0cff760', parent: 'e137e9b', tags: [remoteName + '/' + devBranch]},
+                {id: '4ed301d', parent: '0cff760', tags: [devBranch]}
             ],
             originData: [
                 {id: 'e137e9b'},
                 {id: '7eb7654', parent: 'e137e9b'},
                 {id: '090e2b8', parent: '7eb7654'},
-                {id: 'ee5df4b', parent: '090e2b8', tags: ['master']},
+                {id: 'ee5df4b', parent: '090e2b8', tags: [defaultBranch]},
                 {id: '0cff760', parent: 'e137e9b'},
                 {id: '2f8d946', parent: '0cff760'},
-                {id: '29235ca', parent: '2f8d946', tags: ['dev']}
+                {id: '29235ca', parent: '2f8d946', tags: [devBranch]}
             ],
             initialMessage:
                 'Carefully compare the commit IDs between the origin and the local repository. ' +
@@ -429,14 +473,14 @@ require(['explaingit'], function (explainGit) {
             name: 'Pull',
             height: 500,
             commitData: [
-                {id: 'e137e9b', tags: ['origin/master']},
-                {id: '46d095b', parent: 'e137e9b', tags: ['master']}
+                {id: 'e137e9b', tags: [remoteDefaultBranch]},
+                {id: '46d095b', parent: 'e137e9b', tags: [defaultBranch]}
             ],
             originData: [
                 {id: 'e137e9b'},
                 {id: '7eb7654', parent: 'e137e9b'},
                 {id: '090e2b8', parent: '7eb7654'},
-                {id: 'ee5df4b', parent: '090e2b8', tags: ['master']}
+                {id: 'ee5df4b', parent: '090e2b8', tags: [defaultBranch]}
             ],
             initialMessage:
                 'Carefully compare the commit IDs between the origin and the local repository. ' +
@@ -446,12 +490,12 @@ require(['explaingit'], function (explainGit) {
             name: 'Push',
             height: 500,
             commitData: [
-                {id: 'e137e9b', tags: ['origin/master']},
-                {id: '46d095b', parent: 'e137e9b', tags: ['master']}
+                {id: 'e137e9b', tags: [remoteDefaultBranch]},
+                {id: '46d095b', parent: 'e137e9b', tags: [defaultBranch]}
             ],
             originData: [
                 {id: 'e137e9b'},
-                {id: '7eb7654', parent: 'e137e9b', tags: ['master']}
+                {id: '7eb7654', parent: 'e137e9b', tags: [defaultBranch]}
             ],
             initialMessage:
                 'Carefully compare the commit IDs between the origin and the local repository. ' +
@@ -462,17 +506,17 @@ require(['explaingit'], function (explainGit) {
             height: 200,
             baseLine: 0.4,
             commitData: [
-                {id: 'e137e9b', tags: ['origin/master']},
+                {id: 'e137e9b', tags: [remoteDefaultBranch]},
                 {id: '0e70093', parent: 'e137e9b'},
-                {id: '3e33afd', parent: '0e70093', tags: ['master']}
+                {id: '3e33afd', parent: '0e70093', tags: [defaultBranch]}
             ],
-            initialMessage: 'Type "git reset origin/master".'
+            initialMessage: 'Type "git reset ' + remoteDefaultBranch + '".'
         },
         'fetchrebase': {
             name: 'FetchRebase',
             height: 500,
             commitData: [
-                {id: 'e137e9b', tags: ['origin/master', 'master']},
+                {id: 'e137e9b', tags: [remoteDefaultBranch, defaultBranch]},
                 {id: '46d095b', parent: 'e137e9b'},
                 {id: 'dccdc4d', parent: '46d095b', tags: ['my-branch']}
             ],
@@ -481,10 +525,10 @@ require(['explaingit'], function (explainGit) {
                 {id: 'e137e9b'},
                 {id: '7eb7654', parent: 'e137e9b'},
                 {id: '090e2b8', parent: '7eb7654'},
-                {id: 'ee5df4b', parent: '090e2b8', tags: ['master']}
+                {id: 'ee5df4b', parent: '090e2b8', tags: [defaultBranch]}
             ],
             initialMessage:
-                'First type "git fetch". Then type "git rebase origin/master".'
+                'First type "git fetch". Then type "git rebase ' + remoteDefaultBranch + '".'
         },
         'deletebranches': {
             name: 'DeleteBranches',
@@ -493,7 +537,7 @@ require(['explaingit'], function (explainGit) {
             commitData: [
                 {id: 'e137e9b'},
                 {id: 'bb92e0e', parent: 'e137e9b'},
-                {id: 'd25ee9b', parent: 'bb92e0e', tags: ['master']},
+                {id: 'd25ee9b', parent: 'bb92e0e', tags: [defaultBranch]},
                 {id: '071ff28', parent: 'e137e9b', tags: ['protoss']},
                 {id: 'f5b32c8', parent: 'bb92e0e'},
                 {id: 'e088135', parent: 'f5b32c8', tags: ['zerg']},
@@ -508,13 +552,13 @@ require(['explaingit'], function (explainGit) {
             name: 'Free',
             height: 500,
             commitData: [
-                {id: 'e137e9b', tags: ['origin/master', 'master']}
+                {id: 'e137e9b', tags: [remoteDefaultBranch, defaultBranch]}
             ],
             originData: [
                 {id: 'e137e9b'},
                 {id: '7eb7654', parent: 'e137e9b'},
                 {id: '090e2b8', parent: '7eb7654'},
-                {id: 'ee5df4b', parent: '090e2b8', tags: ['master']}
+                {id: 'ee5df4b', parent: '090e2b8', tags: [defaultBranch]}
             ],
             initialMessage:
                 'Have fun.'
@@ -524,30 +568,42 @@ require(['explaingit'], function (explainGit) {
     window.addEventListener('hashchange', open, false);
     window.addEventListener('load', open, false);
     
+    var zenActive = false;
+
+    function setZenLayout(zen) {
+        var display = zen ? 'none' : '',
+            elements = document.getElementsByClassName('row');
+        for (var i = 0; i != elements.length; ++i) {
+            elements[i].style.display = display;
+        }
+        document.getElementById('fork-me').style.display = display;
+        zenActive = zen;
+    }
+
     function open() {
         var hash = window.location.hash.substr(1),
             linkId = 'open-' + hash,
             example = examples[hash];
-        
+
+        if (zenActive && hash !== 'zen') {
+            explainGit.reset();
+            setZenLayout(false);
+        }
+
         if (example) {
             explainGit.reset();
             document.getElementById(linkId).classList.add('selected');
             explainGit.open(example);
         } else if (hash === 'zen') {
-            var elements = document.getElementsByClassName('row');
-            for(var i = 0; i != elements.length; ++i)
-            {
-              elements[i].style.display = 'none';
-            }
-            document.getElementById('fork-me').style.display = 'none';
-            
+            setZenLayout(true);
+
             explainGit.reset();
 
             explainGit.open({
                 name: 'Zen',
                 height: '100%',
                 commitData: [
-                    {id: 'e137e9b', tags: ['master'], message: 'first commit'}
+                    {id: 'e137e9b', tags: [defaultBranch], message: 'first commit'}
                 ],
                 initialMessage:
                     'Have fun.'

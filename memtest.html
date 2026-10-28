@@ -17,7 +17,7 @@
 </div>
 <h3><a id="start-test" href="#">Start Test</a></h3>
 <script type="text/javascript">
-require(['explaingit'], function (explainGit) {
+require(['explaingit', 'config'], function (explainGit, config) {
     var open = function () {
         openSwitch.style.display = 'none';
 
@@ -25,7 +25,7 @@ require(['explaingit'], function (explainGit) {
             name: 'Memtest',
             height: 250,
             commitData: [
-                {id: '98ca9b5', tags: ['origin/master', 'master']}
+                {id: '98ca9b5', tags: [config.remoteName + '/' + config.defaultBranch, config.defaultBranch]}
             ]
         });
     };

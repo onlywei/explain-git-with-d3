@@ -90,6 +90,12 @@ span.cmd {
     top: 0; bottom: 20px; right: 20px; left: 20px;
 }
 
+#ExplainGitZen-Container .exit-zen {
+    position: absolute;
+    bottom: 2px; right: 20px;
+    font-size: 12px;
+}
+
 .remote-name-display {
     font-weight: bold;
     text-align: right;
